@@ -23,20 +23,14 @@ type nodeAttr struct {
 	Parent string // remember parent node, "" means no parent
 }
 type nodeArray map[string]*nodeAttr
-type adjacencyList map[string][]string
+type adjacencyListGraph map[string][]string
 
 type bfs struct {
 	Source    string
-	NodesAttr map[string]*nodeAttr
+	NodesAttr nodeArray
 }
 
-func printNodeArray(nodes nodeArray) {
-	for k, v := range nodes {
-		fmt.Printf("node %s -- %v\n", k, v)
-	}
-}
-
-func newBfs(graph adjacencyList, source string) (*bfs, error) {
+func newBfs(graph adjacencyListGraph, source string) (*bfs, error) {
 	if len(graph) < 2 {
 		return nil, fmt.Errorf("Invalid Graph len %d, at least 2 nodes should in the graph", len(graph))
 	}
@@ -45,7 +39,7 @@ func newBfs(graph adjacencyList, source string) (*bfs, error) {
 	}
 
 	// Initialize
-	bfsContext := &bfs{source, map[string]*nodeAttr{}}
+	bfsContext := &bfs{source, nodeArray{}}
 	for k := range graph { // create node attr for each node
 		bfsContext.NodesAttr[k] = &nodeAttr{0, false, ""}
 	}
@@ -111,7 +105,7 @@ func (b *bfs) Query(target string) error {
 	return nil
 }
 
-var adjListGraph = adjacencyList{
+var adjListGraph = adjacencyListGraph{
 	"r": {"s", "v"},
 	"s": {"r", "w"},
 	"t": {"u", "w", "x"},
@@ -128,7 +122,7 @@ func main() {
 	if err != nil {
 		return
 	}
-	printNodeArray(b.NodesAttr)
+	fmt.Println(b) // TODO: implement `bfs.String()`
 
 	b.Query("v")
 	b.Query("x")
