@@ -25,13 +25,18 @@ type nodeAttr struct {
 type nodeArray map[string]*nodeAttr
 type adjacencyList map[string][]string
 
+type bfs struct {
+	Source    string
+	NodesAttr map[string]*nodeAttr
+}
+
 func printNodeArray(nodes nodeArray) {
 	for k, v := range nodes {
 		fmt.Printf("node %s -- %v\n", k, v)
 	}
 }
 
-func (graph adjacencyList) BreadthFirstSearch(source string) (nodeArray, error) {
+func newBfs(graph adjacencyList, source string) (*bfs, error) {
 	if len(graph) < 2 {
 		return nil, fmt.Errorf("Invalid Graph len %d, at least 2 nodes should in the graph", len(graph))
 	}
@@ -40,13 +45,13 @@ func (graph adjacencyList) BreadthFirstSearch(source string) (nodeArray, error) 
 	}
 
 	// Initialize
-	nodes := nodeArray{}
+	bfsContext := &bfs{source, map[string]*nodeAttr{}}
 	for k := range graph { // create node attr for each node
-		nodes[k] = &nodeAttr{0, false, ""}
+		bfsContext.NodesAttr[k] = &nodeAttr{0, false, ""}
 	}
-	nodes[source].Depth = 0
-	nodes[source].Viewed = true
-	nodes[source].Parent = ""
+	bfsContext.NodesAttr[source].Depth = 0
+	bfsContext.NodesAttr[source].Viewed = true
+	bfsContext.NodesAttr[source].Parent = ""
 
 	fmt.Printf("BFS Process: ")
 
@@ -58,12 +63,12 @@ func (graph adjacencyList) BreadthFirstSearch(source string) (nodeArray, error) 
 		u := queue[0]
 		queue = queue[1:]
 
-		currDepth := nodes[u].Depth
+		currDepth := bfsContext.NodesAttr[u].Depth
 		for _, v := range graph[u] {
-			if !nodes[v].Viewed {
-				nodes[v].Depth = currDepth + 1
-				nodes[v].Parent = u
-				nodes[v].Viewed = true
+			if !bfsContext.NodesAttr[v].Viewed {
+				bfsContext.NodesAttr[v].Depth = currDepth + 1
+				bfsContext.NodesAttr[v].Parent = u
+				bfsContext.NodesAttr[v].Viewed = true
 				queue = append(queue, v)
 			}
 		}
@@ -72,36 +77,26 @@ func (graph adjacencyList) BreadthFirstSearch(source string) (nodeArray, error) 
 			fmt.Printf(" -> ")
 		}
 		fmt.Printf("%s", u)
-		nodes[u].Viewed = true
+		bfsContext.NodesAttr[u].Viewed = true
 	}
 
 	fmt.Println("")
-	return nodes, nil
+	return bfsContext, nil
 }
 
-func (graph adjacencyList) Query(source string, target string, nodes nodeArray) error {
-	if len(graph) < 2 {
-		return fmt.Errorf("Invalid Graph len %d, at least 2 nodes should in the graph", len(graph))
-	}
-	if _, ok := graph[source]; !ok {
-		return fmt.Errorf("Invalid Source %s not in the graph", source)
-	}
-	if _, ok := graph[target]; !ok {
-		return fmt.Errorf("Invalid Target %s not in the graph", target)
-	}
-	//TODO: check whether `nodes` valid
+func (b *bfs) Query(target string) error {
 
-	currNodeAttr, targetInNodes := nodes[target]
+	currNodeAttr, targetInNodes := b.NodesAttr[target]
 	if !targetInNodes {
 		return fmt.Errorf("Invalid Nodes Attr Array: target %s not in the array", target)
 	}
-	fmt.Printf("%s -> %s depth %d\n", source, target, currNodeAttr.Depth)
+	fmt.Printf("%s -> %s depth %d\n", b.Source, target, currNodeAttr.Depth)
 
 	shortestPath := []string{}
 	shortestPath = append(shortestPath, target)
 	for currNodeAttr.Parent != "" {
 		currNode := currNodeAttr.Parent
-		currNodeAttr = nodes[currNode]
+		currNodeAttr = b.NodesAttr[currNode]
 		shortestPath = append(shortestPath, currNode)
 	}
 	for i, j := 0, len(shortestPath)-1; i < j; i, j = i+1, j-1 {
@@ -129,17 +124,14 @@ var adjListGraph = adjacencyList{
 
 func main() {
 
-	source := "s"
-
-	nodes, err := adjListGraph.BreadthFirstSearch(source)
+	b, err := newBfs(adjListGraph, "s")
 	if err != nil {
 		return
 	}
-	printNodeArray(nodes)
+	printNodeArray(b.NodesAttr)
 
-	adjListGraph.Query(source, "v", nodes)
-	adjListGraph.Query(source, "x", nodes)
-	adjListGraph.Query(source, "y", nodes)
-	adjListGraph.Query(source, "u", nodes)
-
+	b.Query("v")
+	b.Query("x")
+	b.Query("y")
+	b.Query("u")
 }
