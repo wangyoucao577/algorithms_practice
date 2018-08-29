@@ -1,4 +1,4 @@
-// Breadth first Search
+// Breadth First Search
 package main
 
 /* This sample undirected graph comes from
@@ -31,7 +31,7 @@ func printNodeArray(nodes nodeArray) {
 	}
 }
 
-func adjacencyListBasedBFS(graph adjacencyList, source string) (nodeArray, error) {
+func (graph adjacencyList) BreadthFirstSearch(source string) (nodeArray, error) {
 	if len(graph) < 2 {
 		return nil, fmt.Errorf("Invalid Graph len %d, at least 2 nodes should in the graph", len(graph))
 	}
@@ -79,8 +79,41 @@ func adjacencyListBasedBFS(graph adjacencyList, source string) (nodeArray, error
 	return nodes, nil
 }
 
-func adjacencyListBasedQuery() {
+func (graph adjacencyList) Query(source string, target string, nodes nodeArray) error {
+	if len(graph) < 2 {
+		return fmt.Errorf("Invalid Graph len %d, at least 2 nodes should in the graph", len(graph))
+	}
+	if _, ok := graph[source]; !ok {
+		return fmt.Errorf("Invalid Source %s not in the graph", source)
+	}
+	if _, ok := graph[target]; !ok {
+		return fmt.Errorf("Invalid Target %s not in the graph", target)
+	}
+	//TODO: check whether `nodes` valid
 
+	currNodeAttr, targetInNodes := nodes[target]
+	if !targetInNodes {
+		return fmt.Errorf("Invalid Nodes Attr Array: target %s not in the array", target)
+	}
+	fmt.Printf("%s -> %s depth %d\n", source, target, currNodeAttr.Depth)
+
+	shortestPath := []string{}
+	shortestPath = append(shortestPath, target)
+	for currNodeAttr.Parent != "" {
+		currNode := currNodeAttr.Parent
+		currNodeAttr = nodes[currNode]
+		shortestPath = append(shortestPath, currNode)
+	}
+	for i, j := 0, len(shortestPath)-1; i < j; i, j = i+1, j-1 {
+		shortestPath[i], shortestPath[j] = shortestPath[j], shortestPath[i]
+	}
+	fmt.Printf("  shortest path: ")
+	for _, n := range shortestPath {
+		fmt.Printf("%s ", n)
+	}
+	fmt.Println()
+
+	return nil
 }
 
 func main() {
@@ -94,8 +127,17 @@ func main() {
 	adjListGraph["x"] = []string{"t", "w", "y"}
 	adjListGraph["y"] = []string{"u", "x"}
 
-	if nodes, err := adjacencyListBasedBFS(adjListGraph, "s"); err == nil {
-		printNodeArray(nodes)
+	source := "s"
+
+	nodes, err := adjListGraph.BreadthFirstSearch(source)
+	if err != nil {
+		return
 	}
+	printNodeArray(nodes)
+
+	adjListGraph.Query(source, "v", nodes)
+	adjListGraph.Query(source, "x", nodes)
+	adjListGraph.Query(source, "y", nodes)
+	adjListGraph.Query(source, "u", nodes)
 
 }
