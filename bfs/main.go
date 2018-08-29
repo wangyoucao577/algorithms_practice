@@ -116,16 +116,18 @@ func (graph adjacencyList) Query(source string, target string, nodes nodeArray) 
 	return nil
 }
 
+var adjListGraph = adjacencyList{
+	"r": {"s", "v"},
+	"s": {"r", "w"},
+	"t": {"u", "w", "x"},
+	"u": {"t", "y"},
+	"v": {"r"},
+	"w": {"s", "t", "x"},
+	"x": {"t", "w", "y"},
+	"y": {"u", "x"},
+}
+
 func main() {
-	adjListGraph := adjacencyList{}
-	adjListGraph["r"] = []string{"s", "v"}
-	adjListGraph["s"] = []string{"r", "w"}
-	adjListGraph["t"] = []string{"u", "w", "x"}
-	adjListGraph["u"] = []string{"t", "y"}
-	adjListGraph["v"] = []string{"r"}
-	adjListGraph["w"] = []string{"s", "t", "x"}
-	adjListGraph["x"] = []string{"t", "w", "y"}
-	adjListGraph["y"] = []string{"u", "x"}
 
 	source := "s"
 
