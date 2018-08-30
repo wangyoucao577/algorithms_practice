@@ -12,7 +12,11 @@ r - s   t - u
 v   w - x - y
 */
 
-type adjacencyListGraph map[string][]string
+type nodeID string // represent each node by `string` in the code
+
+// since we represent node by `string`,
+// we have to use `map` instead of `array` to represent the Adjacency List Based Graph
+type adjacencyListGraph map[nodeID][]nodeID
 
 var adjListGraph = adjacencyListGraph{
 	"r": {"s", "v"},
@@ -23,4 +27,10 @@ var adjListGraph = adjacencyListGraph{
 	"w": {"s", "t", "x"},
 	"x": {"t", "w", "y"},
 	"y": {"u", "x"},
+}
+
+// If we not use `string` to represent node,
+// we should define the `String()` for the new type.
+func (n nodeID) String() string {
+	return string(n)
 }

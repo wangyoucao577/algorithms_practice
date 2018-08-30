@@ -8,16 +8,16 @@ import (
 type nodeAttr struct {
 	Depth  int    //
 	Viewed bool   // false is WHITE i.e. not viewed, true is BLACK i.e. has been viewed
-	Parent string // remember parent node, "" means no parent
+	Parent nodeID // remember parent node, "" means no parent
 }
-type nodeArray map[string]*nodeAttr
+type nodeArray map[nodeID]*nodeAttr
 
 type bfs struct {
-	Source    string
+	Source    nodeID
 	NodesAttr nodeArray
 }
 
-func newBfs(graph adjacencyListGraph, source string) (*bfs, error) {
+func newBfs(graph adjacencyListGraph, source nodeID) (*bfs, error) {
 	if len(graph) < 2 {
 		return nil, fmt.Errorf("Invalid Graph len %d, at least 2 nodes should in the graph", len(graph))
 	}
@@ -36,7 +36,7 @@ func newBfs(graph adjacencyListGraph, source string) (*bfs, error) {
 
 	fmt.Printf("BFS Process: ")
 
-	var queue []string // next search queue
+	var queue []nodeID // next search queue
 	queue = append(queue, source)
 
 	for len(queue) > 0 {
@@ -65,7 +65,7 @@ func newBfs(graph adjacencyListGraph, source string) (*bfs, error) {
 	return bfsContext, nil
 }
 
-func (b *bfs) Query(target string) error {
+func (b *bfs) Query(target nodeID) error {
 
 	currNodeAttr, targetInNodes := b.NodesAttr[target]
 	if !targetInNodes {
@@ -73,7 +73,7 @@ func (b *bfs) Query(target string) error {
 	}
 	fmt.Printf("%s -> %s depth %d\n", b.Source, target, currNodeAttr.Depth)
 
-	shortestPath := []string{}
+	shortestPath := []nodeID{}
 	shortestPath = append(shortestPath, target)
 	for currNodeAttr.Parent != "" {
 		currNode := currNodeAttr.Parent
@@ -94,14 +94,14 @@ func (b *bfs) Query(target string) error {
 
 func main() {
 
-	b, err := newBfs(adjListGraph, "s")
+	b, err := newBfs(adjListGraph, nodeID("s"))
 	if err != nil {
 		return
 	}
 	fmt.Println(b) // TODO: implement `bfs.String()`
 
-	b.Query("v")
-	b.Query("x")
-	b.Query("y")
-	b.Query("u")
+	b.Query(nodeID("v"))
+	b.Query(nodeID("x"))
+	b.Query(nodeID("y"))
+	b.Query(nodeID("u"))
 }
