@@ -3,102 +3,53 @@ package main
 /* This sample undirected graph comes from
   "Introduction to Algorithms - Third Edition" 22.2 BFS
 
-  V = 8 (node count)
-  E = 9 (edge count)
-  define undirected graph G(V,E) as below (`s` is the source node):
+	V = 8 (node count)
+	E = 9 (edge count)
+	define undirected graph G(V,E) as below (`s` is the source node):
 
-r - s   t - u
-|   | / |   |
-v   w - x - y
+	r(0) - s(1)   t(2) - u(3)
+	|     |   /   |     |
+	v(4)   w(5) - x(6) - y(7)
 */
 
-type nodeID string // represent each node by `string` in the code
+func (n nodeName) String() string {
+	return string(n)
+}
 
-type rangeAction func(nodeID)
+func (n nodeID) String() string {
+	return n.Name().String()
+}
 
-type graphOperator interface {
-	NodeCount() int
-	IsNodeValid(nodeID) bool
+// define fixed nodes order in the graph, then we use the `index` as nodeID for search,
+// will be easier to implement by code.
+// node name only for print.
+var orderedNodesName = [...]nodeName{"r", "s", "t", "u", "v", "w", "x", "y"}
 
-	IterateAllNodes(rangeAction)
-	IterateAdjacencyNodes(nodeID, rangeAction)
+func (n nodeID) Name() nodeName {
+	return orderedNodesName[n]
+}
+
+var nodeNameToIDMap = map[nodeName]nodeID{"r": 0, "s": 1, "t": 2, "u": 3, "v": 4, "w": 5, "x": 6, "y": 7}
+
+func (n nodeName) ID() nodeID {
+	return nodeNameToIDMap[n]
 }
 
 /************************* Adjacency  List  Based Graph Representation *****************************/
-
-// since we represent node by `string`,
-// we have to use `map` instead of `array` to represent the Adjacency List Based Graph
-type adjacencyListGraph map[nodeID][]nodeID
-
-func (g adjacencyListGraph) NodeCount() int {
-	return len(g)
-}
-
-func (g adjacencyListGraph) IsNodeValid(currNode nodeID) bool {
-	_, ok := g[currNode]
-	return ok
-}
-
-func (g adjacencyListGraph) IterateAllNodes(action rangeAction) {
-	for k := range g {
-		action(k)
-	}
-}
-
-func (g adjacencyListGraph) IterateAdjacencyNodes(currNode nodeID, action rangeAction) {
-	for _, v := range g[currNode] {
-		action(v)
-	}
-}
-
 var adjListGraph = adjacencyListGraph{
-	"r": {"s", "v"},
-	"s": {"r", "w"},
-	"t": {"u", "w", "x"},
-	"u": {"t", "y"},
-	"v": {"r"},
-	"w": {"s", "t", "x"},
-	"x": {"t", "w", "y"},
-	"y": {"u", "x"},
+	[]nodeID{1, 4},
+	[]nodeID{0, 5},
+	[]nodeID{3, 5, 6},
+	[]nodeID{2, 7},
+	[]nodeID{0},
+	[]nodeID{1, 2, 6},
+	[]nodeID{2, 5, 7},
+	[]nodeID{3, 6},
 }
 
 /************************* Adjacency  List  Based Graph Representation *****************************/
 
 /************************* Adjacency Matrix Based Graph Representation *****************************/
-
-type adjacencyMatrixGraph struct {
-	NodesOrder map[nodeID]int
-	Matrix     [][]bool
-}
-
-func (g adjacencyMatrixGraph) NodeCount() int {
-	return len(g.NodesOrder)
-}
-
-func (g adjacencyMatrixGraph) IsNodeValid(currNode nodeID) bool {
-	_, ok := g.NodesOrder[currNode]
-	return ok
-}
-
-func (g adjacencyMatrixGraph) IterateAllNodes(action rangeAction) {
-	for k := range g.NodesOrder {
-		action(k)
-	}
-}
-
-func (g adjacencyMatrixGraph) IterateAdjacencyNodes(currNode nodeID, action rangeAction) {
-	row, ok := g.NodesOrder[currNode]
-	if !ok {
-		return
-	}
-
-	for k, v := range g.NodesOrder {
-		if g.Matrix[row][v] {
-			action(k)
-		}
-	}
-}
-
 /*
   For this undirected graph, we can only store half of the matrix to save storage if needed
 
@@ -114,23 +65,14 @@ func (g adjacencyMatrixGraph) IterateAdjacencyNodes(currNode nodeID, action rang
   y   0 0 0 1 0 0 1 0
 */
 var adjMatrixGraph = adjacencyMatrixGraph{
-	NodesOrder: map[nodeID]int{"r": 0, "s": 1, "t": 2, "u": 3, "v": 4, "w": 5, "x": 6, "y": 7},
-	Matrix: [][]bool{
-		{false, true, false, false, true, false, false, false},
-		{true, false, false, false, false, true, false, false},
-		{false, false, false, true, false, true, true, false},
-		{false, false, true, false, false, false, false, true},
-		{true, false, false, false, false, false, false, false},
-		{false, true, true, false, false, false, true, false},
-		{false, false, true, false, false, true, false, true},
-		{false, false, false, true, false, false, true, false},
-	},
+	{false, true, false, false, true, false, false, false},
+	{true, false, false, false, false, true, false, false},
+	{false, false, false, true, false, true, true, false},
+	{false, false, true, false, false, false, false, true},
+	{true, false, false, false, false, false, false, false},
+	{false, true, true, false, false, false, true, false},
+	{false, false, true, false, false, true, false, true},
+	{false, false, false, true, false, false, true, false},
 }
 
 /************************* Adjacency Matrix Based Graph Representation *****************************/
-
-// If we not use `string` to represent node,
-// we should define the `String()` for the new type.
-func (n nodeID) String() string {
-	return string(n)
-}

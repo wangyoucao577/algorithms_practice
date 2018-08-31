@@ -6,7 +6,7 @@ import "fmt"
 type nodeAttr struct {
 	Depth  int    // record depth for each node during search
 	Viewed bool   // false is WHITE i.e. not viewed, true is BLACK i.e. has been viewed
-	Parent nodeID // remember parent node, "" means no parent
+	Parent nodeID // remember parent node, InvalidNodeID means no parent
 }
 type nodeAttrArray map[nodeID]*nodeAttr // nodeID is not a int start from 0, so we use `map` instread of `array`
 
@@ -26,11 +26,11 @@ func newBFS(graph graphOperator, source nodeID) (*bfs, error) {
 	// Initialize
 	bfsContext := &bfs{source, nodeAttrArray{}}
 	graph.IterateAllNodes(func(k nodeID) {
-		bfsContext.NodesAttr[k] = &nodeAttr{0, false, ""} // create node attr for each node
+		bfsContext.NodesAttr[k] = &nodeAttr{0, false, InvalidNodeID} // create node attr for each node
 	})
 	bfsContext.NodesAttr[source].Depth = 0
 	bfsContext.NodesAttr[source].Viewed = true
-	bfsContext.NodesAttr[source].Parent = ""
+	bfsContext.NodesAttr[source].Parent = InvalidNodeID
 
 	fmt.Printf("BFS Process: ")
 
@@ -73,7 +73,7 @@ func (b *bfs) Query(target nodeID) error {
 
 	shortestPath := []nodeID{}
 	shortestPath = append(shortestPath, target)
-	for currNodeAttr.Parent != "" {
+	for currNodeAttr.Parent != InvalidNodeID {
 		currNode := currNodeAttr.Parent
 		currNodeAttr = b.NodesAttr[currNode]
 		shortestPath = append(shortestPath, currNode)
