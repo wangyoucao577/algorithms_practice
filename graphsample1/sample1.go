@@ -12,7 +12,7 @@ import "github.com/wangyoucao577/algorithms_practice/graph"
 	define undirected graph G(V,E) as below (`s` is the source node):
 
 	r(0) - s(1)   t(2) - u(3)
-	|     |   /   |     |
+	 |       |  /   |     |
 	v(4)   w(5) - x(6) - y(7)
 */
 
