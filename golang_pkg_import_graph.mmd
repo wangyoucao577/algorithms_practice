@@ -1,0 +1,21 @@
+%% Call below command to convert .mmd to .png
+%%  Adjust -w or -H if necessary
+%% mmdc -p puppeteer-config.json -i golang_pkg_import_graph.mmd -o golang_pkg_import_graph.mmd.png -w 960 -H 540
+
+%%```mermaid
+
+graph BT
+
+Title[<u> pkg Import Graph</u>]
+Title-->pkggraph
+style Title fill:#FFF,stroke:#FFF
+linkStyle 0 stroke:#FFF,stroke-width:0;
+
+pkggraphsample1["(pkg)graphsample1"] --> pkggraph["(pkg)graph"]
+pkgbfs["(pkg)bfs"] --> pkggraph
+pkgbfs --> pkggraphsample1
+bfs_dfs_main("(bin)bfs_dfs_main") --> pkgbfs
+bfs_dfs_main --> pkggraphsample1
+bfs_dfs_main --> pkggraph
+
+%%```
