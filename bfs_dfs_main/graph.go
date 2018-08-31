@@ -28,6 +28,9 @@ var nodeConverter = nodeIDNameConverter{
 }
 
 func (n nodeIDNameConverter) IDToName(i graph.NodeID) string {
+	if i == graph.InvalidNodeID {
+		return "InvalidNodeID"
+	}
 	return n.orderedNodesName[i]
 }
 func (n nodeIDNameConverter) NameToID(name string) graph.NodeID {

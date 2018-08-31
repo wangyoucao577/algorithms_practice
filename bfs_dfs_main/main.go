@@ -22,13 +22,22 @@ func printPath(w io.Writer, s graph.NodeID, t graph.NodeID, depth int, path grap
 
 func main() {
 
-	fmt.Println("Adjacency List Based Graph")
+	var bfsMonitor = func(queue []graph.NodeID, currNode graph.NodeID) {
+		fmt.Printf("currNode %v, queue(%d): ", nodeConverter.IDToName(currNode), len(queue))
+		for _, v := range queue {
+			fmt.Printf("%v ", nodeConverter.IDToName(v))
+		}
+		fmt.Println()
+	}
+
 	source := nodeConverter.NameToID("s")
 	var target graph.NodeID
 	var depth int
 	var path graph.Path
 
-	b1, err := bfs.NewBfs(adjListGraph, source, nil)
+	fmt.Println()
+	fmt.Printf("Run BFS on Adjacency List Based Graph, source %v\n", nodeConverter.IDToName(source))
+	b1, err := bfs.NewBfs(adjListGraph, source, bfsMonitor)
 	if err != nil {
 		return
 	}
@@ -50,8 +59,9 @@ func main() {
 	depth, path = b1.Query(target)
 	printPath(os.Stdout, source, target, depth, path, nodeConverter)
 
-	fmt.Println("\nAdjacency Matrix Based Graph")
-	b2, err := bfs.NewBfs(adjMatrixGraph, source, nil)
+	fmt.Println()
+	fmt.Printf("Run BFS on Adjacency Matrix Based Graph, source %v\n", nodeConverter.IDToName(source))
+	b2, err := bfs.NewBfs(adjMatrixGraph, source, bfsMonitor)
 	if err != nil {
 		return
 	}
