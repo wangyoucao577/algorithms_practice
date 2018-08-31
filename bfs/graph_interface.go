@@ -1,45 +1,45 @@
 package main
 
-type nodeName string
-type nodeID uint // represent each node by `unsigned int` in the code, start from 0
+type NodeName string
+type NodeID uint // represent each node by `unsigned int` in the code, start from 0
 
 const (
 	// InvalidNodeID define max uint
-	InvalidNodeID = nodeID(^uint(0))
+	InvalidNodeID = NodeID(^uint(0))
 )
 
-type rangeAction func(nodeID)
+type IterateAction func(NodeID)
 
-type graphOperator interface {
+type Graph interface {
 	NodeCount() int
-	IsNodeValid(nodeID) bool
+	IsNodeValid(NodeID) bool
 
-	IterateAllNodes(rangeAction)
-	IterateAdjacencyNodes(nodeID, rangeAction)
+	IterateAllNodes(IterateAction)
+	IterateAdjacencyNodes(NodeID, IterateAction)
 }
 
 /************************* Adjacency  List  Based Graph Representation *****************************/
 
-type adjacencyListGraph [][]nodeID
+type AdjacencyListGraph [][]NodeID
 
-func (g adjacencyListGraph) NodeCount() int {
+func (g AdjacencyListGraph) NodeCount() int {
 	return len(g)
 }
 
-func (g adjacencyListGraph) IsNodeValid(currNode nodeID) bool {
+func (g AdjacencyListGraph) IsNodeValid(currNode NodeID) bool {
 	if int(currNode) >= len(g) {
 		return false
 	}
 	return true
 }
 
-func (g adjacencyListGraph) IterateAllNodes(action rangeAction) {
+func (g AdjacencyListGraph) IterateAllNodes(action IterateAction) {
 	for i := range g {
-		action(nodeID(i))
+		action(NodeID(i))
 	}
 }
 
-func (g adjacencyListGraph) IterateAdjacencyNodes(currNode nodeID, action rangeAction) {
+func (g AdjacencyListGraph) IterateAdjacencyNodes(currNode NodeID, action IterateAction) {
 	if !g.IsNodeValid(currNode) {
 		return
 	}
@@ -53,33 +53,33 @@ func (g adjacencyListGraph) IterateAdjacencyNodes(currNode nodeID, action rangeA
 
 /************************* Adjacency Matrix Based Graph Representation *****************************/
 
-type adjacencyMatrixGraph [][]bool
+type AdjacencyMatrixGraph [][]bool
 
-func (g adjacencyMatrixGraph) NodeCount() int {
+func (g AdjacencyMatrixGraph) NodeCount() int {
 	return len(g)
 }
 
-func (g adjacencyMatrixGraph) IsNodeValid(currNode nodeID) bool {
+func (g AdjacencyMatrixGraph) IsNodeValid(currNode NodeID) bool {
 	if int(currNode) >= len(g) {
 		return false
 	}
 	return true
 }
 
-func (g adjacencyMatrixGraph) IterateAllNodes(action rangeAction) {
+func (g AdjacencyMatrixGraph) IterateAllNodes(action IterateAction) {
 	for i := range g {
-		action(nodeID(i))
+		action(NodeID(i))
 	}
 }
 
-func (g adjacencyMatrixGraph) IterateAdjacencyNodes(currNode nodeID, action rangeAction) {
+func (g AdjacencyMatrixGraph) IterateAdjacencyNodes(currNode NodeID, action IterateAction) {
 	if !g.IsNodeValid(currNode) {
 		return
 	}
 
 	for i, v := range g[currNode] {
 		if v {
-			action(nodeID(i))
+			action(NodeID(i))
 		}
 	}
 }
