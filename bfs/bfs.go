@@ -8,26 +8,26 @@ type nodeAttr struct {
 	Viewed bool   // false is WHITE i.e. not viewed, true is BLACK i.e. has been viewed
 	Parent nodeID // remember parent node, "" means no parent
 }
-type nodeArray map[nodeID]*nodeAttr
+type nodeAttrArray map[nodeID]*nodeAttr // nodeID is not a int start from 0, so we use `map` instread of `array`
 
 type bfs struct {
-	Source    nodeID
-	NodesAttr nodeArray
+	Source    nodeID        // BFS start point
+	NodesAttr nodeAttrArray // store depth/parent/viewed during BFS
 }
 
-func newBfs(graph adjacencyListGraph, source nodeID) (*bfs, error) {
-	if len(graph) < 2 {
-		return nil, fmt.Errorf("Invalid Graph len %d, at least 2 nodes should in the graph", len(graph))
+func newBFS(graph graphOperator, source nodeID) (*bfs, error) {
+	if graph.NodeCount() < 2 {
+		return nil, fmt.Errorf("Invalid Graph len %d, at least 2 nodes should in the graph", graph.NodeCount())
 	}
-	if _, ok := graph[source]; !ok {
+	if !graph.IsNodeValid(source) {
 		return nil, fmt.Errorf("Invalid Source %s not in the graph", source)
 	}
 
 	// Initialize
-	bfsContext := &bfs{source, nodeArray{}}
-	for k := range graph { // create node attr for each node
-		bfsContext.NodesAttr[k] = &nodeAttr{0, false, ""}
-	}
+	bfsContext := &bfs{source, nodeAttrArray{}}
+	graph.IterateAllNodes(func(k nodeID) {
+		bfsContext.NodesAttr[k] = &nodeAttr{0, false, ""} // create node attr for each node
+	})
 	bfsContext.NodesAttr[source].Depth = 0
 	bfsContext.NodesAttr[source].Viewed = true
 	bfsContext.NodesAttr[source].Parent = ""
@@ -43,14 +43,14 @@ func newBfs(graph adjacencyListGraph, source nodeID) (*bfs, error) {
 		queue = queue[1:]
 
 		currDepth := bfsContext.NodesAttr[u].Depth
-		for _, v := range graph[u] {
+		graph.IterateAdjacencyNodes(u, func(v nodeID) {
 			if !bfsContext.NodesAttr[v].Viewed {
 				bfsContext.NodesAttr[v].Depth = currDepth + 1
 				bfsContext.NodesAttr[v].Parent = u
 				bfsContext.NodesAttr[v].Viewed = true
 				queue = append(queue, v)
 			}
-		}
+		})
 
 		if u != source {
 			fmt.Printf(" -> ")

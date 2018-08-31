@@ -14,15 +14,42 @@ v   w - x - y
 
 type nodeID string // represent each node by `string` in the code
 
-const (
-	nodeCount = 8 // V= 8
-)
+type rangeAction func(nodeID)
+
+type graphOperator interface {
+	NodeCount() int
+	IsNodeValid(nodeID) bool
+
+	IterateAllNodes(rangeAction)
+	IterateAdjacencyNodes(nodeID, rangeAction)
+}
 
 /************************* Adjacency  List  Based Graph Representation *****************************/
 
 // since we represent node by `string`,
 // we have to use `map` instead of `array` to represent the Adjacency List Based Graph
 type adjacencyListGraph map[nodeID][]nodeID
+
+func (g adjacencyListGraph) NodeCount() int {
+	return len(g)
+}
+
+func (g adjacencyListGraph) IsNodeValid(currNode nodeID) bool {
+	_, ok := g[currNode]
+	return ok
+}
+
+func (g adjacencyListGraph) IterateAllNodes(action rangeAction) {
+	for k := range g {
+		action(k)
+	}
+}
+
+func (g adjacencyListGraph) IterateAdjacencyNodes(currNode nodeID, action rangeAction) {
+	for _, v := range g[currNode] {
+		action(v)
+	}
+}
 
 var adjListGraph = adjacencyListGraph{
 	"r": {"s", "v"},
@@ -39,9 +66,38 @@ var adjListGraph = adjacencyListGraph{
 
 /************************* Adjacency Matrix Based Graph Representation *****************************/
 
-// since we represent node by `string`,
-// we have to use `map` instead of `array` to represent the Adjacency Matrix Based Graph
-type adjacencyMatrixGraph map[nodeID][nodeCount]bool
+type adjacencyMatrixGraph struct {
+	NodesOrder map[nodeID]int
+	Matrix     [][]bool
+}
+
+func (g adjacencyMatrixGraph) NodeCount() int {
+	return len(g.NodesOrder)
+}
+
+func (g adjacencyMatrixGraph) IsNodeValid(currNode nodeID) bool {
+	_, ok := g.NodesOrder[currNode]
+	return ok
+}
+
+func (g adjacencyMatrixGraph) IterateAllNodes(action rangeAction) {
+	for k := range g.NodesOrder {
+		action(k)
+	}
+}
+
+func (g adjacencyMatrixGraph) IterateAdjacencyNodes(currNode nodeID, action rangeAction) {
+	row, ok := g.NodesOrder[currNode]
+	if !ok {
+		return
+	}
+
+	for k, v := range g.NodesOrder {
+		if g.Matrix[row][v] {
+			action(k)
+		}
+	}
+}
 
 /*
   For this undirected graph, we can only store half of the matrix to save storage if needed
@@ -58,14 +114,17 @@ type adjacencyMatrixGraph map[nodeID][nodeCount]bool
   y   0 0 0 1 0 0 1 0
 */
 var adjMatrixGraph = adjacencyMatrixGraph{
-	"r": {false, true, false, false, true, false, false, false},
-	"s": {true, false, false, false, false, true, false, false},
-	"t": {false, false, false, true, false, true, true, false},
-	"u": {false, false, true, false, false, false, false, true},
-	"v": {true, false, false, false, false, false, false, false},
-	"w": {false, true, true, false, false, false, true, false},
-	"x": {false, false, true, false, false, true, false, true},
-	"y": {false, false, false, true, false, false, true, false},
+	NodesOrder: map[nodeID]int{"r": 0, "s": 1, "t": 2, "u": 3, "v": 4, "w": 5, "x": 6, "y": 7},
+	Matrix: [][]bool{
+		{false, true, false, false, true, false, false, false},
+		{true, false, false, false, false, true, false, false},
+		{false, false, false, true, false, true, true, false},
+		{false, false, true, false, false, false, false, true},
+		{true, false, false, false, false, false, false, false},
+		{false, true, true, false, false, false, true, false},
+		{false, false, true, false, false, true, false, true},
+		{false, false, false, true, false, false, true, false},
+	},
 }
 
 /************************* Adjacency Matrix Based Graph Representation *****************************/
