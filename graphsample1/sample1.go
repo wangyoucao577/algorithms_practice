@@ -1,4 +1,6 @@
-package main
+// Package graphsample1 defined a undirected graph comes from
+//  "Introduction to Algorithms - Third Edition" 22.2 BFS
+package graphsample1
 
 import "github.com/wangyoucao577/algorithms_practice/graph"
 
@@ -27,18 +29,21 @@ var nodeConverter = nodeIDNameConverter{
 	map[string]graph.NodeID{"r": 0, "s": 1, "t": 2, "u": 3, "v": 4, "w": 5, "x": 6, "y": 7},
 }
 
-func (n nodeIDNameConverter) IDToName(i graph.NodeID) string {
+// IDToName convert NodeID to human readable name
+func IDToName(i graph.NodeID) string {
 	if i == graph.InvalidNodeID {
 		return "InvalidNodeID"
 	}
-	return n.orderedNodesName[i]
-}
-func (n nodeIDNameConverter) NameToID(name string) graph.NodeID {
-	return n.nodeNameToIDMap[name]
+	return nodeConverter.orderedNodesName[i]
 }
 
-/************************* Adjacency  List  Based Graph Representation *****************************/
-var adjListGraph = graph.AdjacencyListGraph{
+// NameToID convert node human readable name to NodeID
+func NameToID(name string) graph.NodeID {
+	return nodeConverter.nodeNameToIDMap[name]
+}
+
+// AdjacencyListGraphSample1 adjacency list based graph sample 1
+var AdjacencyListGraphSample1 = graph.AdjacencyListGraph{
 	[]graph.NodeID{1, 4},
 	[]graph.NodeID{0, 5},
 	[]graph.NodeID{3, 5, 6},
@@ -49,9 +54,7 @@ var adjListGraph = graph.AdjacencyListGraph{
 	[]graph.NodeID{3, 6},
 }
 
-/************************* Adjacency  List  Based Graph Representation *****************************/
-
-/************************* Adjacency Matrix Based Graph Representation *****************************/
+// AdjacencyMatrixGraphSample1 adjacency Matrix based graph sample 1
 /*
   For this undirected graph, we can only store half of the matrix to save storage if needed
 
@@ -66,7 +69,7 @@ var adjListGraph = graph.AdjacencyListGraph{
   x   0 0 1 0 0 1 0 1
   y   0 0 0 1 0 0 1 0
 */
-var adjMatrixGraph = graph.AdjacencyMatrixGraph{
+var AdjacencyMatrixGraphSample1 = graph.AdjacencyMatrixGraph{
 	{false, true, false, false, true, false, false, false},
 	{true, false, false, false, false, true, false, false},
 	{false, false, false, true, false, true, true, false},
@@ -76,5 +79,3 @@ var adjMatrixGraph = graph.AdjacencyMatrixGraph{
 	{false, false, true, false, false, true, false, true},
 	{false, false, false, true, false, false, true, false},
 }
-
-/************************* Adjacency Matrix Based Graph Representation *****************************/

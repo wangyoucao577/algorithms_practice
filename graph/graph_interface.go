@@ -10,11 +10,6 @@ const (
 	InvalidNodeID = NodeID(^uint(0))
 )
 
-// NodeIDToName defined a interface for convert NodeID to human readable string
-type NodeIDToName interface {
-	IDToName(NodeID) string
-}
-
 // Path represented by nodes
 type Path []NodeID
 

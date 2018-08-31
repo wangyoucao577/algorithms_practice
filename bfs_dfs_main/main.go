@@ -7,14 +7,15 @@ import (
 
 	"github.com/wangyoucao577/algorithms_practice/bfs"
 	"github.com/wangyoucao577/algorithms_practice/graph"
+	"github.com/wangyoucao577/algorithms_practice/graphsample1"
 )
 
-func printPath(w io.Writer, s graph.NodeID, t graph.NodeID, depth int, path graph.Path, idToName graph.NodeIDToName) {
+func printPath(w io.Writer, s graph.NodeID, t graph.NodeID, depth int, path graph.Path) {
 	fmt.Fprintf(w, "%s -> %s shortest path (depth %d) : %s",
-		idToName.IDToName(s), idToName.IDToName(t), depth, idToName.IDToName(s))
+		graphsample1.IDToName(s), graphsample1.IDToName(t), depth, graphsample1.IDToName(s))
 	for _, v := range path {
 		if v != s {
-			fmt.Fprintf(w, " -> %s", idToName.IDToName(v))
+			fmt.Fprintf(w, " -> %s", graphsample1.IDToName(v))
 		}
 	}
 	fmt.Fprintln(w)
@@ -23,64 +24,64 @@ func printPath(w io.Writer, s graph.NodeID, t graph.NodeID, depth int, path grap
 func main() {
 
 	var bfsMonitor = func(queue []graph.NodeID, currNode graph.NodeID) {
-		fmt.Printf("currNode %v, queue(%d): ", nodeConverter.IDToName(currNode), len(queue))
+		fmt.Printf("currNode %v, queue(%d): ", graphsample1.IDToName(currNode), len(queue))
 		for _, v := range queue {
-			fmt.Printf("%v ", nodeConverter.IDToName(v))
+			fmt.Printf("%v ", graphsample1.IDToName(v))
 		}
 		fmt.Println()
 	}
 
-	source := nodeConverter.NameToID("s")
+	source := graphsample1.NameToID("s")
 	var target graph.NodeID
 	var depth int
 	var path graph.Path
 
 	fmt.Println()
-	fmt.Printf("Run BFS on Adjacency List Based Graph, source %v\n", nodeConverter.IDToName(source))
-	b1, err := bfs.NewBfs(adjListGraph, source, bfsMonitor)
+	fmt.Printf("Run BFS on Adjacency List Based Graph, source %v\n", graphsample1.IDToName(source))
+	b1, err := bfs.NewBfs(graphsample1.AdjacencyListGraphSample1, source, bfsMonitor)
 	if err != nil {
 		return
 	}
 	//fmt.Println(b1) // TODO: implement `bfs.String()`
 
-	target = nodeConverter.NameToID("v")
+	target = graphsample1.NameToID("v")
 	depth, path = b1.Query(target)
-	printPath(os.Stdout, source, target, depth, path, nodeConverter)
+	printPath(os.Stdout, source, target, depth, path)
 
-	target = nodeConverter.NameToID("x")
+	target = graphsample1.NameToID("x")
 	depth, path = b1.Query(target)
-	printPath(os.Stdout, source, target, depth, path, nodeConverter)
+	printPath(os.Stdout, source, target, depth, path)
 
-	target = nodeConverter.NameToID("y")
+	target = graphsample1.NameToID("y")
 	depth, path = b1.Query(target)
-	printPath(os.Stdout, source, target, depth, path, nodeConverter)
+	printPath(os.Stdout, source, target, depth, path)
 
-	target = nodeConverter.NameToID("u")
+	target = graphsample1.NameToID("u")
 	depth, path = b1.Query(target)
-	printPath(os.Stdout, source, target, depth, path, nodeConverter)
+	printPath(os.Stdout, source, target, depth, path)
 
 	fmt.Println()
-	fmt.Printf("Run BFS on Adjacency Matrix Based Graph, source %v\n", nodeConverter.IDToName(source))
-	b2, err := bfs.NewBfs(adjMatrixGraph, source, bfsMonitor)
+	fmt.Printf("Run BFS on Adjacency Matrix Based Graph, source %v\n", graphsample1.IDToName(source))
+	b2, err := bfs.NewBfs(graphsample1.AdjacencyMatrixGraphSample1, source, bfsMonitor)
 	if err != nil {
 		return
 	}
 	//fmt.Println(b2) // TODO: implement `bfs.String()`
 
-	target = nodeConverter.NameToID("v")
+	target = graphsample1.NameToID("v")
 	depth, path = b2.Query(target)
-	printPath(os.Stdout, source, target, depth, path, nodeConverter)
+	printPath(os.Stdout, source, target, depth, path)
 
-	target = nodeConverter.NameToID("x")
+	target = graphsample1.NameToID("x")
 	depth, path = b2.Query(target)
-	printPath(os.Stdout, source, target, depth, path, nodeConverter)
+	printPath(os.Stdout, source, target, depth, path)
 
-	target = nodeConverter.NameToID("y")
+	target = graphsample1.NameToID("y")
 	depth, path = b2.Query(target)
-	printPath(os.Stdout, source, target, depth, path, nodeConverter)
+	printPath(os.Stdout, source, target, depth, path)
 
-	target = nodeConverter.NameToID("u")
+	target = graphsample1.NameToID("u")
 	depth, path = b2.Query(target)
-	printPath(os.Stdout, source, target, depth, path, nodeConverter)
+	printPath(os.Stdout, source, target, depth, path)
 
 }
