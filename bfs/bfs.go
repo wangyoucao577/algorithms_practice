@@ -66,14 +66,17 @@ func NewBfs(g graph.Graph, source graph.NodeID, w io.Writer, idToName graph.Node
 	return bfsContext, nil
 }
 
-func (b *Bfs) Query(target graph.NodeID) error {
+// Query find shortest path between source and target
+// on the BFS searched graph.
+// return depth and path if succeed.
+func (b *Bfs) Query(target graph.NodeID) (int, graph.Path) {
 
 	currNodeAttr, targetInNodes := b.NodesAttr[target]
 	if !targetInNodes {
-		return fmt.Errorf("Invalid Nodes Attr Array: target %s not in the array", target)
+		panic(fmt.Errorf("target node %v not in the graph", target))
 	}
-	fmt.Printf("%d -> %d depth %d\n", b.Source, target, currNodeAttr.Depth)
 
+	depth := currNodeAttr.Depth
 	shortestPath := []graph.NodeID{}
 	shortestPath = append(shortestPath, target)
 	for currNodeAttr.Parent != graph.InvalidNodeID {
@@ -84,11 +87,6 @@ func (b *Bfs) Query(target graph.NodeID) error {
 	for i, j := 0, len(shortestPath)-1; i < j; i, j = i+1, j-1 {
 		shortestPath[i], shortestPath[j] = shortestPath[j], shortestPath[i]
 	}
-	fmt.Printf("  shortest path: ")
-	for _, n := range shortestPath {
-		fmt.Printf("%v ", n)
-	}
-	fmt.Println()
 
-	return nil
+	return depth, shortestPath
 }

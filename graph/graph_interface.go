@@ -15,6 +15,9 @@ type NodeIDToName interface {
 	IDToName(NodeID) string
 }
 
+// Path represented by nodes
+type Path []NodeID
+
 // IterateAction will be called in each Iterate functions
 type IterateAction func(NodeID)
 
