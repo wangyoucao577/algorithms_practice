@@ -28,7 +28,7 @@ func main() {
 	var depth int
 	var path graph.Path
 
-	b1, err := bfs.NewBfs(adjListGraph, source, os.Stdout, nodeConverter)
+	b1, err := bfs.NewBfs(adjListGraph, source, nil)
 	if err != nil {
 		return
 	}
@@ -51,7 +51,7 @@ func main() {
 	printPath(os.Stdout, source, target, depth, path, nodeConverter)
 
 	fmt.Println("\nAdjacency Matrix Based Graph")
-	b2, err := bfs.NewBfs(adjMatrixGraph, source, os.Stdout, nodeConverter)
+	b2, err := bfs.NewBfs(adjMatrixGraph, source, nil)
 	if err != nil {
 		return
 	}
