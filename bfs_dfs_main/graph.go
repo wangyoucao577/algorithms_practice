@@ -1,5 +1,7 @@
 package main
 
+import "github.com/wangyoucao577/algorithms_practice/graph"
+
 /* This sample undirected graph comes from
   "Introduction to Algorithms - Third Edition" 22.2 BFS
 
@@ -12,39 +14,36 @@ package main
 	v(4)   w(5) - x(6) - y(7)
 */
 
-func (n NodeName) String() string {
-	return string(n)
-}
-
-func (n NodeID) String() string {
-	return n.Name().String()
+type nodeIDNameConverter struct {
+	orderedNodesName []string
+	nodeNameToIDMap  map[string]graph.NodeID
 }
 
 // define fixed nodes order in the graph, then we use the `index` as nodeID for search,
 // will be easier to implement by code.
 // node name only for print.
-var orderedNodesName = [...]NodeName{"r", "s", "t", "u", "v", "w", "x", "y"}
-
-func (n NodeID) Name() NodeName {
-	return orderedNodesName[n]
+var nodeConverter = nodeIDNameConverter{
+	[]string{"r", "s", "t", "u", "v", "w", "x", "y"},
+	map[string]graph.NodeID{"r": 0, "s": 1, "t": 2, "u": 3, "v": 4, "w": 5, "x": 6, "y": 7},
 }
 
-var nodeNameToIDMap = map[NodeName]NodeID{"r": 0, "s": 1, "t": 2, "u": 3, "v": 4, "w": 5, "x": 6, "y": 7}
-
-func (n NodeName) ID() NodeID {
-	return nodeNameToIDMap[n]
+func (n nodeIDNameConverter) IDToName(i graph.NodeID) string {
+	return n.orderedNodesName[i]
+}
+func (n nodeIDNameConverter) NameToID(name string) graph.NodeID {
+	return n.nodeNameToIDMap[name]
 }
 
 /************************* Adjacency  List  Based Graph Representation *****************************/
-var adjListGraph = AdjacencyListGraph{
-	[]NodeID{1, 4},
-	[]NodeID{0, 5},
-	[]NodeID{3, 5, 6},
-	[]NodeID{2, 7},
-	[]NodeID{0},
-	[]NodeID{1, 2, 6},
-	[]NodeID{2, 5, 7},
-	[]NodeID{3, 6},
+var adjListGraph = graph.AdjacencyListGraph{
+	[]graph.NodeID{1, 4},
+	[]graph.NodeID{0, 5},
+	[]graph.NodeID{3, 5, 6},
+	[]graph.NodeID{2, 7},
+	[]graph.NodeID{0},
+	[]graph.NodeID{1, 2, 6},
+	[]graph.NodeID{2, 5, 7},
+	[]graph.NodeID{3, 6},
 }
 
 /************************* Adjacency  List  Based Graph Representation *****************************/
@@ -64,7 +63,7 @@ var adjListGraph = AdjacencyListGraph{
   x   0 0 1 0 0 1 0 1
   y   0 0 0 1 0 0 1 0
 */
-var adjMatrixGraph = AdjacencyMatrixGraph{
+var adjMatrixGraph = graph.AdjacencyMatrixGraph{
 	{false, true, false, false, true, false, false, false},
 	{true, false, false, false, false, true, false, false},
 	{false, false, false, true, false, true, true, false},
