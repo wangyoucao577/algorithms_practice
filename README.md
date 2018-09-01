@@ -24,7 +24,7 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 - bfs    
 实现《算法导论 第3版》ch22.2 广度优先搜索 中的算法描述. 基本思路为搜索过程中从`queue`(借助其先入先出的特性)头上取下一次迭代的初始节点, 并将迭代到的节点存储到`queue`尾, 从而实现**广度优先**. 搜索过程中的`tree`的信息及`depth`等通过节点属性的形式保存在一个节点数组中.    
 
-- bfs_dfs_main    
+- bfs_main    
 执行`package bfs`代码的`main`.     
 
 ## C/C++ 实践
