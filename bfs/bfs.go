@@ -7,9 +7,17 @@ import (
 	"github.com/wangyoucao577/algorithms_practice/graph"
 )
 
+type color int
+
+const (
+	white color = iota // Not find
+	gray               // Have found but not scan adjacency list
+	black              // Have scaned adjacency list
+)
+
 type nodeAttr struct {
 	Depth  int          // record depth for each node during search
-	Viewed bool         // false is WHITE i.e. not viewed, true is BLACK i.e. has been viewed
+	Color  color        // record node status during search
 	Parent graph.NodeID // remember parent node, InvalidNodeID means no parent
 }
 type nodeAttrArray map[graph.NodeID]*nodeAttr // nodeID is not a int start from 0, so we use `map` instread of `array`
@@ -36,10 +44,10 @@ func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, er
 	// Initialize
 	bfsContext := &Bfs{source, nodeAttrArray{}}
 	g.IterateAllNodes(func(k graph.NodeID) {
-		bfsContext.NodesAttr[k] = &nodeAttr{0, false, graph.InvalidNodeID} // create node attr for each node
+		bfsContext.NodesAttr[k] = &nodeAttr{0, white, graph.InvalidNodeID} // create node attr for each node
 	})
 	bfsContext.NodesAttr[source].Depth = 0
-	bfsContext.NodesAttr[source].Viewed = true
+	bfsContext.NodesAttr[source].Color = gray
 	bfsContext.NodesAttr[source].Parent = graph.InvalidNodeID
 
 	var queue []graph.NodeID // next search queue
@@ -58,10 +66,10 @@ func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, er
 
 		currDepth := bfsContext.NodesAttr[u].Depth
 		g.IterateAdjacencyNodes(u, func(v graph.NodeID) {
-			if !bfsContext.NodesAttr[v].Viewed {
+			if bfsContext.NodesAttr[v].Color == white {
 				bfsContext.NodesAttr[v].Depth = currDepth + 1
 				bfsContext.NodesAttr[v].Parent = u
-				bfsContext.NodesAttr[v].Viewed = true
+				bfsContext.NodesAttr[v].Color = gray
 				queue = append(queue, v)
 				if monitor != nil {
 					monitor(queue, u)
@@ -69,7 +77,7 @@ func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, er
 			}
 		})
 
-		bfsContext.NodesAttr[u].Viewed = true
+		bfsContext.NodesAttr[u].Color = black
 	}
 
 	return bfsContext, nil
