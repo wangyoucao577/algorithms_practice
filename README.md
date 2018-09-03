@@ -19,13 +19,19 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 注: 图论中的各种涉及到路径的算法, 通常都基于`point-to-point`来讨论, 而不是`edge-to-edge`, 从`graph`的表现形式就可以反映出这一点.     
 
 - graphsample1     
-来自《算法导论 第3版》ch22.2 广度优先搜索 中的示例`Graph`, 基于上面的`package graph`的定义的实现, 从而方便后续的实验.    
+来自《算法导论 第3版》ch22.2 广度优先搜索 中的示例`Undirected Graph`, 基于上面的`package graph`的定义的实现, 从而方便后续的实验.    
+
+- graphsample2    
+来自《算法导论 第3版》ch22.1 中的示例`Directed Graph`, 基于`package graph`的定义的实现, 从而方便后面的实验.    
 
 - bfs    
 实现《算法导论 第3版》ch22.2 广度优先搜索 中的算法描述. 基本思路为搜索过程中从`queue`(借助其先入先出的特性)头上取下一次迭代的初始节点, 并将迭代到的节点存储到`queue`尾, 从而实现**广度优先**. 搜索过程中的`tree`的信息及`depth`等通过节点属性的形式保存在一个节点数组中.    
 
 - bfs_main    
 执行`package bfs`代码的`main`.     
+
+- dfs    
+实现《算法导论 第3版》ch22.3 深度优先搜索 中的算法描述. 本书章节中的伪码是基于递归的描述, 实际`coding`时同时实现了基于栈的实现.    
 
 ## C/C++ 实践
     
