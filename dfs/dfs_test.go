@@ -28,6 +28,8 @@ func TestDfsOnGraphSample2(t *testing.T) {
 		{StackBased, []dfsTree{dfsTree{graph.NodeID(0)}, dfsTree{graph.NodeID(2)}}},
 	}
 
+	var latestDfs *Dfs = nil
+
 	for _, v := range tests {
 		// adjacency list based graph
 		dList, err := NewDfs(graphsample2.AdjacencyListGraphSample(), v.m)
@@ -38,6 +40,13 @@ func TestDfsOnGraphSample2(t *testing.T) {
 			t.Errorf("DFS on graphsample2.AdjacencyListGraphSample, got forest %v, want %v", dList.forest, v.want)
 		}
 		//dList.printEdges(graphsample2.AdjacencyListGraphSample())
+		if latestDfs != nil {
+			if !reflect.DeepEqual(latestDfs, dList) {
+				t.Errorf("DFS structure not equal to latest one, got forest %v, want %v", dList, latestDfs)
+			}
+		} else {
+			latestDfs = dList
+		}
 
 		// adjacency matrix based graph
 		dMatrix, err := NewDfs(graphsample2.AdjacencyMatrixGraphSample(), v.m)
@@ -48,6 +57,14 @@ func TestDfsOnGraphSample2(t *testing.T) {
 			t.Errorf("DFS on graphsample2.AdjacencyMatrixGraphSample, got forest %v, want %v", dList.forest, v.want)
 		}
 		//dMatrix.printEdges(graphsample2.AdjacencyMatrixGraphSample())
+		if latestDfs != nil {
+			if !reflect.DeepEqual(latestDfs, dMatrix) {
+				t.Errorf("DFS structure not equal to latest one, got forest %v, want %v", dMatrix, latestDfs)
+			}
+		} else {
+			latestDfs = dMatrix
+		}
+
 	}
 
 }
