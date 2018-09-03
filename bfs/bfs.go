@@ -16,16 +16,16 @@ const (
 )
 
 type nodeAttr struct {
-	Depth  int          // record depth for each node during search
-	Color  color        // record node status during search
-	Parent graph.NodeID // remember parent node, InvalidNodeID means no parent
+	depth     int          // record depth for each node during search
+	nodeColor color        // record node status during search
+	parent    graph.NodeID // remember parent node, InvalidNodeID means no parent
 }
 type nodeAttrArray map[graph.NodeID]*nodeAttr // nodeID is not a int start from 0, so we use `map` instread of `array`
 
 // Bfs defined a structure to store result after BFS search
 type Bfs struct {
 	Source    graph.NodeID  // BFS start point
-	NodesAttr nodeAttrArray // store depth/parent/viewed during BFS
+	nodesAttr nodeAttrArray // store depth/parent/viewed during BFS
 }
 
 // SearchMonitor defined a func to monitor the BFS process
@@ -44,11 +44,11 @@ func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, er
 	// Initialize
 	bfsContext := &Bfs{source, nodeAttrArray{}}
 	g.IterateAllNodes(func(k graph.NodeID) {
-		bfsContext.NodesAttr[k] = &nodeAttr{0, white, graph.InvalidNodeID} // create node attr for each node
+		bfsContext.nodesAttr[k] = &nodeAttr{0, white, graph.InvalidNodeID} // create node attr for each node
 	})
-	bfsContext.NodesAttr[source].Depth = 0
-	bfsContext.NodesAttr[source].Color = gray
-	bfsContext.NodesAttr[source].Parent = graph.InvalidNodeID
+	bfsContext.nodesAttr[source].depth = 0
+	bfsContext.nodesAttr[source].nodeColor = gray
+	bfsContext.nodesAttr[source].parent = graph.InvalidNodeID
 
 	var queue []graph.NodeID // next search queue
 	queue = append(queue, source)
@@ -64,12 +64,12 @@ func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, er
 			monitor(queue, u)
 		}
 
-		currDepth := bfsContext.NodesAttr[u].Depth
+		currDepth := bfsContext.nodesAttr[u].depth
 		g.IterateAdjacencyNodes(u, func(v graph.NodeID) {
-			if bfsContext.NodesAttr[v].Color == white {
-				bfsContext.NodesAttr[v].Depth = currDepth + 1
-				bfsContext.NodesAttr[v].Parent = u
-				bfsContext.NodesAttr[v].Color = gray
+			if bfsContext.nodesAttr[v].nodeColor == white {
+				bfsContext.nodesAttr[v].depth = currDepth + 1
+				bfsContext.nodesAttr[v].parent = u
+				bfsContext.nodesAttr[v].nodeColor = gray
 				queue = append(queue, v)
 				if monitor != nil {
 					monitor(queue, u)
@@ -77,7 +77,7 @@ func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, er
 			}
 		})
 
-		bfsContext.NodesAttr[u].Color = black
+		bfsContext.nodesAttr[u].nodeColor = black
 	}
 
 	return bfsContext, nil
@@ -88,17 +88,17 @@ func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, er
 // return depth and path if succeed.
 func (b *Bfs) Query(target graph.NodeID) (int, graph.Path) {
 
-	currNodeAttr, targetInNodes := b.NodesAttr[target]
+	currNodeAttr, targetInNodes := b.nodesAttr[target]
 	if !targetInNodes {
 		panic(fmt.Errorf("target node %v not in the graph", target))
 	}
 
-	depth := currNodeAttr.Depth
+	depth := currNodeAttr.depth
 	shortestPath := []graph.NodeID{}
 	shortestPath = append(shortestPath, target)
-	for currNodeAttr.Parent != graph.InvalidNodeID {
-		currNode := currNodeAttr.Parent
-		currNodeAttr = b.NodesAttr[currNode]
+	for currNodeAttr.parent != graph.InvalidNodeID {
+		currNode := currNodeAttr.parent
+		currNodeAttr = b.nodesAttr[currNode]
 		shortestPath = append(shortestPath, currNode)
 	}
 	for i, j := 0, len(shortestPath)-1; i < j; i, j = i+1, j-1 {

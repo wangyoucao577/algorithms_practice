@@ -24,8 +24,8 @@ func TestDfsOnGraphSample2(t *testing.T) {
 		if err != nil {
 			t.Errorf("DFS on adjacency list based graph failed, err %v", err)
 		}
-		if !reflect.DeepEqual(dList.Forest, v.want) {
-			t.Errorf("DFS on graphsample2.AdjacencyListGraphSample, got forest %v, want %v", dList.Forest, v.want)
+		if !reflect.DeepEqual(dList.forest, v.want) {
+			t.Errorf("DFS on graphsample2.AdjacencyListGraphSample, got forest %v, want %v", dList.forest, v.want)
 		}
 
 		// adjacency matrix based graph
@@ -33,8 +33,8 @@ func TestDfsOnGraphSample2(t *testing.T) {
 		if err != nil {
 			t.Errorf("DFS on adjacency matrix based graph failed, err %v", err)
 		}
-		if !reflect.DeepEqual(dMatrix.Forest, v.want) {
-			t.Errorf("DFS on graphsample2.AdjacencyMatrixGraphSample, got forest %v, want %v", dList.Forest, v.want)
+		if !reflect.DeepEqual(dMatrix.forest, v.want) {
+			t.Errorf("DFS on graphsample2.AdjacencyMatrixGraphSample, got forest %v, want %v", dList.forest, v.want)
 		}
 	}
 
