@@ -38,7 +38,7 @@ func main() {
 
 	fmt.Println()
 	fmt.Printf("Run BFS on Adjacency List Based Graph, source %v\n", graphsample1.IDToName(source))
-	b1, err := bfs.NewBfs(graphsample1.AdjacencyListGraphSample1, source, bfsMonitor)
+	b1, err := bfs.NewBfs(graphsample1.AdjacencyListGraphSample(), source, bfsMonitor)
 	if err != nil {
 		return
 	}
@@ -62,7 +62,7 @@ func main() {
 
 	fmt.Println()
 	fmt.Printf("Run BFS on Adjacency Matrix Based Graph, source %v\n", graphsample1.IDToName(source))
-	b2, err := bfs.NewBfs(graphsample1.AdjacencyMatrixGraphSample1, source, bfsMonitor)
+	b2, err := bfs.NewBfs(graphsample1.AdjacencyMatrixGraphSample(), source, bfsMonitor)
 	if err != nil {
 		return
 	}

@@ -42,8 +42,7 @@ func NameToID(name string) graph.NodeID {
 	return nodeConverter.nodeNameToIDMap[name]
 }
 
-// AdjacencyListGraphSample1 adjacency list based graph sample 1
-var AdjacencyListGraphSample1 = graph.AdjacencyListGraph{
+var adjacencyListGraphSample = graph.AdjacencyListGraph{
 	[]graph.NodeID{1, 4},
 	[]graph.NodeID{0, 5},
 	[]graph.NodeID{3, 5, 6},
@@ -69,7 +68,7 @@ var AdjacencyListGraphSample1 = graph.AdjacencyListGraph{
   x   0 0 1 0 0 1 0 1
   y   0 0 0 1 0 0 1 0
 */
-var AdjacencyMatrixGraphSample1 = graph.AdjacencyMatrixGraph{
+var adjacencyMatrixGraphSample = graph.AdjacencyMatrixGraph{
 	{false, true, false, false, true, false, false, false},
 	{true, false, false, false, false, true, false, false},
 	{false, false, false, true, false, true, true, false},
@@ -78,4 +77,14 @@ var AdjacencyMatrixGraphSample1 = graph.AdjacencyMatrixGraph{
 	{false, true, true, false, false, false, true, false},
 	{false, false, true, false, false, true, false, true},
 	{false, false, false, true, false, false, true, false},
+}
+
+// AdjacencyListGraphSample return the adjacency list based graph sample instance
+func AdjacencyListGraphSample() graph.Graph {
+	return adjacencyListGraphSample
+}
+
+// AdjacencyMatrixGraphSample return the adjacency matrix based graph sample instance
+func AdjacencyMatrixGraphSample() graph.Graph {
+	return adjacencyMatrixGraphSample
 }

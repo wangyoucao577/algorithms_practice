@@ -20,7 +20,7 @@ func TestDfsOnGraphSample2(t *testing.T) {
 
 	for _, v := range tests {
 		// adjacency list based graph
-		dList, err := NewDfs(graphsample2.AdjacencyListGraphSample, v.m)
+		dList, err := NewDfs(graphsample2.AdjacencyListGraphSample(), v.m)
 		if err != nil {
 			t.Errorf("DFS on adjacency list based graph failed, err %v", err)
 		}
@@ -29,7 +29,7 @@ func TestDfsOnGraphSample2(t *testing.T) {
 		}
 
 		// adjacency matrix based graph
-		dMatrix, err := NewDfs(graphsample2.AdjacencyMatrixGraphSample, v.m)
+		dMatrix, err := NewDfs(graphsample2.AdjacencyMatrixGraphSample(), v.m)
 		if err != nil {
 			t.Errorf("DFS on adjacency matrix based graph failed, err %v", err)
 		}

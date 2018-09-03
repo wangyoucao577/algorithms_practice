@@ -29,7 +29,7 @@ func TestBfsOnGraphSample1(t *testing.T) {
 	}
 
 	// adjacency list based graph
-	bList, err := NewBfs(graphsample1.AdjacencyListGraphSample1, source, nil)
+	bList, err := NewBfs(graphsample1.AdjacencyListGraphSample(), source, nil)
 	if err != nil {
 		t.Errorf("BFS on adjacency list based graph failed, source %v", source)
 	}
@@ -45,7 +45,7 @@ func TestBfsOnGraphSample1(t *testing.T) {
 	}
 
 	// adjacency matrix based graph
-	bMatrix, err := NewBfs(graphsample1.AdjacencyMatrixGraphSample1, source, nil)
+	bMatrix, err := NewBfs(graphsample1.AdjacencyMatrixGraphSample(), source, nil)
 	if err != nil {
 		t.Errorf("BFS on adjacency Matrix based graph failed, source %v", source)
 	}
