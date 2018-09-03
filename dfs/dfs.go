@@ -3,6 +3,16 @@ package dfs
 
 import "github.com/wangyoucao577/algorithms_practice/graph"
 
+type implementMethod int
+
+const (
+	// Recurse implement DFS by recurse
+	Recurse implementMethod = iota
+
+	// StackBased implement DFS by stack and loop
+	StackBased
+)
+
 type color int
 
 const (
@@ -31,7 +41,7 @@ type Dfs struct {
 }
 
 // NewDfs execute the DFS search on a graph
-func NewDfs(g graph.Graph) (*Dfs, error) {
+func NewDfs(g graph.Graph, m implementMethod) (*Dfs, error) {
 
 	// Initialize
 	dfsContext := &Dfs{0, []dfsTree{}, nodeAttrArray{}}
@@ -45,13 +55,57 @@ func NewDfs(g graph.Graph) (*Dfs, error) {
 			dfsContext.Forest = append(dfsContext.Forest, dfsTree{k}) //record a tree's root
 
 			// execute one tree search
-			dfsContext.dfsVisit(g, k)
+			switch m {
+			case Recurse:
+				dfsContext.dfsRecurseVisit(g, k)
+			case StackBased:
+				dfsContext.dfsStackBasedVisit(g, k)
+			}
 		}
 	})
 	return dfsContext, nil
 }
 
-func (d *Dfs) dfsVisit(g graph.Graph, currNode graph.NodeID) {
+func (d *Dfs) dfsStackBasedVisit(g graph.Graph, root graph.NodeID) {
+	d.Time++
+	d.NodesAttr[root].Color = gray
+	d.NodesAttr[root].TimestampD = d.Time
+
+	var stack = []graph.NodeID{}
+	stack = append(stack, root)
+
+	for len(stack) > 0 {
+
+		currNode := stack[len(stack)-1]
+
+		newWhiteNodeFound := false
+		g.ControllableIterateAdjacencyNodes(currNode, func(v graph.NodeID) graph.IterateControl {
+			if d.NodesAttr[v].Color == white {
+				newWhiteNodeFound = true
+
+				d.NodesAttr[v].Parent = currNode
+
+				d.Time++
+				d.NodesAttr[v].Color = gray
+				d.NodesAttr[v].TimestampD = d.Time
+
+				stack = append(stack, v) // push stack: push to the end
+				return graph.BreakIterate
+			}
+			return graph.ContinueIterate
+		})
+
+		if !newWhiteNodeFound {
+			d.Time++
+			d.NodesAttr[currNode].Color = black
+			d.NodesAttr[currNode].TimestampF = d.Time
+
+			stack = stack[:len(stack)-1] // pop from stack
+		}
+	}
+}
+
+func (d *Dfs) dfsRecurseVisit(g graph.Graph, currNode graph.NodeID) {
 	d.Time++
 	d.NodesAttr[currNode].Color = gray
 	d.NodesAttr[currNode].TimestampD = d.Time
@@ -59,7 +113,7 @@ func (d *Dfs) dfsVisit(g graph.Graph, currNode graph.NodeID) {
 	g.IterateAdjacencyNodes(currNode, func(v graph.NodeID) {
 		if d.NodesAttr[v].Color == white {
 			d.NodesAttr[v].Parent = currNode
-			d.dfsVisit(g, v)
+			d.dfsRecurseVisit(g, v)
 		}
 	})
 

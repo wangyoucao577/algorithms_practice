@@ -13,8 +13,23 @@ const (
 // Path represented by nodes
 type Path []NodeID
 
+// IterateControl will control all iterate functions' behavior, go on or break
+type IterateControl int
+
+const (
+	// ContinueIterate will let the iterate func go on
+	ContinueIterate IterateControl = iota
+
+	// BreakIterate will let the iterate func break immdiately
+	BreakIterate
+)
+
 // IterateAction will be called in each Iterate functions
 type IterateAction func(NodeID)
+
+// IterateActionWithControl will be called in each Iterate functions,
+// if it returned with `BreakIterate` then stop the iterate function immediately
+type IterateActionWithControl func(NodeID) IterateControl
 
 // Graph defined common interfaces of a graph,
 // whatever Adjacency List or Adjacency Matrix based graph
@@ -30,9 +45,19 @@ type Graph interface {
 	// call IterateAction for each iterated node
 	IterateAllNodes(IterateAction)
 
+	// ControllableIterateAllNodes for/range on all nodes of the graph,
+	// call IterateAction for each iterated node.
+	// break the loop immdiately if action return `BreakIterate`
+	ControllableIterateAllNodes(IterateActionWithControl)
+
 	// IterateAdjacencyNodes for/range on all adjacency nodes of current node,
 	// call IterateAction for each iterated node
 	IterateAdjacencyNodes(NodeID, IterateAction)
+
+	// ControllableIterateAdjacencyNodes for/range on all adjacency nodes of current node,
+	// call IterateAction for each iterated node.
+	// break the loop immdiately if action return `BreakIterate`
+	ControllableIterateAdjacencyNodes(NodeID, IterateActionWithControl)
 }
 
 /************************* Adjacency  List  Based Graph Representation *****************************/
@@ -61,6 +86,18 @@ func (g AdjacencyListGraph) IterateAllNodes(action IterateAction) {
 	}
 }
 
+// ControllableIterateAllNodes for/range on all nodes of the graph,
+// call IterateAction for each iterated node.
+// break the loop immdiately if action return `BreakIterate`
+func (g AdjacencyListGraph) ControllableIterateAllNodes(action IterateActionWithControl) {
+	for i := range g {
+		condition := action(NodeID(i))
+		if condition == BreakIterate {
+			break
+		}
+	}
+}
+
 // IterateAdjacencyNodes for/range on all adjacency nodes of current node,
 // call IterateAction for each iterated node
 func (g AdjacencyListGraph) IterateAdjacencyNodes(currNode NodeID, action IterateAction) {
@@ -70,6 +107,22 @@ func (g AdjacencyListGraph) IterateAdjacencyNodes(currNode NodeID, action Iterat
 
 	for _, v := range g[currNode] {
 		action(v)
+	}
+}
+
+// ControllableIterateAdjacencyNodes for/range on all adjacency nodes of current node,
+// call IterateAction for each iterated node.
+// break the loop immdiately if action return `BreakIterate`
+func (g AdjacencyListGraph) ControllableIterateAdjacencyNodes(currNode NodeID, action IterateActionWithControl) {
+	if !g.IsNodeValid(currNode) {
+		return
+	}
+
+	for _, v := range g[currNode] {
+		condition := action(v)
+		if condition == BreakIterate {
+			break
+		}
 	}
 }
 
@@ -101,6 +154,18 @@ func (g AdjacencyMatrixGraph) IterateAllNodes(action IterateAction) {
 	}
 }
 
+// ControllableIterateAllNodes for/range on all nodes of the graph,
+// call IterateAction for each iterated node.
+// break the loop immdiately if action return `BreakIterate`
+func (g AdjacencyMatrixGraph) ControllableIterateAllNodes(action IterateActionWithControl) {
+	for i := range g {
+		condition := action(NodeID(i))
+		if condition == BreakIterate {
+			break
+		}
+	}
+}
+
 // IterateAdjacencyNodes for/range on all adjacency nodes of current node,
 // call IterateAction for each iterated node
 func (g AdjacencyMatrixGraph) IterateAdjacencyNodes(currNode NodeID, action IterateAction) {
@@ -111,6 +176,24 @@ func (g AdjacencyMatrixGraph) IterateAdjacencyNodes(currNode NodeID, action Iter
 	for i, v := range g[currNode] {
 		if v {
 			action(NodeID(i))
+		}
+	}
+}
+
+// ControllableIterateAdjacencyNodes for/range on all adjacency nodes of current node,
+// call IterateAction for each iterated node.
+// break the loop immdiately if action return `BreakIterate`
+func (g AdjacencyMatrixGraph) ControllableIterateAdjacencyNodes(currNode NodeID, action IterateActionWithControl) {
+	if !g.IsNodeValid(currNode) {
+		return
+	}
+
+	for i, v := range g[currNode] {
+		if v {
+			condition := action(NodeID(i))
+			if condition == BreakIterate {
+				break
+			}
 		}
 	}
 }

@@ -10,24 +10,32 @@ import (
 
 func TestDfsOnGraphSample2(t *testing.T) {
 
-	want := []dfsTree{dfsTree{graph.NodeID(0)}, dfsTree{graph.NodeID(2)}}
-
-	// adjacency list based graph
-	dList, err := NewDfs(graphsample2.AdjacencyListGraphSample)
-	if err != nil {
-		t.Errorf("DFS on adjacency list based graph failed, err %v", err)
-	}
-	if !reflect.DeepEqual(dList.Forest, want) {
-		t.Errorf("DFS on graphsample2.AdjacencyListGraphSample, got forest %v, want %v", dList.Forest, want)
+	var tests = []struct {
+		m    implementMethod
+		want []dfsTree
+	}{
+		{Recurse, []dfsTree{dfsTree{graph.NodeID(0)}, dfsTree{graph.NodeID(2)}}},
+		{StackBased, []dfsTree{dfsTree{graph.NodeID(0)}, dfsTree{graph.NodeID(2)}}},
 	}
 
-	// adjacency matrix based graph
-	dMatrix, err := NewDfs(graphsample2.AdjacencyMatrixGraphSample)
-	if err != nil {
-		t.Errorf("DFS on adjacency matrix based graph failed, err %v", err)
-	}
-	if !reflect.DeepEqual(dMatrix.Forest, want) {
-		t.Errorf("DFS on graphsample2.AdjacencyMatrixGraphSample, got forest %v, want %v", dList.Forest, want)
+	for _, v := range tests {
+		// adjacency list based graph
+		dList, err := NewDfs(graphsample2.AdjacencyListGraphSample, v.m)
+		if err != nil {
+			t.Errorf("DFS on adjacency list based graph failed, err %v", err)
+		}
+		if !reflect.DeepEqual(dList.Forest, v.want) {
+			t.Errorf("DFS on graphsample2.AdjacencyListGraphSample, got forest %v, want %v", dList.Forest, v.want)
+		}
+
+		// adjacency matrix based graph
+		dMatrix, err := NewDfs(graphsample2.AdjacencyMatrixGraphSample, v.m)
+		if err != nil {
+			t.Errorf("DFS on adjacency matrix based graph failed, err %v", err)
+		}
+		if !reflect.DeepEqual(dMatrix.Forest, v.want) {
+			t.Errorf("DFS on graphsample2.AdjacencyMatrixGraphSample, got forest %v, want %v", dList.Forest, v.want)
+		}
 	}
 
 }
