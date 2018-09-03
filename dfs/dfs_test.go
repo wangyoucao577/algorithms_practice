@@ -1,29 +1,12 @@
 package dfs
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/wangyoucao577/algorithms_practice/graph"
 	"github.com/wangyoucao577/algorithms_practice/graphsample2"
 )
-
-func forestEqual(p []dfsTree, q []dfsTree) bool {
-	if len(p) != len(q) {
-		return false
-	}
-
-	if (p == nil) != (q == nil) {
-		return false
-	}
-
-	for i := range p {
-		if p[i] != q[i] {
-			return false
-		}
-	}
-
-	return true
-}
 
 func TestDfsOnGraphSample2(t *testing.T) {
 
@@ -34,7 +17,7 @@ func TestDfsOnGraphSample2(t *testing.T) {
 	if err != nil {
 		t.Errorf("DFS on adjacency list based graph failed, err %v", err)
 	}
-	if !forestEqual(dList.Forest, want) {
+	if !reflect.DeepEqual(dList.Forest, want) {
 		t.Errorf("DFS on graphsample2.AdjacencyListGraphSample, got forest %v, want %v", dList.Forest, want)
 	}
 
@@ -43,7 +26,7 @@ func TestDfsOnGraphSample2(t *testing.T) {
 	if err != nil {
 		t.Errorf("DFS on adjacency matrix based graph failed, err %v", err)
 	}
-	if !forestEqual(dMatrix.Forest, want) {
+	if !reflect.DeepEqual(dMatrix.Forest, want) {
 		t.Errorf("DFS on graphsample2.AdjacencyMatrixGraphSample, got forest %v, want %v", dList.Forest, want)
 	}
 
