@@ -192,3 +192,28 @@ func (d *Dfs) dfsRecurseVisit(g graph.Graph, currNode graph.NodeID) {
 	d.nodesAttr[currNode].nodeColor = black
 	d.nodesAttr[currNode].timestampF = d.time
 }
+
+// RetrievePath to retrieve path from source to target
+func (d *Dfs) RetrievePath(source, target graph.NodeID) (graph.Path, error) {
+	path := graph.Path{}
+
+	curr := target
+	for {
+		path = append(path, curr)
+
+		parent := d.nodesAttr[curr].parent
+		if parent == source {
+			path = append(path, source)
+			break
+		} else if parent == graph.InvalidNodeID {
+			return nil, fmt.Errorf("no valid path from %v to %v", source, target)
+		}
+
+		curr = parent
+	}
+
+	for i, j := 0, len(path)-1; i < j; i, j = i+1, j-1 {
+		path[i], path[j] = path[j], path[i]
+	}
+	return path, nil
+}
