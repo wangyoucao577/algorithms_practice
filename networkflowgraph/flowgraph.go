@@ -19,13 +19,19 @@ type edgeAttrArray map[graph.EdgeID]*edgeAttr
 type NetworkFlowGraph struct {
 	AdjGraph  graph.AdjacencyListGraph
 	edgesAttr edgeAttrArray
+	Source    graph.NodeID
+	Target    graph.NodeID
 }
 
 //ConstructNetworkFlowGraph try to construct a adjacency list based graph with edge capacity,
 // nodeCount and edgeCount will define V and E
 // then from r to read contents for adjacency list relationship and edge attr
 func ConstructNetworkFlowGraph(nodeCount, edgeCount int, r io.Reader) (*NetworkFlowGraph, error) {
-	flowGraph := &NetworkFlowGraph{graph.AdjacencyListGraph{}, edgeAttrArray{}}
+	flowGraph := &NetworkFlowGraph{
+		AdjGraph:  graph.AdjacencyListGraph{},
+		edgesAttr: edgeAttrArray{},
+		Source:    graph.InvalidNodeID,
+		Target:    graph.InvalidNodeID}
 
 	for i := 0; i < nodeCount; i++ {
 		flowGraph.AdjGraph = append(flowGraph.AdjGraph, []graph.NodeID{})
@@ -68,6 +74,8 @@ func ConstructNetworkFlowGraph(nodeCount, edgeCount int, r io.Reader) (*NetworkF
 		return nil, err
 	}
 
+	flowGraph.Source = graph.NodeID(0)
+	flowGraph.Target = graph.NodeID(nodeCount - 1)
 	return flowGraph, nil
 }
 
