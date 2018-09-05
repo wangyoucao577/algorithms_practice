@@ -45,6 +45,9 @@ type Graph interface {
 	// NodeCount return how many nodes in the graph
 	NodeCount() int
 
+	// EdgeCount return how many edges in the graph
+	EdgeCount() int
+
 	// IsNodeValid check whether a node in or not in the graph
 	IsNodeValid(NodeID) bool
 
@@ -61,6 +64,10 @@ type Graph interface {
 	// call IterateAction for each iterated node
 	IterateAdjacencyNodes(NodeID, IterateAction)
 
+	// ReverseIterateAdjacencyNodes reverse for/range on all adjacency nodes of current node,
+	// call IterateAction for each iterated node
+	ReverseIterateAdjacencyNodes(NodeID, IterateAction)
+
 	// ControllableIterateAdjacencyNodes for/range on all adjacency nodes of current node,
 	// call IterateAction for each iterated node.
 	// break the loop immdiately if action return `BreakIterate`
@@ -75,6 +82,15 @@ type AdjacencyListGraph [][]NodeID
 // NodeCount return how many nodes in the graph
 func (g AdjacencyListGraph) NodeCount() int {
 	return len(g)
+}
+
+// EdgeCount return how many edges in the graph
+func (g AdjacencyListGraph) EdgeCount() int {
+	var count int
+	g.IterateAllNodes(func(u NodeID) {
+		count += len(g[u])
+	})
+	return count
 }
 
 // IsNodeValid check whether a node in or not in the graph
@@ -117,6 +133,19 @@ func (g AdjacencyListGraph) IterateAdjacencyNodes(currNode NodeID, action Iterat
 	}
 }
 
+// ReverseIterateAdjacencyNodes reverse for/range on all adjacency nodes of current node,
+// call IterateAction for each iterated node
+func (g AdjacencyListGraph) ReverseIterateAdjacencyNodes(currNode NodeID, action IterateAction) {
+	if !g.IsNodeValid(currNode) {
+		return
+	}
+
+	adjList := g[currNode]
+	for i := len(adjList) - 1; i >= 0; i-- {
+		action(adjList[i])
+	}
+}
+
 // ControllableIterateAdjacencyNodes for/range on all adjacency nodes of current node,
 // call IterateAction for each iterated node.
 // break the loop immdiately if action return `BreakIterate`
@@ -143,6 +172,17 @@ type AdjacencyMatrixGraph [][]bool
 // NodeCount return how many nodes in the graph
 func (g AdjacencyMatrixGraph) NodeCount() int {
 	return len(g)
+}
+
+// EdgeCount return how many edges in the graph
+func (g AdjacencyMatrixGraph) EdgeCount() int {
+	var count int
+	g.IterateAllNodes(func(u NodeID) {
+		g.IterateAdjacencyNodes(u, func(_ NodeID) {
+			count++
+		})
+	})
+	return count
 }
 
 // IsNodeValid check whether a node in or not in the graph
@@ -182,6 +222,21 @@ func (g AdjacencyMatrixGraph) IterateAdjacencyNodes(currNode NodeID, action Iter
 
 	for i, v := range g[currNode] {
 		if v {
+			action(NodeID(i))
+		}
+	}
+}
+
+// ReverseIterateAdjacencyNodes reverse for/range on all adjacency nodes of current node,
+// call IterateAction for each iterated node
+func (g AdjacencyMatrixGraph) ReverseIterateAdjacencyNodes(currNode NodeID, action IterateAction) {
+	if !g.IsNodeValid(currNode) {
+		return
+	}
+
+	adjRow := g[currNode]
+	for i := len(adjRow) - 1; i >= 0; i-- {
+		if adjRow[i] {
 			action(NodeID(i))
 		}
 	}
@@ -242,4 +297,10 @@ func (e EdgeID) UndirectedEqual(f EdgeID) bool {
 //Reverse return reverse edge of current one
 func (e EdgeID) Reverse() EdgeID {
 	return EdgeID{e.To, e.From}
+}
+
+//IsValid return whether the edgeID is valid
+//if From or To is InvalidNodeID, the edgeID is invalid
+func (e EdgeID) IsValid() bool {
+	return e.From != InvalidNodeID && e.To != InvalidNodeID
 }
