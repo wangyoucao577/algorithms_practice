@@ -27,8 +27,14 @@ func TestDrainageDitches(t *testing.T) {
 		t.Error(err)
 	}
 
-	maxFlow := FordFulkerson(g)
+	maxFlow := FordFulkerson(g, false)
 	if maxFlow != want {
-		t.Errorf("got maximum flow %v, want %v", maxFlow, want)
+		t.Errorf("[FordFulkerson] got maximum flow %v, want %v", maxFlow, want)
 	}
+
+	edmondsKarpMaxFlow := FordFulkerson(g, true)
+	if edmondsKarpMaxFlow != want {
+		t.Errorf("[EdmondsKarp] got maximum flow %v, want %v", edmondsKarpMaxFlow, want)
+	}
+
 }

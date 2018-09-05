@@ -3,6 +3,7 @@ package drainageditches
 import (
 	"fmt"
 
+	"github.com/wangyoucao577/algorithms_practice/bfs"
 	"github.com/wangyoucao577/algorithms_practice/dfs"
 	"github.com/wangyoucao577/algorithms_practice/graph"
 	"github.com/wangyoucao577/algorithms_practice/networkflowgraph"
@@ -126,7 +127,7 @@ func (r *residualNetworkGraph) calculateResidualCapacity(path graph.Path) augmen
 }
 
 // FordFulkerson algorithm for maximum flow problem
-func FordFulkerson(g *networkflowgraph.NetworkFlowGraph) int {
+func FordFulkerson(g *networkflowgraph.NetworkFlowGraph, edmondsKarp bool) int {
 
 	//initialize flow
 	currGraphFlow := newGraphFlow(g)
@@ -139,14 +140,30 @@ func FordFulkerson(g *networkflowgraph.NetworkFlowGraph) int {
 		//fmt.Println(residualGraph)
 
 		// try to find augmenting path in the residual network graph
-		dfsSearchedContext, _ := dfs.NewDfs(residualGraph.adjGraph, dfs.Recurse)
-		newPath, err := dfsSearchedContext.RetrievePath(g.Source, g.Target)
-		if err != nil {
-			fmt.Println(err)
-			break // no more agumenting path can be found
+		var newPath graph.Path
+		if edmondsKarp {
+			bfs, err := bfs.NewBfs(residualGraph.adjGraph, g.Source, nil)
+			if err != nil {
+				fmt.Println(err)
+				break // bfs failed
+			}
+			_, path := bfs.Query(g.Target)
+			if len(path) == 0 {
+				fmt.Println("no new valid path by BFS")
+				break // no more agumenting path can be found
+			}
+			newPath = path
+		} else {
+			dfsSearchedContext, _ := dfs.NewDfs(residualGraph.adjGraph, dfs.Recurse)
+			path, err := dfsSearchedContext.RetrievePath(g.Source, g.Target)
+			if err != nil {
+				fmt.Println(err)
+				break // no more agumenting path can be found
+			}
+			newPath = path
 		}
-
 		fmt.Println(newPath)
+
 		newAugmentingPath := residualGraph.calculateResidualCapacity(newPath)
 		if newAugmentingPath.minFlow.f <= 0 {
 			fmt.Println("no new valid augmenting path")
