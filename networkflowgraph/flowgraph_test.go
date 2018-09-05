@@ -3,6 +3,8 @@ package networkflowgraph
 import (
 	"strings"
 	"testing"
+
+	"github.com/wangyoucao577/algorithms_practice/graph"
 )
 
 func TestConstructDrainageDitchesSampleGraph(t *testing.T) {
@@ -25,14 +27,28 @@ func TestConstructDrainageDitchesSampleGraph(t *testing.T) {
 		t.Error(err)
 	}
 	//fmt.Println(g)
-	if g.baseGraph.NodeCount() != nodeCount {
-		t.Errorf("node count got %d, want %d", g.baseGraph.NodeCount(), nodeCount)
+	if g.AdjGraph.NodeCount() != nodeCount {
+		t.Errorf("node count got %d, want %d", g.AdjGraph.NodeCount(), nodeCount)
 	}
-	if g.baseGraph.EdgeCount() != edgeCount {
-		t.Errorf("edge count got %d, want %d", g.baseGraph.EdgeCount(), edgeCount)
+	if g.AdjGraph.EdgeCount() != edgeCount {
+		t.Errorf("edge count got %d, want %d", g.AdjGraph.EdgeCount(), edgeCount)
 	}
 	if len(g.edgesAttr) != edgeCount {
 		t.Errorf("edge attr count got %d, want %d", len(g.edgesAttr), edgeCount)
 	}
 
+	g.AdjGraph.IterateAllNodes(func(u graph.NodeID) {
+		g.AdjGraph.IterateAdjacencyNodes(u, func(v graph.NodeID) {
+			// edge u->v must exist
+			edge := graph.EdgeID{From: u, To: v}
+			if _, ok := g.edgesAttr[edge]; !ok {
+				t.Errorf("edge %v no capacity exist", edge)
+			}
+
+			// edge v->u must NOT exist
+			if _, ok := g.edgesAttr[edge.Reverse()]; ok {
+				t.Errorf("edge %v capacity exist, but expect not exist", edge.Reverse())
+			}
+		})
+	})
 }

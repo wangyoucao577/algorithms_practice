@@ -17,7 +17,7 @@ type edgeAttrArray map[graph.EdgeID]*edgeAttr
 
 //NetworkFlowGraph represent graph for network flow problem (maximum flow problem)
 type NetworkFlowGraph struct {
-	baseGraph graph.AdjacencyListGraph
+	AdjGraph  graph.AdjacencyListGraph
 	edgesAttr edgeAttrArray
 }
 
@@ -28,7 +28,7 @@ func ConstructNetworkFlowGraph(nodeCount, edgeCount int, r io.Reader) (*NetworkF
 	flowGraph := &NetworkFlowGraph{graph.AdjacencyListGraph{}, edgeAttrArray{}}
 
 	for i := 0; i < nodeCount; i++ {
-		flowGraph.baseGraph = append(flowGraph.baseGraph, []graph.NodeID{})
+		flowGraph.AdjGraph = append(flowGraph.AdjGraph, []graph.NodeID{})
 	}
 
 	scanner := bufio.NewScanner(r)
@@ -55,7 +55,7 @@ func ConstructNetworkFlowGraph(nodeCount, edgeCount int, r io.Reader) (*NetworkF
 			return nil, fmt.Errorf("invalid edgeCapacity %d", edgeCapacity)
 		}
 
-		flowGraph.baseGraph[fromNode] = append(flowGraph.baseGraph[fromNode], graph.NodeID(toNode))
+		flowGraph.AdjGraph[fromNode] = append(flowGraph.AdjGraph[fromNode], graph.NodeID(toNode))
 		edge := graph.EdgeID{From: graph.NodeID(fromNode), To: graph.NodeID(toNode)}
 		flowGraph.edgesAttr[edge] = &edgeAttr{edgeCapacity}
 
@@ -69,4 +69,13 @@ func ConstructNetworkFlowGraph(nodeCount, edgeCount int, r io.Reader) (*NetworkF
 	}
 
 	return flowGraph, nil
+}
+
+// Capacity return capacity for an edge
+func (g *NetworkFlowGraph) Capacity(e graph.EdgeID) int {
+	c, ok := g.edgesAttr[e]
+	if !ok {
+		return 0
+	}
+	return c.capacity
 }
