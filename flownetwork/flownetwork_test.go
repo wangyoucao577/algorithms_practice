@@ -1,4 +1,4 @@
-package networkflowgraph
+package flownetwork
 
 import (
 	"strings"
@@ -22,7 +22,7 @@ func TestConstructDrainageDitchesSampleGraph(t *testing.T) {
 	edgeCount, nodeCount := 5, 4
 	inputScanContents := "1 2 40\n1 4 20\n2 4 20\n2 3 30\n3 4 10"
 
-	g, err := ConstructNetworkFlowGraph(nodeCount, edgeCount, strings.NewReader(inputScanContents))
+	g, err := ConstructFlowNetwork(nodeCount, edgeCount, strings.NewReader(inputScanContents))
 	if err != nil {
 		t.Error(err)
 	}

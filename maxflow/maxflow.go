@@ -7,27 +7,27 @@ import (
 
 	"github.com/wangyoucao577/algorithms_practice/bfs"
 	"github.com/wangyoucao577/algorithms_practice/dfs"
+	"github.com/wangyoucao577/algorithms_practice/flownetwork"
 	"github.com/wangyoucao577/algorithms_practice/graph"
-	"github.com/wangyoucao577/algorithms_practice/networkflowgraph"
 )
 
-type graphFlow map[graph.EdgeID]networkflowgraph.FlowUnit
+type graphFlow map[graph.EdgeID]flownetwork.FlowUnit
 
 type augmentingPath struct {
 	path    graph.Path
-	minFlow networkflowgraph.FlowUnit
+	minFlow flownetwork.FlowUnit
 }
 
-type flowStroage map[graph.EdgeID]networkflowgraph.FlowUnit
+type flowStroage map[graph.EdgeID]flownetwork.FlowUnit
 
-// residualNetworkGraph has same structure as NetworkFlowGraph, but will have reverse edges
+// residualNetworkGraph has same structure as flownetwork, but will have reverse edges
 type residualNetworkGraph struct {
 	adjGraph graph.AdjacencyListGraph
 	flows    flowStroage
 }
 
 // calculateResidualNetwork will calculate residual network with current flow based on network flow graph
-func calculateResidualNetwork(g *networkflowgraph.NetworkFlowGraph, f graphFlow) *residualNetworkGraph {
+func calculateResidualNetwork(g *flownetwork.FlowNetwork, f graphFlow) *residualNetworkGraph {
 	r := &residualNetworkGraph{graph.AdjacencyListGraph{}, flowStroage{}}
 
 	g.AdjGraph.IterateAllNodes(func(u graph.NodeID) {
@@ -58,7 +58,7 @@ func calculateResidualNetwork(g *networkflowgraph.NetworkFlowGraph, f graphFlow)
 	return r
 }
 
-func newGraphFlow(g *networkflowgraph.NetworkFlowGraph) graphFlow {
+func newGraphFlow(g *flownetwork.FlowNetwork) graphFlow {
 	newFlow := graphFlow{}
 
 	g.AdjGraph.IterateAllNodes(func(u graph.NodeID) {
@@ -71,8 +71,8 @@ func newGraphFlow(g *networkflowgraph.NetworkFlowGraph) graphFlow {
 	return newFlow
 }
 
-func (f graphFlow) maximumFlow(source graph.NodeID) networkflowgraph.FlowUnit {
-	var maximum networkflowgraph.FlowUnit
+func (f graphFlow) maximumFlow(source graph.NodeID) flownetwork.FlowUnit {
+	var maximum flownetwork.FlowUnit
 
 	for k, v := range f {
 		if k.From == source {
@@ -122,7 +122,7 @@ func (r *residualNetworkGraph) calculateResidualCapacity(path graph.Path) augmen
 }
 
 // FordFulkerson algorithm for maximum flow problem
-func FordFulkerson(g *networkflowgraph.NetworkFlowGraph, edmondsKarp bool) int {
+func FordFulkerson(g *flownetwork.FlowNetwork, edmondsKarp bool) int {
 
 	//initialize flow
 	currGraphFlow := newGraphFlow(g)

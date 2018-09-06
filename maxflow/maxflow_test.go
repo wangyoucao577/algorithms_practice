@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/wangyoucao577/algorithms_practice/networkflowgraph"
+	"github.com/wangyoucao577/algorithms_practice/flownetwork"
 )
 
 func TestDrainageDitches(t *testing.T) {
@@ -22,7 +22,7 @@ func TestDrainageDitches(t *testing.T) {
 	inputScanContents := "1 2 40\n1 4 20\n2 4 20\n2 3 30\n3 4 10"
 	want := 50
 
-	g, err := networkflowgraph.ConstructNetworkFlowGraph(nodeCount, edgeCount, strings.NewReader(inputScanContents))
+	g, err := flownetwork.ConstructFlowNetwork(nodeCount, edgeCount, strings.NewReader(inputScanContents))
 	if err != nil {
 		t.Error(err)
 	}

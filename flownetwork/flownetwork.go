@@ -1,6 +1,6 @@
-//Package networkflowgraph represent graph for maximum flow problem
+//Package flownetwork represent flow network (directed graph + capacities) for maximum flow problem
 // i.e. a adjacency list based graph with edge capacity
-package networkflowgraph
+package flownetwork
 
 import (
 	"bufio"
@@ -15,19 +15,19 @@ type FlowUnit int
 
 type capacityStorage map[graph.EdgeID]FlowUnit
 
-//NetworkFlowGraph represent graph for network flow problem (maximum flow problem)
-type NetworkFlowGraph struct {
+//FlowNetwork represent graph for network flow problem (maximum flow problem)
+type FlowNetwork struct {
 	AdjGraph   graph.AdjacencyListGraph
 	capacities capacityStorage
 	Source     graph.NodeID
 	Target     graph.NodeID
 }
 
-//ConstructNetworkFlowGraph try to construct a adjacency list based graph with edge capacity,
+//ConstructFlowNetwork try to construct a adjacency list based graph with edge capacity,
 // nodeCount and edgeCount will define V and E
 // then from r to read contents for adjacency list relationship and edge attr
-func ConstructNetworkFlowGraph(nodeCount, edgeCount int, r io.Reader) (*NetworkFlowGraph, error) {
-	flowGraph := &NetworkFlowGraph{
+func ConstructFlowNetwork(nodeCount, edgeCount int, r io.Reader) (*FlowNetwork, error) {
+	flowGraph := &FlowNetwork{
 		AdjGraph:   graph.AdjacencyListGraph{},
 		capacities: capacityStorage{},
 		Source:     graph.InvalidNodeID,
@@ -80,7 +80,7 @@ func ConstructNetworkFlowGraph(nodeCount, edgeCount int, r io.Reader) (*NetworkF
 }
 
 // Capacity return capacity for an edge
-func (g *NetworkFlowGraph) Capacity(e graph.EdgeID) FlowUnit {
+func (g *FlowNetwork) Capacity(e graph.EdgeID) FlowUnit {
 	c, ok := g.capacities[e]
 	if !ok {
 		return 0
