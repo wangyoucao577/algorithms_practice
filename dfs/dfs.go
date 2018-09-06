@@ -77,8 +77,34 @@ type Dfs struct {
 	edgesAttr edgeAttrArray // store edges' attr during DFS
 }
 
-// NewDfs execute the DFS search on a graph
-func NewDfs(g graph.Graph, m implementMethod) (*Dfs, error) {
+// NewDfs execute the DFS search on a graph, start from the root node
+func NewDfs(g graph.Graph, root graph.NodeID, m implementMethod) (*Dfs, error) {
+	// Initialize
+	dfsContext := &Dfs{0, []dfsTree{}, nodeAttrArray{}, edgeAttrArray{}}
+	g.IterateAllNodes(func(k graph.NodeID) {
+		dfsContext.nodesAttr[k] = &nodeAttr{0, 0, white, graph.InvalidNodeID} // create node attr for each node
+
+		g.IterateAdjacencyNodes(k, func(v graph.NodeID) {
+			edge := graph.EdgeID{From: k, To: v}
+			dfsContext.edgesAttr[edge] = &edgeAttr{unknown}
+		})
+	})
+
+	dfsContext.forest = append(dfsContext.forest, dfsTree{root}) //record a tree's root
+
+	// execute one tree search
+	switch m {
+	case Recurse:
+		dfsContext.dfsRecurseVisit(g, root)
+	case StackBased:
+		dfsContext.dfsStackBasedVisit(g, root)
+	}
+
+	return dfsContext, nil
+}
+
+// NewDfsForest execute the DFS search on a graph, traversing all nodes
+func NewDfsForest(g graph.Graph, m implementMethod) (*Dfs, error) {
 
 	// Initialize
 	dfsContext := &Dfs{0, []dfsTree{}, nodeAttrArray{}, edgeAttrArray{}}
@@ -193,8 +219,8 @@ func (d *Dfs) dfsRecurseVisit(g graph.Graph, currNode graph.NodeID) {
 	d.nodesAttr[currNode].timestampF = d.time
 }
 
-// RetrievePath to retrieve path from source to target
-func (d *Dfs) RetrievePath(source, target graph.NodeID) (graph.Path, error) {
+// Query retrieve path from source to target based on a dfs tree/forest
+func (d *Dfs) Query(source, target graph.NodeID) (graph.Path, error) {
 	path := graph.Path{}
 
 	curr := target

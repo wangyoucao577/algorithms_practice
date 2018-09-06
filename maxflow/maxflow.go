@@ -138,20 +138,20 @@ func FordFulkerson(f *flownetwork.FlowNetwork, edmondsKarp bool) flownetwork.Edg
 		if edmondsKarp { //EdmondsKarp use BFS to find a path, better effectiveness
 			bfs, err := bfs.NewBfs(rn.adjGraph, f.Source(), nil)
 			if err != nil {
-				fmt.Println(err)
+				//fmt.Println(err)
 				break // bfs failed
 			}
 			_, path, err := bfs.Query(f.Target())
 			if err != nil {
-				fmt.Println(err)
+				//fmt.Println(err)
 				break // no more agumenting path can be found
 			}
 			augmentingPath = path
 		} else {
-			dfsSearchedContext, _ := dfs.NewDfs(rn.adjGraph, dfs.Recurse)
-			path, err := dfsSearchedContext.RetrievePath(f.Source(), f.Target())
+			dfs, _ := dfs.NewDfs(rn.adjGraph, f.Source(), dfs.Recurse)
+			path, err := dfs.Query(f.Source(), f.Target())
 			if err != nil {
-				fmt.Println(err)
+				//fmt.Println(err)
 				break // no more agumenting path can be found
 			}
 			augmentingPath = path
