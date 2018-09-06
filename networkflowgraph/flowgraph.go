@@ -10,17 +10,17 @@ import (
 	"github.com/wangyoucao577/algorithms_practice/graph"
 )
 
-type edgeAttr struct {
-	capacity int
-}
-type edgeAttrArray map[graph.EdgeID]*edgeAttr
+// FlowUnit represent unit for capacity, flow
+type FlowUnit int
+
+type capacityStorage map[graph.EdgeID]FlowUnit
 
 //NetworkFlowGraph represent graph for network flow problem (maximum flow problem)
 type NetworkFlowGraph struct {
-	AdjGraph  graph.AdjacencyListGraph
-	edgesAttr edgeAttrArray
-	Source    graph.NodeID
-	Target    graph.NodeID
+	AdjGraph   graph.AdjacencyListGraph
+	capacities capacityStorage
+	Source     graph.NodeID
+	Target     graph.NodeID
 }
 
 //ConstructNetworkFlowGraph try to construct a adjacency list based graph with edge capacity,
@@ -28,10 +28,10 @@ type NetworkFlowGraph struct {
 // then from r to read contents for adjacency list relationship and edge attr
 func ConstructNetworkFlowGraph(nodeCount, edgeCount int, r io.Reader) (*NetworkFlowGraph, error) {
 	flowGraph := &NetworkFlowGraph{
-		AdjGraph:  graph.AdjacencyListGraph{},
-		edgesAttr: edgeAttrArray{},
-		Source:    graph.InvalidNodeID,
-		Target:    graph.InvalidNodeID}
+		AdjGraph:   graph.AdjacencyListGraph{},
+		capacities: capacityStorage{},
+		Source:     graph.InvalidNodeID,
+		Target:     graph.InvalidNodeID}
 
 	for i := 0; i < nodeCount; i++ {
 		flowGraph.AdjGraph = append(flowGraph.AdjGraph, []graph.NodeID{})
@@ -63,7 +63,7 @@ func ConstructNetworkFlowGraph(nodeCount, edgeCount int, r io.Reader) (*NetworkF
 
 		flowGraph.AdjGraph[fromNode] = append(flowGraph.AdjGraph[fromNode], graph.NodeID(toNode))
 		edge := graph.EdgeID{From: graph.NodeID(fromNode), To: graph.NodeID(toNode)}
-		flowGraph.edgesAttr[edge] = &edgeAttr{edgeCapacity}
+		flowGraph.capacities[edge] = FlowUnit(edgeCapacity)
 
 		if count >= edgeCount { // got enough edges
 			break
@@ -80,10 +80,10 @@ func ConstructNetworkFlowGraph(nodeCount, edgeCount int, r io.Reader) (*NetworkF
 }
 
 // Capacity return capacity for an edge
-func (g *NetworkFlowGraph) Capacity(e graph.EdgeID) int {
-	c, ok := g.edgesAttr[e]
+func (g *NetworkFlowGraph) Capacity(e graph.EdgeID) FlowUnit {
+	c, ok := g.capacities[e]
 	if !ok {
 		return 0
 	}
-	return c.capacity
+	return c
 }

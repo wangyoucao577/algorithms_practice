@@ -1,3 +1,5 @@
+// Package maxflow implemented alogrithms to solve maximum flow problem,
+// e.g. FordFulkerson, EmondsKarp, Dinic, etc.
 package maxflow
 
 import (
@@ -9,31 +11,24 @@ import (
 	"github.com/wangyoucao577/algorithms_practice/networkflowgraph"
 )
 
-type edgeFlow struct {
-	f int
-}
-
-type graphFlow map[graph.EdgeID]*edgeFlow
+type graphFlow map[graph.EdgeID]networkflowgraph.FlowUnit
 
 type augmentingPath struct {
 	path    graph.Path
-	minFlow edgeFlow
+	minFlow networkflowgraph.FlowUnit
 }
 
-type edgeAttr struct {
-	capacity int
-}
-type edgeAttrArray map[graph.EdgeID]*edgeAttr
+type flowStroage map[graph.EdgeID]networkflowgraph.FlowUnit
 
 // residualNetworkGraph has same structure as NetworkFlowGraph, but will have reverse edges
 type residualNetworkGraph struct {
-	adjGraph  graph.AdjacencyListGraph
-	edgesAttr edgeAttrArray
+	adjGraph graph.AdjacencyListGraph
+	flows    flowStroage
 }
 
 // calculateResidualNetwork will calculate residual network with current flow based on network flow graph
 func calculateResidualNetwork(g *networkflowgraph.NetworkFlowGraph, f graphFlow) *residualNetworkGraph {
-	r := &residualNetworkGraph{graph.AdjacencyListGraph{}, edgeAttrArray{}}
+	r := &residualNetworkGraph{graph.AdjacencyListGraph{}, flowStroage{}}
 
 	g.AdjGraph.IterateAllNodes(func(u graph.NodeID) {
 		r.adjGraph = append(r.adjGraph, []graph.NodeID{})
@@ -44,18 +39,18 @@ func calculateResidualNetwork(g *networkflowgraph.NetworkFlowGraph, f graphFlow)
 			edge := graph.EdgeID{From: u, To: v}
 
 			edgeFlow := f[edge]
-			if edgeFlow.f > 0 {
-				if g.Capacity(edge) > edgeFlow.f {
+			if edgeFlow > 0 {
+				if g.Capacity(edge) > edgeFlow {
 					r.adjGraph[u] = append(r.adjGraph[u], v)
-					r.edgesAttr[edge] = &edgeAttr{g.Capacity(edge) - edgeFlow.f}
+					r.flows[edge] = g.Capacity(edge) - edgeFlow
 				}
 
 				//reverse edge for residual network graph
 				r.adjGraph[v] = append(r.adjGraph[v], u)
-				r.edgesAttr[edge.Reverse()] = &edgeAttr{edgeFlow.f}
+				r.flows[edge.Reverse()] = edgeFlow
 			} else {
 				r.adjGraph[u] = append(r.adjGraph[u], v)
-				r.edgesAttr[edge] = &edgeAttr{g.Capacity(edge)}
+				r.flows[edge] = g.Capacity(edge)
 			}
 		})
 	})
@@ -69,19 +64,19 @@ func newGraphFlow(g *networkflowgraph.NetworkFlowGraph) graphFlow {
 	g.AdjGraph.IterateAllNodes(func(u graph.NodeID) {
 		g.AdjGraph.IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			edge := graph.EdgeID{From: u, To: v}
-			newFlow[edge] = &edgeFlow{0}
+			newFlow[edge] = 0
 		})
 	})
 
 	return newFlow
 }
 
-func (f graphFlow) maximumFlow(source graph.NodeID) int {
-	var maximum int
+func (f graphFlow) maximumFlow(source graph.NodeID) networkflowgraph.FlowUnit {
+	var maximum networkflowgraph.FlowUnit
 
 	for k, v := range f {
 		if k.From == source {
-			maximum += v.f
+			maximum += v
 		}
 	}
 
@@ -93,9 +88,9 @@ func (f graphFlow) minus(a augmentingPath) {
 	for i := 0; i < len(a.path)-1; i++ {
 		edge := graph.EdgeID{From: a.path[i], To: a.path[i+1]}
 		if _, ok := f[edge]; ok {
-			f[edge].f += a.minFlow.f
+			f[edge] += a.minFlow
 		} else {
-			f[edge.Reverse()].f -= a.minFlow.f
+			f[edge.Reverse()] -= a.minFlow
 		}
 
 	}
@@ -103,22 +98,22 @@ func (f graphFlow) minus(a augmentingPath) {
 
 func (f graphFlow) print() {
 	for k, v := range f {
-		fmt.Printf("edge %v flow %v, ", k, v.f)
+		fmt.Printf("edge %v flow %v, ", k, v)
 	}
 	fmt.Println()
 }
 
 func (r *residualNetworkGraph) calculateResidualCapacity(path graph.Path) augmentingPath {
-	a := augmentingPath{path, edgeFlow{0}}
+	a := augmentingPath{path, 0}
 
 	for i := 0; i < len(a.path)-1; i++ {
 		edge := graph.EdgeID{From: a.path[i], To: a.path[i+1]}
 
-		if a.minFlow.f == 0 {
-			a.minFlow.f = r.edgesAttr[edge].capacity
+		if a.minFlow == 0 {
+			a.minFlow = r.flows[edge]
 		} else {
-			if a.minFlow.f > r.edgesAttr[edge].capacity {
-				a.minFlow.f = r.edgesAttr[edge].capacity
+			if a.minFlow > r.flows[edge] {
+				a.minFlow = r.flows[edge]
 			}
 		}
 	}
@@ -165,7 +160,7 @@ func FordFulkerson(g *networkflowgraph.NetworkFlowGraph, edmondsKarp bool) int {
 		fmt.Println(newPath)
 
 		newAugmentingPath := residualGraph.calculateResidualCapacity(newPath)
-		if newAugmentingPath.minFlow.f <= 0 {
+		if newAugmentingPath.minFlow <= 0 {
 			fmt.Println("no new valid augmenting path")
 			break // no more agumenting path can be found
 		}
@@ -175,5 +170,5 @@ func FordFulkerson(g *networkflowgraph.NetworkFlowGraph, edmondsKarp bool) int {
 
 	}
 
-	return currGraphFlow.maximumFlow(g.Source)
+	return int(currGraphFlow.maximumFlow(g.Source))
 }

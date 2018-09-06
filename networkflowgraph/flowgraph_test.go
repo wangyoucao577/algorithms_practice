@@ -33,20 +33,20 @@ func TestConstructDrainageDitchesSampleGraph(t *testing.T) {
 	if g.AdjGraph.EdgeCount() != edgeCount {
 		t.Errorf("edge count got %d, want %d", g.AdjGraph.EdgeCount(), edgeCount)
 	}
-	if len(g.edgesAttr) != edgeCount {
-		t.Errorf("edge attr count got %d, want %d", len(g.edgesAttr), edgeCount)
+	if len(g.capacities) != edgeCount {
+		t.Errorf("edge attr count got %d, want %d", len(g.capacities), edgeCount)
 	}
 
 	g.AdjGraph.IterateAllNodes(func(u graph.NodeID) {
 		g.AdjGraph.IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			// edge u->v must exist
 			edge := graph.EdgeID{From: u, To: v}
-			if _, ok := g.edgesAttr[edge]; !ok {
+			if _, ok := g.capacities[edge]; !ok {
 				t.Errorf("edge %v no capacity exist", edge)
 			}
 
 			// edge v->u must NOT exist
-			if _, ok := g.edgesAttr[edge.Reverse()]; ok {
+			if _, ok := g.capacities[edge.Reverse()]; ok {
 				t.Errorf("edge %v capacity exist, but expect not exist", edge.Reverse())
 			}
 		})
