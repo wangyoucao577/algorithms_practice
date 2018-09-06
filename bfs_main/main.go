@@ -45,19 +45,19 @@ func main() {
 	//fmt.Println(b1) // TODO: implement `bfs.String()`
 
 	target = graphsample1.NameToID("v")
-	depth, path = b1.Query(target)
+	depth, path, _ = b1.Query(target)
 	printPath(os.Stdout, source, target, depth, path)
 
 	target = graphsample1.NameToID("x")
-	depth, path = b1.Query(target)
+	depth, path, _ = b1.Query(target)
 	printPath(os.Stdout, source, target, depth, path)
 
 	target = graphsample1.NameToID("y")
-	depth, path = b1.Query(target)
+	depth, path, _ = b1.Query(target)
 	printPath(os.Stdout, source, target, depth, path)
 
 	target = graphsample1.NameToID("u")
-	depth, path = b1.Query(target)
+	depth, path, _ = b1.Query(target)
 	printPath(os.Stdout, source, target, depth, path)
 
 	fmt.Println()
@@ -69,19 +69,19 @@ func main() {
 	//fmt.Println(b2) // TODO: implement `bfs.String()`
 
 	target = graphsample1.NameToID("v")
-	depth, path = b2.Query(target)
+	depth, path, _ = b2.Query(target)
 	printPath(os.Stdout, source, target, depth, path)
 
 	target = graphsample1.NameToID("x")
-	depth, path = b2.Query(target)
+	depth, path, _ = b2.Query(target)
 	printPath(os.Stdout, source, target, depth, path)
 
 	target = graphsample1.NameToID("y")
-	depth, path = b2.Query(target)
+	depth, path, _ = b2.Query(target)
 	printPath(os.Stdout, source, target, depth, path)
 
 	target = graphsample1.NameToID("u")
-	depth, path = b2.Query(target)
+	depth, path, _ = b2.Query(target)
 	printPath(os.Stdout, source, target, depth, path)
 
 }

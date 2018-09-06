@@ -86,11 +86,15 @@ func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, er
 // Query find shortest path between source and target
 // on the BFS searched graph.
 // return depth and path if succeed.
-func (b *Bfs) Query(target graph.NodeID) (int, graph.Path) {
+func (b *Bfs) Query(target graph.NodeID) (int, graph.Path, error) {
 
 	currNodeAttr, targetInNodes := b.nodesAttr[target]
 	if !targetInNodes {
 		panic(fmt.Errorf("target node %v not in the graph", target))
+	}
+
+	if target != b.Source && currNodeAttr.parent == graph.InvalidNodeID {
+		return 0, nil, fmt.Errorf("no valid path from %v to %v", b.Source, target)
 	}
 
 	depth := currNodeAttr.depth
@@ -105,5 +109,5 @@ func (b *Bfs) Query(target graph.NodeID) (int, graph.Path) {
 		shortestPath[i], shortestPath[j] = shortestPath[j], shortestPath[i]
 	}
 
-	return depth, shortestPath
+	return depth, shortestPath, nil
 }

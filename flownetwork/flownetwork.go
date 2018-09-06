@@ -10,15 +10,16 @@ import (
 	"github.com/wangyoucao577/algorithms_practice/graph"
 )
 
-// FlowUnit represent unit for capacity, flow
-type FlowUnit int
+// EdgeFlowUnit represent unit of capacity/flow of one edge
+type EdgeFlowUnit int
 
-type capacityStorage map[graph.EdgeID]FlowUnit
+// CapacityStorage represent capacities/residualCapacities on a flow network
+type CapacityStorage map[graph.EdgeID]EdgeFlowUnit
 
 //FlowNetwork represent graph for network flow problem (maximum flow problem)
 type FlowNetwork struct {
 	adjGraph   graph.AdjacencyListGraph
-	capacities capacityStorage
+	capacities CapacityStorage
 
 	// source, target will represent the maximum flow problem on the flow network
 	// so we define them with the flow network
@@ -32,7 +33,7 @@ type FlowNetwork struct {
 func ConstructFlowNetwork(nodeCount, edgeCount int, r io.Reader) (*FlowNetwork, error) {
 	flowGraph := &FlowNetwork{
 		adjGraph:   graph.AdjacencyListGraph{},
-		capacities: capacityStorage{},
+		capacities: CapacityStorage{},
 		source:     graph.InvalidNodeID,
 		target:     graph.InvalidNodeID}
 
@@ -66,7 +67,7 @@ func ConstructFlowNetwork(nodeCount, edgeCount int, r io.Reader) (*FlowNetwork, 
 
 		flowGraph.adjGraph[fromNode] = append(flowGraph.adjGraph[fromNode], graph.NodeID(toNode))
 		edge := graph.EdgeID{From: graph.NodeID(fromNode), To: graph.NodeID(toNode)}
-		flowGraph.capacities[edge] = FlowUnit(edgeCapacity)
+		flowGraph.capacities[edge] = EdgeFlowUnit(edgeCapacity)
 
 		if count >= edgeCount { // got enough edges
 			break
@@ -83,7 +84,7 @@ func ConstructFlowNetwork(nodeCount, edgeCount int, r io.Reader) (*FlowNetwork, 
 }
 
 // Capacity return capacity for an edge
-func (f *FlowNetwork) Capacity(e graph.EdgeID) FlowUnit {
+func (f *FlowNetwork) Capacity(e graph.EdgeID) EdgeFlowUnit {
 	c, ok := f.capacities[e]
 	if !ok {
 		return 0

@@ -23,6 +23,6 @@ func main() {
 	}
 	//fmt.Println(g)
 
-	flow := maxflow.FordFulkerson(f, true)
-	fmt.Println(flow)
+	flowValue := maxflow.FordFulkerson(f, true)
+	fmt.Println(flowValue)
 }

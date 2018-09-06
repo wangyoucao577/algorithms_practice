@@ -34,7 +34,7 @@ func TestBfsOnGraphSample1(t *testing.T) {
 		t.Errorf("BFS on adjacency list based graph failed, source %v", source)
 	}
 	for _, v := range tests {
-		depth, path := bList.Query(v.target)
+		depth, path, _ := bList.Query(v.target)
 		if depth != v.want.Depth {
 			t.Errorf("Query for %v, got depth %d, want %d", v.target, depth, v.want.Depth)
 		}
@@ -50,7 +50,7 @@ func TestBfsOnGraphSample1(t *testing.T) {
 		t.Errorf("BFS on adjacency Matrix based graph failed, source %v", source)
 	}
 	for _, v := range tests {
-		depth, path := bMatrix.Query(v.target)
+		depth, path, _ := bMatrix.Query(v.target)
 		if depth != v.want.Depth {
 			t.Errorf("Query for %v, got depth %d, want %d", v.target, depth, v.want.Depth)
 		}

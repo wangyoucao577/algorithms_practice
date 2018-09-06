@@ -11,68 +11,87 @@ import (
 	"github.com/wangyoucao577/algorithms_practice/graph"
 )
 
-type graphFlow map[graph.EdgeID]flownetwork.FlowUnit
+type flowStorage map[graph.EdgeID]flownetwork.EdgeFlowUnit
 
-type augmentingPath struct {
-	path    graph.Path
-	minFlow flownetwork.FlowUnit
+// residualNetwork has same structure as flownetwork, but will have reverse edges
+type residualNetwork struct {
+	adjGraph           graph.AdjacencyListGraph
+	residualCapacities flownetwork.CapacityStorage
 }
 
-type flowStroage map[graph.EdgeID]flownetwork.FlowUnit
+// calculateResidualNetwork will calculate residual network with current flow based on flow network
+func calculateResidualNetwork(fn *flownetwork.FlowNetwork, flow flowStorage) *residualNetwork {
+	rn := &residualNetwork{graph.AdjacencyListGraph{}, flownetwork.CapacityStorage{}}
 
-// residualNetworkGraph has same structure as flownetwork, but will have reverse edges
-type residualNetworkGraph struct {
-	adjGraph graph.AdjacencyListGraph
-	flows    flowStroage
-}
-
-// calculateResidualNetwork will calculate residual network with current flow based on network flow graph
-func calculateResidualNetwork(g *flownetwork.FlowNetwork, f graphFlow) *residualNetworkGraph {
-	r := &residualNetworkGraph{graph.AdjacencyListGraph{}, flowStroage{}}
-
-	g.Graph().IterateAllNodes(func(u graph.NodeID) {
-		r.adjGraph = append(r.adjGraph, []graph.NodeID{})
+	fn.Graph().IterateAllNodes(func(u graph.NodeID) {
+		rn.adjGraph = append(rn.adjGraph, []graph.NodeID{})
 	})
 
-	g.Graph().IterateAllNodes(func(u graph.NodeID) {
-		g.Graph().IterateAdjacencyNodes(u, func(v graph.NodeID) {
+	fn.Graph().IterateAllNodes(func(u graph.NodeID) {
+		fn.Graph().IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			edge := graph.EdgeID{From: u, To: v}
 
-			edgeFlow := f[edge]
+			edgeFlow := flow[edge]
 			if edgeFlow > 0 {
-				if g.Capacity(edge) > edgeFlow {
-					r.adjGraph[u] = append(r.adjGraph[u], v)
-					r.flows[edge] = g.Capacity(edge) - edgeFlow
+				if fn.Capacity(edge) > edgeFlow {
+					rn.adjGraph[u] = append(rn.adjGraph[u], v)
+					rn.residualCapacities[edge] = fn.Capacity(edge) - edgeFlow
 				}
 
 				//reverse edge for residual network graph
-				r.adjGraph[v] = append(r.adjGraph[v], u)
-				r.flows[edge.Reverse()] = edgeFlow
+				rn.adjGraph[v] = append(rn.adjGraph[v], u)
+				rn.residualCapacities[edge.Reverse()] = edgeFlow
 			} else {
-				r.adjGraph[u] = append(r.adjGraph[u], v)
-				r.flows[edge] = g.Capacity(edge)
+				rn.adjGraph[u] = append(rn.adjGraph[u], v)
+				rn.residualCapacities[edge] = fn.Capacity(edge)
 			}
 		})
 	})
 
-	return r
+	return rn
 }
 
-func newGraphFlow(g *flownetwork.FlowNetwork) graphFlow {
-	newFlow := graphFlow{}
+func newFlow(fn *flownetwork.FlowNetwork) flowStorage {
+	flow := flowStorage{}
 
-	g.Graph().IterateAllNodes(func(u graph.NodeID) {
-		g.Graph().IterateAdjacencyNodes(u, func(v graph.NodeID) {
+	fn.Graph().IterateAllNodes(func(u graph.NodeID) {
+		fn.Graph().IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			edge := graph.EdgeID{From: u, To: v}
-			newFlow[edge] = 0
+			flow[edge] = 0
 		})
 	})
 
-	return newFlow
+	return flow
 }
 
-func (f graphFlow) maximumFlow(source graph.NodeID) flownetwork.FlowUnit {
-	var maximum flownetwork.FlowUnit
+func newAugmentingFlow(rn *residualNetwork, augmentingPath graph.Path) flowStorage {
+
+	// calculate min edge flow
+	var minEdgeFlow flownetwork.EdgeFlowUnit
+	for i := 0; i < len(augmentingPath)-1; i++ {
+		edge := graph.EdgeID{From: augmentingPath[i], To: augmentingPath[i+1]}
+
+		if minEdgeFlow == 0 {
+			minEdgeFlow = rn.residualCapacities[edge]
+		} else {
+			if minEdgeFlow > rn.residualCapacities[edge] {
+				minEdgeFlow = rn.residualCapacities[edge]
+			}
+		}
+	}
+
+	// construct augmenting flow
+	augmentingFlow := flowStorage{}
+	for i := 0; i < len(augmentingPath)-1; i++ {
+		edge := graph.EdgeID{From: augmentingPath[i], To: augmentingPath[i+1]}
+		augmentingFlow[edge] = minEdgeFlow
+	}
+
+	return augmentingFlow
+}
+
+func (f flowStorage) Value(source graph.NodeID) flownetwork.EdgeFlowUnit {
+	var maximum flownetwork.EdgeFlowUnit
 
 	for k, v := range f {
 		if k.From == source {
@@ -83,92 +102,69 @@ func (f graphFlow) maximumFlow(source graph.NodeID) flownetwork.FlowUnit {
 	return maximum
 }
 
-func (f graphFlow) minus(a augmentingPath) {
+func (f flowStorage) minus(augmentingFlow flowStorage) {
 
-	for i := 0; i < len(a.path)-1; i++ {
-		edge := graph.EdgeID{From: a.path[i], To: a.path[i+1]}
-		if _, ok := f[edge]; ok {
-			f[edge] += a.minFlow
+	for k, v := range augmentingFlow {
+		if _, ok := f[k]; ok {
+			f[k] += v
 		} else {
-			f[edge.Reverse()] -= a.minFlow
+			f[k.Reverse()] -= v
 		}
-
 	}
 }
 
-func (f graphFlow) print() {
+func (f flowStorage) print() {
 	for k, v := range f {
 		fmt.Printf("edge %v flow %v, ", k, v)
 	}
 	fmt.Println()
 }
 
-func (r *residualNetworkGraph) calculateResidualCapacity(path graph.Path) augmentingPath {
-	a := augmentingPath{path, 0}
-
-	for i := 0; i < len(a.path)-1; i++ {
-		edge := graph.EdgeID{From: a.path[i], To: a.path[i+1]}
-
-		if a.minFlow == 0 {
-			a.minFlow = r.flows[edge]
-		} else {
-			if a.minFlow > r.flows[edge] {
-				a.minFlow = r.flows[edge]
-			}
-		}
-	}
-
-	return a
-}
-
-// FordFulkerson algorithm for maximum flow problem
-func FordFulkerson(f *flownetwork.FlowNetwork, edmondsKarp bool) int {
+// FordFulkerson algorithm for maximum flow problem, with/without EdmondKarp improvement
+func FordFulkerson(f *flownetwork.FlowNetwork, edmondsKarp bool) flownetwork.EdgeFlowUnit {
+	fmt.Printf("FordFulkerson, EmondsKarp %v\n", edmondsKarp)
 
 	//initialize flow
-	currGraphFlow := newGraphFlow(f)
+	currFlow := newFlow(f)
 
 	for {
-		currGraphFlow.print()
+		//currFlow.print()
 
-		// construct new residual network graph
-		residualGraph := calculateResidualNetwork(f, currGraphFlow)
-		//fmt.Println(residualGraph)
+		// phase 1, construct residual network based on original flow network and current flow
+		rn := calculateResidualNetwork(f, currFlow)
 
-		// try to find augmenting path in the residual network graph
-		var newPath graph.Path
-		if edmondsKarp {
-			bfs, err := bfs.NewBfs(residualGraph.adjGraph, f.Source(), nil)
+		// pahse 2, try to find augmenting path in the residual network graph
+		var augmentingPath graph.Path
+		if edmondsKarp { //EdmondsKarp use BFS to find a path, better effectiveness
+			bfs, err := bfs.NewBfs(rn.adjGraph, f.Source(), nil)
 			if err != nil {
 				fmt.Println(err)
 				break // bfs failed
 			}
-			_, path := bfs.Query(f.Target())
-			if len(path) == 0 {
-				fmt.Println("no new valid path by BFS")
+			_, path, err := bfs.Query(f.Target())
+			if err != nil {
+				fmt.Println(err)
 				break // no more agumenting path can be found
 			}
-			newPath = path
+			augmentingPath = path
 		} else {
-			dfsSearchedContext, _ := dfs.NewDfs(residualGraph.adjGraph, dfs.Recurse)
+			dfsSearchedContext, _ := dfs.NewDfs(rn.adjGraph, dfs.Recurse)
 			path, err := dfsSearchedContext.RetrievePath(f.Source(), f.Target())
 			if err != nil {
 				fmt.Println(err)
 				break // no more agumenting path can be found
 			}
-			newPath = path
+			augmentingPath = path
 		}
-		fmt.Println(newPath)
+		//fmt.Println(augmentingPath)
 
-		newAugmentingPath := residualGraph.calculateResidualCapacity(newPath)
-		if newAugmentingPath.minFlow <= 0 {
-			fmt.Println("no new valid augmenting path")
-			break // no more agumenting path can be found
-		}
+		// phase 3, generate augmenting flow from augmenting path
+		augmentingFlow := newAugmentingFlow(rn, augmentingPath)
 
-		// flow - augmentingPathFlow
-		currGraphFlow.minus(newAugmentingPath)
+		// phase 4, current flow - augmenting flow
+		currFlow.minus(augmentingFlow)
 
 	}
 
-	return int(currGraphFlow.maximumFlow(f.Source()))
+	return currFlow.Value(f.Source())
 }
