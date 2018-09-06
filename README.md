@@ -31,7 +31,20 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 执行`package bfs`代码的`main`.     
 
 - dfs    
-实现《算法导论 第3版》ch22.3 深度优先搜索 中的算法描述. 本书章节中的伪码是基于递归的描述, 实际`coding`时同时实现了基于栈的实现.    
+实现《算法导论 第3版》ch22.3 深度优先搜索 中的算法描述. 本书章节中的伪码是基于递归的描述, 比较清晰易懂也容易实现. 实际`coding`时同时参考[Depth-first search - Wikipedia](https://en.wikipedia.org/wiki/Depth-first_search)实现了基于栈的实现. 注: 基于栈的实现一般来讲结果会和递归的实现不太一样, 主要是遍历的次序关系.    
+
+- flownetwork    
+描述[maximum flow problem](https://en.wikipedia.org/wiki/Maximum_flow_problem)的流网络, 主要包含基于`directed graph`的图以及图上每两个`node`间(i.e. `edge`)的容量. 需要注意的是两个`node`间只能有单向的`edge`, 不能有反向. 同时为了描述[maximum flow problem](https://en.wikipedia.org/wiki/Maximum_flow_problem)问题, 也记录了入点和出点.    
+
+- maxflow    
+[maximum flow problem](https://en.wikipedia.org/wiki/Maximum_flow_problem)的算法实现, 包括`FordFulkerson`, `EmondsKarp`, `Dinic`, etc. 在其内部的`_test.go`中以[Drainage Ditches](http://poj.org/problem?id=1273)问题作为典型的测试用例.    
+    - `FordFulkerson`: 基础的最大流问题解决方法. 定义了`flow`, `residual network`, `augmenting path`等重要的基础概念, 以及解决问题的一般思路.    
+    - `EmondKarp`: 基于`FordFulkerson`, 在如何寻找`augmenting path`的方法上进行了扩展优化, 即以[BFS](https://en.wikipedia.org/wiki/Breadth-first_search)代替[DFS](https://en.wikipedia.org/wiki/Depth-first_search), 效率更高.    
+    - `Dinic`: TODO    
+
+- maxflow_main    
+调用`maxflow`以解决[maximum flow problem](https://en.wikipedia.org/wiki/Maximum_flow_problem), 支持从`stdin`来构造`flownetwork`, 以更容易测试新的问题.     
+
 
 ## C/C++ 实践
     
