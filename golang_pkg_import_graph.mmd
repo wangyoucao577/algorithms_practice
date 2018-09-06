@@ -24,4 +24,15 @@ bfs_main --> pkggraph
 pkgdfs["(pkg)dfs"] --> pkggraph
 pkgdfs --> pkggraphsample2
 
+pkgflownetwork["(pkg)flownetwork"] --> pkggraph
+
+pkgmaxflow["(pkg)maxflow"] --> pkgflownetwork
+pkgmaxflow --> pkgdfs
+pkgmaxflow --> pkgbfs
+pkgmaxflow --> pkggraph
+
+
+maxflow_main("(bin)maxflow_main") --> pkgflownetwork
+maxflow_main("(bin)maxflow_main") --> pkgmaxflow
+
 %%```
