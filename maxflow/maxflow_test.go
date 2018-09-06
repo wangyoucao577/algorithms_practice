@@ -1,4 +1,4 @@
-package drainageditches
+package maxflow
 
 import (
 	"strings"

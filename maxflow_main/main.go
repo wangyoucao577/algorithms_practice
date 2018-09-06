@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/wangyoucao577/algorithms_practice/drainageditches"
+	"github.com/wangyoucao577/algorithms_practice/maxflow"
 	"github.com/wangyoucao577/algorithms_practice/networkflowgraph"
 )
 
@@ -23,6 +23,6 @@ func main() {
 	}
 	//fmt.Println(g)
 
-	maxFlow := drainageditches.FordFulkerson(g)
-	fmt.Println(maxFlow)
+	f := maxflow.FordFulkerson(g, true)
+	fmt.Println(f)
 }
