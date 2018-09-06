@@ -30,12 +30,12 @@ type residualNetworkGraph struct {
 func calculateResidualNetwork(g *flownetwork.FlowNetwork, f graphFlow) *residualNetworkGraph {
 	r := &residualNetworkGraph{graph.AdjacencyListGraph{}, flowStroage{}}
 
-	g.AdjGraph.IterateAllNodes(func(u graph.NodeID) {
+	g.Graph().IterateAllNodes(func(u graph.NodeID) {
 		r.adjGraph = append(r.adjGraph, []graph.NodeID{})
 	})
 
-	g.AdjGraph.IterateAllNodes(func(u graph.NodeID) {
-		g.AdjGraph.IterateAdjacencyNodes(u, func(v graph.NodeID) {
+	g.Graph().IterateAllNodes(func(u graph.NodeID) {
+		g.Graph().IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			edge := graph.EdgeID{From: u, To: v}
 
 			edgeFlow := f[edge]
@@ -61,8 +61,8 @@ func calculateResidualNetwork(g *flownetwork.FlowNetwork, f graphFlow) *residual
 func newGraphFlow(g *flownetwork.FlowNetwork) graphFlow {
 	newFlow := graphFlow{}
 
-	g.AdjGraph.IterateAllNodes(func(u graph.NodeID) {
-		g.AdjGraph.IterateAdjacencyNodes(u, func(v graph.NodeID) {
+	g.Graph().IterateAllNodes(func(u graph.NodeID) {
+		g.Graph().IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			edge := graph.EdgeID{From: u, To: v}
 			newFlow[edge] = 0
 		})
@@ -122,27 +122,27 @@ func (r *residualNetworkGraph) calculateResidualCapacity(path graph.Path) augmen
 }
 
 // FordFulkerson algorithm for maximum flow problem
-func FordFulkerson(g *flownetwork.FlowNetwork, edmondsKarp bool) int {
+func FordFulkerson(f *flownetwork.FlowNetwork, edmondsKarp bool) int {
 
 	//initialize flow
-	currGraphFlow := newGraphFlow(g)
+	currGraphFlow := newGraphFlow(f)
 
 	for {
 		currGraphFlow.print()
 
 		// construct new residual network graph
-		residualGraph := calculateResidualNetwork(g, currGraphFlow)
+		residualGraph := calculateResidualNetwork(f, currGraphFlow)
 		//fmt.Println(residualGraph)
 
 		// try to find augmenting path in the residual network graph
 		var newPath graph.Path
 		if edmondsKarp {
-			bfs, err := bfs.NewBfs(residualGraph.adjGraph, g.Source, nil)
+			bfs, err := bfs.NewBfs(residualGraph.adjGraph, f.Source(), nil)
 			if err != nil {
 				fmt.Println(err)
 				break // bfs failed
 			}
-			_, path := bfs.Query(g.Target)
+			_, path := bfs.Query(f.Target())
 			if len(path) == 0 {
 				fmt.Println("no new valid path by BFS")
 				break // no more agumenting path can be found
@@ -150,7 +150,7 @@ func FordFulkerson(g *flownetwork.FlowNetwork, edmondsKarp bool) int {
 			newPath = path
 		} else {
 			dfsSearchedContext, _ := dfs.NewDfs(residualGraph.adjGraph, dfs.Recurse)
-			path, err := dfsSearchedContext.RetrievePath(g.Source, g.Target)
+			path, err := dfsSearchedContext.RetrievePath(f.Source(), f.Target())
 			if err != nil {
 				fmt.Println(err)
 				break // no more agumenting path can be found
@@ -170,5 +170,5 @@ func FordFulkerson(g *flownetwork.FlowNetwork, edmondsKarp bool) int {
 
 	}
 
-	return int(currGraphFlow.maximumFlow(g.Source))
+	return int(currGraphFlow.maximumFlow(f.Source()))
 }

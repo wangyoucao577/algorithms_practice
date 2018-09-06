@@ -16,13 +16,13 @@ func main() {
 		fmt.Printf("Invalid node count %d edge count %d\n", nodeCount, edgeCount)
 		return
 	}
-	g, err := flownetwork.ConstructFlowNetwork(nodeCount, edgeCount, os.Stdin)
+	f, err := flownetwork.ConstructFlowNetwork(nodeCount, edgeCount, os.Stdin)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	//fmt.Println(g)
 
-	f := maxflow.FordFulkerson(g, true)
-	fmt.Println(f)
+	flow := maxflow.FordFulkerson(f, true)
+	fmt.Println(flow)
 }

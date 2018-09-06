@@ -22,17 +22,17 @@ func TestDrainageDitches(t *testing.T) {
 	inputScanContents := "1 2 40\n1 4 20\n2 4 20\n2 3 30\n3 4 10"
 	want := 50
 
-	g, err := flownetwork.ConstructFlowNetwork(nodeCount, edgeCount, strings.NewReader(inputScanContents))
+	f, err := flownetwork.ConstructFlowNetwork(nodeCount, edgeCount, strings.NewReader(inputScanContents))
 	if err != nil {
 		t.Error(err)
 	}
 
-	maxFlow := FordFulkerson(g, false)
+	maxFlow := FordFulkerson(f, false)
 	if maxFlow != want {
 		t.Errorf("[FordFulkerson] got maximum flow %v, want %v", maxFlow, want)
 	}
 
-	edmondsKarpMaxFlow := FordFulkerson(g, true)
+	edmondsKarpMaxFlow := FordFulkerson(f, true)
 	if edmondsKarpMaxFlow != want {
 		t.Errorf("[EdmondsKarp] got maximum flow %v, want %v", edmondsKarpMaxFlow, want)
 	}
