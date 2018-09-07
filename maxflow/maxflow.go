@@ -15,34 +15,30 @@ type flowStorage map[graph.EdgeID]flownetwork.EdgeFlowUnit
 
 // residualNetwork has same structure as flownetwork, but will have reverse edges
 type residualNetwork struct {
-	adjGraph           graph.AdjacencyListGraph
+	graph.Graph
 	residualCapacities flownetwork.CapacityStorage
 }
 
 // calculateResidualNetwork will calculate residual network with current flow based on flow network
 func calculateResidualNetwork(fn *flownetwork.FlowNetwork, flow flowStorage) *residualNetwork {
-	rn := &residualNetwork{graph.AdjacencyListGraph{}, flownetwork.CapacityStorage{}}
+	rn := &residualNetwork{graph.NewAdjacencyListGraph(fn.NodeCount()), flownetwork.CapacityStorage{}}
 
-	fn.Graph().IterateAllNodes(func(u graph.NodeID) {
-		rn.adjGraph = append(rn.adjGraph, []graph.NodeID{})
-	})
-
-	fn.Graph().IterateAllNodes(func(u graph.NodeID) {
-		fn.Graph().IterateAdjacencyNodes(u, func(v graph.NodeID) {
+	fn.IterateAllNodes(func(u graph.NodeID) {
+		fn.IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			edge := graph.EdgeID{From: u, To: v}
 
 			edgeFlow := flow[edge]
 			if edgeFlow > 0 {
 				if fn.Capacity(edge) > edgeFlow {
-					rn.adjGraph[u] = append(rn.adjGraph[u], v)
+					rn.AddEdge(u, v)
 					rn.residualCapacities[edge] = fn.Capacity(edge) - edgeFlow
 				}
 
 				//reverse edge for residual network graph
-				rn.adjGraph[v] = append(rn.adjGraph[v], u)
+				rn.AddEdge(v, u)
 				rn.residualCapacities[edge.Reverse()] = edgeFlow
 			} else {
-				rn.adjGraph[u] = append(rn.adjGraph[u], v)
+				rn.AddEdge(u, v)
 				rn.residualCapacities[edge] = fn.Capacity(edge)
 			}
 		})
@@ -54,8 +50,8 @@ func calculateResidualNetwork(fn *flownetwork.FlowNetwork, flow flowStorage) *re
 func newFlow(fn *flownetwork.FlowNetwork) flowStorage {
 	flow := flowStorage{}
 
-	fn.Graph().IterateAllNodes(func(u graph.NodeID) {
-		fn.Graph().IterateAdjacencyNodes(u, func(v graph.NodeID) {
+	fn.IterateAllNodes(func(u graph.NodeID) {
+		fn.IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			edge := graph.EdgeID{From: u, To: v}
 			flow[edge] = 0
 		})
@@ -136,7 +132,7 @@ func FordFulkerson(f *flownetwork.FlowNetwork, edmondsKarp bool) flownetwork.Edg
 		// pahse 2, try to find augmenting path in the residual network graph
 		var augmentingPath graph.Path
 		if edmondsKarp { //EdmondsKarp use BFS to find a path, better effectiveness
-			bfs, err := bfs.NewBfs(rn.adjGraph, f.Source(), nil)
+			bfs, err := bfs.NewBfs(rn.Graph, f.Source(), nil)
 			if err != nil {
 				//fmt.Println(err)
 				break // bfs failed
@@ -148,7 +144,7 @@ func FordFulkerson(f *flownetwork.FlowNetwork, edmondsKarp bool) flownetwork.Edg
 			}
 			augmentingPath = path
 		} else {
-			dfs, _ := dfs.NewDfs(rn.adjGraph, f.Source(), dfs.Recurse)
+			dfs, _ := dfs.NewDfs(rn.Graph, f.Source(), dfs.Recurse)
 			path, err := dfs.Query(f.Source(), f.Target())
 			if err != nil {
 				//fmt.Println(err)

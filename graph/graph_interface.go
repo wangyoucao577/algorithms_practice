@@ -2,6 +2,10 @@
 // support both Adjacency List and Adjacency Matrix.
 package graph
 
+import (
+	"fmt"
+)
+
 // NodeID represent each node by `unsigned int`, start from 0
 type NodeID uint
 
@@ -42,6 +46,10 @@ type IterateActionWithControl func(NodeID) IterateControl
 // whatever Adjacency List or Adjacency Matrix based graph
 type Graph interface {
 
+	// AddEdge add en edge between FromNode and ToNode.
+	// make sure both FromNode and ToNode are already inside the graph.
+	AddEdge(NodeID, NodeID) error
+
 	// NodeCount return how many nodes in the graph
 	NodeCount() int
 
@@ -78,6 +86,27 @@ type Graph interface {
 
 // AdjacencyListGraph represent a graph by Adjacency List
 type AdjacencyListGraph [][]NodeID
+
+// NewAdjacencyListGraph create a adjacency list based graph with nodes
+func NewAdjacencyListGraph(nodeCount int) Graph {
+	g := AdjacencyListGraph{}
+	for i := 0; i < nodeCount; i++ {
+		g = append(g, []NodeID{})
+	}
+	return g
+}
+
+// AddEdge add en edge between FromNode and ToNode.
+// make sure both FromNode and ToNode are already inside the graph.
+func (g AdjacencyListGraph) AddEdge(from, to NodeID) error {
+	if !g.IsNodeValid(from) || !g.IsNodeValid(to) {
+		return fmt.Errorf("From node %v or To node %v invalid", from, to)
+	}
+
+	g[from] = append(g[from], to)
+
+	return nil
+}
 
 // NodeCount return how many nodes in the graph
 func (g AdjacencyListGraph) NodeCount() int {
@@ -168,6 +197,27 @@ func (g AdjacencyListGraph) ControllableIterateAdjacencyNodes(currNode NodeID, a
 
 // AdjacencyMatrixGraph represent a graph by Adjacency Matrix
 type AdjacencyMatrixGraph [][]bool
+
+// NewAdjacencyMatrixGraph create a adjacency list based graph with nodes
+func NewAdjacencyMatrixGraph(nodeCount int) Graph {
+	g := AdjacencyMatrixGraph{}
+	for i := 0; i < nodeCount; i++ {
+		g = append(g, make([]bool, nodeCount, nodeCount))
+	}
+	return g
+}
+
+// AddEdge add en edge between FromNode and ToNode.
+// make sure both FromNode and ToNode are already inside the graph.
+func (g AdjacencyMatrixGraph) AddEdge(from, to NodeID) error {
+	if !g.IsNodeValid(from) || !g.IsNodeValid(to) {
+		return fmt.Errorf("From node %v or To node %v invalid", from, to)
+	}
+
+	g[from][to] = true
+
+	return nil
+}
 
 // NodeCount return how many nodes in the graph
 func (g AdjacencyMatrixGraph) NodeCount() int {

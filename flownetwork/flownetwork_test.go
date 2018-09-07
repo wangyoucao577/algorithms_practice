@@ -27,18 +27,18 @@ func TestConstructDrainageDitchesSampleGraph(t *testing.T) {
 		t.Error(err)
 	}
 	//fmt.Println(g)
-	if f.Graph().NodeCount() != nodeCount {
-		t.Errorf("node count got %d, want %d", f.Graph().NodeCount(), nodeCount)
+	if f.NodeCount() != nodeCount {
+		t.Errorf("node count got %d, want %d", f.NodeCount(), nodeCount)
 	}
-	if f.Graph().EdgeCount() != edgeCount {
-		t.Errorf("edge count got %d, want %d", f.Graph().EdgeCount(), edgeCount)
+	if f.EdgeCount() != edgeCount {
+		t.Errorf("edge count got %d, want %d", f.EdgeCount(), edgeCount)
 	}
 	if len(f.capacities) != edgeCount {
 		t.Errorf("edge attr count got %d, want %d", len(f.capacities), edgeCount)
 	}
 
-	f.Graph().IterateAllNodes(func(u graph.NodeID) {
-		f.Graph().IterateAdjacencyNodes(u, func(v graph.NodeID) {
+	f.IterateAllNodes(func(u graph.NodeID) {
+		f.IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			// edge u->v must exist
 			edge := graph.EdgeID{From: u, To: v}
 			if _, ok := f.capacities[edge]; !ok {

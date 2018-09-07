@@ -18,7 +18,7 @@ type CapacityStorage map[graph.EdgeID]EdgeFlowUnit
 
 //FlowNetwork represent graph for network flow problem (maximum flow problem)
 type FlowNetwork struct {
-	adjGraph   graph.AdjacencyListGraph
+	graph.Graph
 	capacities CapacityStorage
 
 	// source, target will represent the maximum flow problem on the flow network
@@ -32,14 +32,10 @@ type FlowNetwork struct {
 // then from r to read contents for adjacency list relationship and edge attr
 func ConstructFlowNetwork(nodeCount, edgeCount int, r io.Reader) (*FlowNetwork, error) {
 	flowGraph := &FlowNetwork{
-		adjGraph:   graph.AdjacencyListGraph{},
+		Graph:      graph.NewAdjacencyListGraph(nodeCount),
 		capacities: CapacityStorage{},
 		source:     graph.InvalidNodeID,
 		target:     graph.InvalidNodeID}
-
-	for i := 0; i < nodeCount; i++ {
-		flowGraph.adjGraph = append(flowGraph.adjGraph, []graph.NodeID{})
-	}
 
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanLines)
@@ -65,7 +61,7 @@ func ConstructFlowNetwork(nodeCount, edgeCount int, r io.Reader) (*FlowNetwork, 
 			return nil, fmt.Errorf("invalid edgeCapacity %d", edgeCapacity)
 		}
 
-		flowGraph.adjGraph[fromNode] = append(flowGraph.adjGraph[fromNode], graph.NodeID(toNode))
+		flowGraph.AddEdge(graph.NodeID(fromNode), graph.NodeID(toNode))
 		edge := graph.EdgeID{From: graph.NodeID(fromNode), To: graph.NodeID(toNode)}
 		flowGraph.capacities[edge] = EdgeFlowUnit(edgeCapacity)
 
@@ -90,11 +86,6 @@ func (f *FlowNetwork) Capacity(e graph.EdgeID) EdgeFlowUnit {
 		return 0
 	}
 	return c
-}
-
-// Graph return adjcency graph (list or matrix based)
-func (f *FlowNetwork) Graph() graph.Graph {
-	return f.adjGraph
 }
 
 // Source represent the start point of the maximum flow problem on current flow network
