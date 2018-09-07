@@ -50,6 +50,10 @@ type Graph interface {
 	// make sure both FromNode and ToNode are already inside the graph.
 	AddEdge(NodeID, NodeID) error
 
+	// DeleteEdge delete en edge between FromNode and ToNode from the graph.
+	// make sure both FromNode and ToNode are already inside the graph.
+	DeleteEdge(NodeID, NodeID) error
+
 	// NodeCount return how many nodes in the graph
 	NodeCount() int
 
@@ -104,6 +108,23 @@ func (g AdjacencyListGraph) AddEdge(from, to NodeID) error {
 	}
 
 	g[from] = append(g[from], to)
+
+	return nil
+}
+
+// DeleteEdge delete en edge between FromNode and ToNode from the graph.
+// make sure both FromNode and ToNode are already inside the graph.
+func (g AdjacencyListGraph) DeleteEdge(from, to NodeID) error {
+	if !g.IsNodeValid(from) || !g.IsNodeValid(to) {
+		return fmt.Errorf("From node %v or To node %v invalid", from, to)
+	}
+
+	for i := 0; i < len(g[from]); i++ {
+		if g[from][i] == to {
+			g[from] = append(g[from][0:i], g[from][i+1:]...)
+			break
+		}
+	}
 
 	return nil
 }
@@ -215,6 +236,24 @@ func (g AdjacencyMatrixGraph) AddEdge(from, to NodeID) error {
 	}
 
 	g[from][to] = true
+
+	return nil
+}
+
+// DeleteEdge delete en edge between FromNode and ToNode from the graph.
+// make sure both FromNode and ToNode are already inside the graph.
+func (g AdjacencyMatrixGraph) DeleteEdge(from, to NodeID) error {
+	if !g.IsNodeValid(from) || !g.IsNodeValid(to) {
+		return fmt.Errorf("From node %v or To node %v invalid", from, to)
+	}
+
+	g.ControllableIterateAdjacencyNodes(from, func(v NodeID) IterateControl {
+		if v == to {
+			g[from][to] = false
+			return BreakIterate
+		}
+		return ContinueIterate
+	})
 
 	return nil
 }

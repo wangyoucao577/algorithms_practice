@@ -37,4 +37,9 @@ func TestDrainageDitches(t *testing.T) {
 		t.Errorf("[EdmondsKarp] got maximum flow %v, want %v", edmondsKarpMaxFlow, want)
 	}
 
+	dinicMaxFlow := Dinic(f)
+	if dinicMaxFlow != want {
+		t.Errorf("[Dinic] got maximum flow %v, want %v", dinicMaxFlow, want)
+	}
+
 }

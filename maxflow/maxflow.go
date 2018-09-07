@@ -9,14 +9,51 @@ import (
 	"github.com/wangyoucao577/algorithms_practice/dfs"
 	"github.com/wangyoucao577/algorithms_practice/flownetwork"
 	"github.com/wangyoucao577/algorithms_practice/graph"
+	"github.com/wangyoucao577/algorithms_practice/levelgraph"
 )
 
 type flowStorage map[graph.EdgeID]flownetwork.EdgeFlowUnit
+
+func (flow flowStorage) empty() bool {
+	return len(flow) == 0
+}
 
 // residualNetwork has same structure as flownetwork, but will have reverse edges
 type residualNetwork struct {
 	graph.Graph
 	residualCapacities flownetwork.CapacityStorage
+}
+
+// levelNetwork grouped level graph with capacities
+type levelNetwork struct {
+	levelgraph.LevelGraph
+	residualCapacities flownetwork.CapacityStorage
+}
+
+func newLevelNetwork(lg *levelgraph.LevelGraph, rn *residualNetwork) *levelNetwork {
+	ln := &levelNetwork{*lg, flownetwork.CapacityStorage{}}
+
+	ln.IterateAllNodes(func(u graph.NodeID) {
+		ln.IterateAdjacencyNodes(u, func(v graph.NodeID) {
+			edge := graph.EdgeID{From: u, To: v}
+
+			ln.residualCapacities[edge] = rn.residualCapacities[edge]
+		})
+	})
+
+	return ln
+}
+
+func (ln *levelNetwork) retrieveAndRemoveFlow(path graph.Path) flowStorage {
+
+	flow := newAugmentingFlow(ln.residualCapacities, path)
+
+	for k, v := range flow {
+		ln.DeleteEdge(k.From, k.To)
+		ln.residualCapacities[k] -= v
+	}
+
+	return flow
 }
 
 // calculateResidualNetwork will calculate residual network with current flow based on flow network
@@ -60,7 +97,7 @@ func newFlow(fn *flownetwork.FlowNetwork) flowStorage {
 	return flow
 }
 
-func newAugmentingFlow(rn *residualNetwork, augmentingPath graph.Path) flowStorage {
+func newAugmentingFlow(capacities flownetwork.CapacityStorage, augmentingPath graph.Path) flowStorage {
 
 	// calculate min edge flow
 	var minEdgeFlow flownetwork.EdgeFlowUnit
@@ -68,10 +105,10 @@ func newAugmentingFlow(rn *residualNetwork, augmentingPath graph.Path) flowStora
 		edge := graph.EdgeID{From: augmentingPath[i], To: augmentingPath[i+1]}
 
 		if minEdgeFlow == 0 {
-			minEdgeFlow = rn.residualCapacities[edge]
+			minEdgeFlow = capacities[edge]
 		} else {
-			if minEdgeFlow > rn.residualCapacities[edge] {
-				minEdgeFlow = rn.residualCapacities[edge]
+			if minEdgeFlow > capacities[edge] {
+				minEdgeFlow = capacities[edge]
 			}
 		}
 	}
@@ -105,6 +142,17 @@ func (f flowStorage) minus(augmentingFlow flowStorage) {
 			f[k] += v
 		} else {
 			f[k.Reverse()] -= v
+		}
+	}
+}
+
+func (f flowStorage) plus(augmentingFlow flowStorage) {
+
+	for k, v := range augmentingFlow {
+		if _, ok := f[k]; ok {
+			f[k] += v
+		} else {
+			f[k] = v
 		}
 	}
 }
@@ -155,7 +203,7 @@ func FordFulkerson(f *flownetwork.FlowNetwork, edmondsKarp bool) flownetwork.Edg
 		//fmt.Println(augmentingPath)
 
 		// phase 3, generate augmenting flow from augmenting path
-		augmentingFlow := newAugmentingFlow(rn, augmentingPath)
+		augmentingFlow := newAugmentingFlow(rn.residualCapacities, augmentingPath)
 
 		// phase 4, current flow - augmenting flow
 		currFlow.minus(augmentingFlow)
@@ -163,4 +211,52 @@ func FordFulkerson(f *flownetwork.FlowNetwork, edmondsKarp bool) flownetwork.Edg
 	}
 
 	return currFlow.Value(f.Source())
+}
+
+// Dinic algorithm for maximum flow problem
+func Dinic(f *flownetwork.FlowNetwork) flownetwork.EdgeFlowUnit {
+	fmt.Println("Dinic")
+
+	//initialize flow
+	currFlow := newFlow(f)
+
+	for {
+		//currFlow.print()
+
+		// phase 1, construct residual network based on original flow network and current flow
+		rn := calculateResidualNetwork(f, currFlow)
+
+		// phase 2, construct level graph from residual network
+		lg, err := bfs.NewLevelGraph(rn, f.Source())
+		if err != nil {
+			fmt.Println(err)
+			break // can not construct a new level graph by BFS
+		}
+		ln := newLevelNetwork(lg, rn)
+
+		// phase 3, try to find blocking flow on the level graph
+		//  here we use DFS as typical method
+		blockingFlow := flowStorage{}
+		for {
+			dfs, _ := dfs.NewDfs(lg, f.Source(), dfs.Recurse)
+			path, err := dfs.Query(f.Source(), f.Target())
+			if err != nil {
+				fmt.Println(err)
+				break // no more agumenting path can be found
+			}
+
+			augmentingFlow := ln.retrieveAndRemoveFlow(path)
+			blockingFlow.plus(augmentingFlow)
+		}
+		if blockingFlow.empty() {
+			break // no more blocking flow can be found
+		}
+
+		// phase 4, current flow - augmenting flow (blocking flow)
+		currFlow.minus(blockingFlow)
+
+	}
+
+	return currFlow.Value(f.Source())
+
 }
