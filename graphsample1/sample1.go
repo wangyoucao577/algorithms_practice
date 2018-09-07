@@ -16,6 +16,10 @@ import "github.com/wangyoucao577/algorithms_practice/graph"
 	v(4)   w(5) - x(6) - y(7)
 */
 
+const (
+	nodeCount = 8
+)
+
 type nodeIDNameConverter struct {
 	orderedNodesName []string
 	nodeNameToIDMap  map[string]graph.NodeID
@@ -42,49 +46,47 @@ func NameToID(name string) graph.NodeID {
 	return nodeConverter.nodeNameToIDMap[name]
 }
 
-var adjacencyListGraphSample = graph.AdjacencyListGraph{
-	[]graph.NodeID{1, 4},
-	[]graph.NodeID{0, 5},
-	[]graph.NodeID{3, 5, 6},
-	[]graph.NodeID{2, 7},
-	[]graph.NodeID{0},
-	[]graph.NodeID{1, 2, 6},
-	[]graph.NodeID{2, 5, 7},
-	[]graph.NodeID{3, 6},
-}
-
-// AdjacencyMatrixGraphSample1 adjacency Matrix based graph sample 1
-/*
-  For this undirected graph, we can only store half of the matrix to save storage if needed
-
-	  r s t u v w x y
-
-  r   0 1 0 0 1 0 0 0
-  s   1 0 0 0 0 1 0 0
-  t   0 0 0 1 0 1 1 0
-  u   0 0 1 0 0 0 0 1
-  v   1 0 0 0 0 0 0 0
-  w   0 1 1 0 0 0 1 0
-  x   0 0 1 0 0 1 0 1
-  y   0 0 0 1 0 0 1 0
-*/
-var adjacencyMatrixGraphSample = graph.AdjacencyMatrixGraph{
-	{false, true, false, false, true, false, false, false},
-	{true, false, false, false, false, true, false, false},
-	{false, false, false, true, false, true, true, false},
-	{false, false, true, false, false, false, false, true},
-	{true, false, false, false, false, false, false, false},
-	{false, true, true, false, false, false, true, false},
-	{false, false, true, false, false, true, false, true},
-	{false, false, false, true, false, false, true, false},
-}
-
 // AdjacencyListGraphSample return the adjacency list based graph sample instance
 func AdjacencyListGraphSample() graph.Graph {
-	return adjacencyListGraphSample
+	sample := graph.NewAdjacencyListGraph(nodeCount)
+
+	return initializeGraphEdges(sample)
 }
 
 // AdjacencyMatrixGraphSample return the adjacency matrix based graph sample instance
 func AdjacencyMatrixGraphSample() graph.Graph {
-	return adjacencyMatrixGraphSample
+	sample := graph.NewAdjacencyMatrixGraph(nodeCount)
+
+	return initializeGraphEdges(sample)
+}
+
+func initializeGraphEdges(g graph.Graph) graph.Graph {
+
+	g.AddEdge(0, 1)
+	g.AddEdge(0, 4)
+
+	g.AddEdge(1, 0)
+	g.AddEdge(1, 5)
+
+	g.AddEdge(2, 3)
+	g.AddEdge(2, 5)
+	g.AddEdge(2, 6)
+
+	g.AddEdge(3, 2)
+	g.AddEdge(3, 7)
+
+	g.AddEdge(4, 0)
+
+	g.AddEdge(5, 1)
+	g.AddEdge(5, 2)
+	g.AddEdge(5, 6)
+
+	g.AddEdge(6, 2)
+	g.AddEdge(6, 5)
+	g.AddEdge(6, 7)
+
+	g.AddEdge(7, 3)
+	g.AddEdge(7, 6)
+
+	return g
 }
