@@ -4,12 +4,12 @@ import "fmt"
 
 /************************* Adjacency  List  Based Graph Representation *****************************/
 
-// AdjacencyListGraph represent a graph by Adjacency List
-type AdjacencyListGraph [][]NodeID
+// adjacencyListGraph represent a graph by Adjacency List
+type adjacencyListGraph [][]NodeID
 
 // NewAdjacencyListGraph create a adjacency list based graph with nodes
 func NewAdjacencyListGraph(nodeCount int) Graph {
-	g := AdjacencyListGraph{}
+	g := adjacencyListGraph{}
 	for i := 0; i < nodeCount; i++ {
 		g = append(g, []NodeID{})
 	}
@@ -18,7 +18,7 @@ func NewAdjacencyListGraph(nodeCount int) Graph {
 
 // AddEdge add en edge between FromNode and ToNode.
 // make sure both FromNode and ToNode are already inside the graph.
-func (g AdjacencyListGraph) AddEdge(from, to NodeID) error {
+func (g adjacencyListGraph) AddEdge(from, to NodeID) error {
 	if !g.IsNodeValid(from) || !g.IsNodeValid(to) {
 		return fmt.Errorf("From node %v or To node %v invalid", from, to)
 	}
@@ -30,7 +30,7 @@ func (g AdjacencyListGraph) AddEdge(from, to NodeID) error {
 
 // DeleteEdge delete en edge between FromNode and ToNode from the graph.
 // make sure both FromNode and ToNode are already inside the graph.
-func (g AdjacencyListGraph) DeleteEdge(from, to NodeID) error {
+func (g adjacencyListGraph) DeleteEdge(from, to NodeID) error {
 	if !g.IsNodeValid(from) || !g.IsNodeValid(to) {
 		return fmt.Errorf("From node %v or To node %v invalid", from, to)
 	}
@@ -46,12 +46,12 @@ func (g AdjacencyListGraph) DeleteEdge(from, to NodeID) error {
 }
 
 // NodeCount return how many nodes in the graph
-func (g AdjacencyListGraph) NodeCount() int {
+func (g adjacencyListGraph) NodeCount() int {
 	return len(g)
 }
 
 // EdgeCount return how many edges in the graph
-func (g AdjacencyListGraph) EdgeCount() int {
+func (g adjacencyListGraph) EdgeCount() int {
 	var count int
 	g.IterateAllNodes(func(u NodeID) {
 		count += len(g[u])
@@ -60,7 +60,7 @@ func (g AdjacencyListGraph) EdgeCount() int {
 }
 
 // IsNodeValid check whether a node in or not in the graph
-func (g AdjacencyListGraph) IsNodeValid(currNode NodeID) bool {
+func (g adjacencyListGraph) IsNodeValid(currNode NodeID) bool {
 	if int(currNode) >= len(g) {
 		return false
 	}
@@ -69,7 +69,7 @@ func (g AdjacencyListGraph) IsNodeValid(currNode NodeID) bool {
 
 // IterateAllNodes for/range on all nodes of the graph,
 // call IterateAction for each iterated node
-func (g AdjacencyListGraph) IterateAllNodes(action IterateAction) {
+func (g adjacencyListGraph) IterateAllNodes(action IterateAction) {
 	for i := range g {
 		action(NodeID(i))
 	}
@@ -78,7 +78,7 @@ func (g AdjacencyListGraph) IterateAllNodes(action IterateAction) {
 // ControllableIterateAllNodes for/range on all nodes of the graph,
 // call IterateAction for each iterated node.
 // break the loop immdiately if action return `BreakIterate`
-func (g AdjacencyListGraph) ControllableIterateAllNodes(action IterateActionWithControl) {
+func (g adjacencyListGraph) ControllableIterateAllNodes(action IterateActionWithControl) {
 	for i := range g {
 		condition := action(NodeID(i))
 		if condition == BreakIterate {
@@ -89,7 +89,7 @@ func (g AdjacencyListGraph) ControllableIterateAllNodes(action IterateActionWith
 
 // IterateAdjacencyNodes for/range on all adjacency nodes of current node,
 // call IterateAction for each iterated node
-func (g AdjacencyListGraph) IterateAdjacencyNodes(currNode NodeID, action IterateAction) {
+func (g adjacencyListGraph) IterateAdjacencyNodes(currNode NodeID, action IterateAction) {
 	if !g.IsNodeValid(currNode) {
 		return
 	}
@@ -101,7 +101,7 @@ func (g AdjacencyListGraph) IterateAdjacencyNodes(currNode NodeID, action Iterat
 
 // ReverseIterateAdjacencyNodes reverse for/range on all adjacency nodes of current node,
 // call IterateAction for each iterated node
-func (g AdjacencyListGraph) ReverseIterateAdjacencyNodes(currNode NodeID, action IterateAction) {
+func (g adjacencyListGraph) ReverseIterateAdjacencyNodes(currNode NodeID, action IterateAction) {
 	if !g.IsNodeValid(currNode) {
 		return
 	}
@@ -115,7 +115,7 @@ func (g AdjacencyListGraph) ReverseIterateAdjacencyNodes(currNode NodeID, action
 // ControllableIterateAdjacencyNodes for/range on all adjacency nodes of current node,
 // call IterateAction for each iterated node.
 // break the loop immdiately if action return `BreakIterate`
-func (g AdjacencyListGraph) ControllableIterateAdjacencyNodes(currNode NodeID, action IterateActionWithControl) {
+func (g adjacencyListGraph) ControllableIterateAdjacencyNodes(currNode NodeID, action IterateActionWithControl) {
 	if !g.IsNodeValid(currNode) {
 		return
 	}
