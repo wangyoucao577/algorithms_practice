@@ -12,10 +12,13 @@ style Title fill:#FFF,stroke:#FFF
 linkStyle 0 stroke:#FFF,stroke-width:0;
 
 pkggraphsample1["(pkg)graphsample1"] --> pkggraph["(pkg)graph"]
-pkggraphsample2["(pkg)graphsample2"] --> pkggraph["(pkg)graph"]
+pkggraphsample2["(pkg)graphsample2"] --> pkggraph
+
+pkglevelgraph["(pkg)levelgraph"] --> pkggraph
 
 pkgbfs["(pkg)bfs"] --> pkggraph
 pkgbfs --> pkggraphsample1
+pkgbfs --> pkglevelgraph
 
 bfs_main("(bin)bfs_main") --> pkgbfs
 bfs_main --> pkggraphsample1
@@ -30,6 +33,7 @@ pkgmaxflow["(pkg)maxflow"] --> pkgflownetwork
 pkgmaxflow --> pkgdfs
 pkgmaxflow --> pkgbfs
 pkgmaxflow --> pkggraph
+pkgmaxflow --> pkglevelgraph
 
 
 maxflow_main("(bin)maxflow_main") --> pkgflownetwork
