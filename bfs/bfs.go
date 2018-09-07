@@ -28,12 +28,22 @@ type Bfs struct {
 	nodesAttr nodeAttrArray // store depth/parent/viewed during BFS
 }
 
-// SearchMonitor defined a func to monitor the BFS process
-// it will be called if one of the two paramenters changed
-type SearchMonitor func(queue []graph.NodeID, currNode graph.NodeID)
+// SearchControlCondition will control all search functions' behavior, continue or break
+type SearchControlCondition int
+
+const (
+	// Break will let the search func break immdiately
+	Break SearchControlCondition = iota
+
+	// Continue will let the search func go on
+	Continue
+)
+
+// SearchControl will control all search functions' behavior, continue or break
+type SearchControl func(graph.NodeID) SearchControlCondition
 
 // NewBfs execute the BFS search for a specified source on a graph
-func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, error) {
+func NewBfs(g graph.Graph, source graph.NodeID, control SearchControl) (*Bfs, error) {
 	if g.NodeCount() < 2 {
 		return nil, fmt.Errorf("Invalid Graph len %d, at least 2 nodes should in the graph", g.NodeCount())
 	}
@@ -52,16 +62,16 @@ func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, er
 
 	var queue []graph.NodeID // next search queue
 	queue = append(queue, source)
-	if monitor != nil {
-		monitor(queue, graph.InvalidNodeID)
-	}
 
 	for len(queue) > 0 {
 		// pop the first element
 		u := queue[0]
 		queue = queue[1:]
-		if monitor != nil {
-			monitor(queue, u)
+		if control != nil {
+			if control(u) == Break {
+				//fmt.Printf("break at node %v\n", u)
+				break // break the search in advance by the process control
+			}
 		}
 
 		currDepth := bfsContext.nodesAttr[u].depth
@@ -71,9 +81,6 @@ func NewBfs(g graph.Graph, source graph.NodeID, monitor SearchMonitor) (*Bfs, er
 				bfsContext.nodesAttr[v].parent = u
 				bfsContext.nodesAttr[v].nodeColor = gray
 				queue = append(queue, v)
-				if monitor != nil {
-					monitor(queue, u)
-				}
 			}
 		})
 

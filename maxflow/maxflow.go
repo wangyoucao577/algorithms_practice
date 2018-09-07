@@ -61,7 +61,12 @@ func FordFulkerson(f *flownetwork.FlowNetwork, edmondsKarp bool) flownetwork.Edg
 		// pahse 2, try to find augmenting path in the residual network graph
 		var augmentingPath graph.Path
 		if edmondsKarp { //EdmondsKarp use BFS to find a path, better effectiveness
-			bfs, err := bfs.NewBfs(rn.Graph, f.Source(), nil)
+			bfs, err := bfs.NewBfs(rn.Graph, f.Source(), func(u graph.NodeID) bfs.SearchControlCondition {
+				if u == f.Target() {
+					return bfs.Break
+				}
+				return bfs.Continue
+			})
 			if err != nil {
 				//fmt.Println(err)
 				break // bfs failed
@@ -108,7 +113,12 @@ func Dinic(f *flownetwork.FlowNetwork) flownetwork.EdgeFlowUnit {
 		rn := calculateResidualNetwork(f, currFlow)
 
 		// phase 2, construct level graph from residual network
-		lg, err := bfs.NewLevelGraph(rn, f.Source())
+		lg, err := bfs.NewLevelGraph(rn, f.Source(), func(u graph.NodeID) bfs.SearchControlCondition {
+			if u == f.Target() {
+				return bfs.Break
+			}
+			return bfs.Continue
+		})
 		if err != nil {
 			fmt.Println(err)
 			break // can not construct a new level graph by BFS
@@ -122,7 +132,7 @@ func Dinic(f *flownetwork.FlowNetwork) flownetwork.EdgeFlowUnit {
 			dfs, _ := dfs.NewDfs(lg, f.Source(), dfs.Recurse)
 			path, err := dfs.Query(f.Source(), f.Target())
 			if err != nil {
-				fmt.Println(err)
+				//fmt.Println(err)
 				break // no more agumenting path can be found
 			}
 

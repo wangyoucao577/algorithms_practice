@@ -23,14 +23,6 @@ func printPath(w io.Writer, s graph.NodeID, t graph.NodeID, depth int, path grap
 
 func main() {
 
-	var bfsMonitor = func(queue []graph.NodeID, currNode graph.NodeID) {
-		fmt.Printf("currNode %v, queue(%d): ", graphsample1.IDToName(currNode), len(queue))
-		for _, v := range queue {
-			fmt.Printf("%v ", graphsample1.IDToName(v))
-		}
-		fmt.Println()
-	}
-
 	source := graphsample1.NameToID("s")
 	var target graph.NodeID
 	var depth int
@@ -38,7 +30,7 @@ func main() {
 
 	fmt.Println()
 	fmt.Printf("Run BFS on Adjacency List Based Graph, source %v\n", graphsample1.IDToName(source))
-	b1, err := bfs.NewBfs(graphsample1.AdjacencyListGraphSample(), source, bfsMonitor)
+	b1, err := bfs.NewBfs(graphsample1.AdjacencyListGraphSample(), source, nil)
 	if err != nil {
 		return
 	}
@@ -62,7 +54,7 @@ func main() {
 
 	fmt.Println()
 	fmt.Printf("Run BFS on Adjacency Matrix Based Graph, source %v\n", graphsample1.IDToName(source))
-	b2, err := bfs.NewBfs(graphsample1.AdjacencyMatrixGraphSample(), source, bfsMonitor)
+	b2, err := bfs.NewBfs(graphsample1.AdjacencyMatrixGraphSample(), source, nil)
 	if err != nil {
 		return
 	}
