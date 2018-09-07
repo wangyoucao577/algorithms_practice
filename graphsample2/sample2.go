@@ -20,6 +20,10 @@ import "github.com/wangyoucao577/algorithms_practice/graph"
     NOTE: node `z` has a spin edge pointer to itself.
 */
 
+const (
+	nodeCount = 6
+)
+
 type nodeIDNameConverter struct {
 	orderedNodesName []string
 	nodeNameToIDMap  map[string]graph.NodeID
@@ -46,44 +50,35 @@ func NameToID(name string) graph.NodeID {
 	return nodeConverter.nodeNameToIDMap[name]
 }
 
-// AdjacencyListGraphSample adjacency list based graph sample 2
-var adjacencyListGraphSample = graph.AdjacencyListGraph{
-	[]graph.NodeID{1, 3},
-	[]graph.NodeID{4},
-	[]graph.NodeID{4, 5},
-	[]graph.NodeID{1},
-	[]graph.NodeID{3},
-	[]graph.NodeID{5},
-}
-
-// AdjacencyMatrixGraphSample adjacency Matrix based graph sample 2
-/*
-    For directed graph, the matrix will be asymmetric.
-
-	  u v w x y z
-
-  u   0 1 0 1 0 0
-  v   0 0 0 0 1 0
-  w   0 0 0 0 1 1
-  x   0 1 0 0 0 0
-  y   0 0 0 1 0 0
-  z   0 0 0 0 0 1
-*/
-var adjacencyMatrixGraphSample = graph.AdjacencyMatrixGraph{
-	{false, true, false, true, false, false},
-	{false, false, false, false, true, false},
-	{false, false, false, false, true, true},
-	{false, true, false, false, false, false},
-	{false, false, false, true, false, false},
-	{false, false, false, false, false, true},
-}
-
 // AdjacencyListGraphSample return the adjacency list based graph sample instance
 func AdjacencyListGraphSample() graph.Graph {
-	return adjacencyListGraphSample
+	sample := graph.NewAdjacencyListGraph(nodeCount)
+
+	return initializeGraphEdges(sample)
 }
 
 // AdjacencyMatrixGraphSample return the adjacency matrix based graph sample instance
 func AdjacencyMatrixGraphSample() graph.Graph {
-	return adjacencyMatrixGraphSample
+	sample := graph.NewAdjacencyMatrixGraph(nodeCount)
+
+	return initializeGraphEdges(sample)
+}
+
+func initializeGraphEdges(g graph.Graph) graph.Graph {
+
+	g.AddEdge(0, 1)
+	g.AddEdge(0, 3)
+
+	g.AddEdge(1, 4)
+
+	g.AddEdge(2, 4)
+	g.AddEdge(2, 5)
+
+	g.AddEdge(3, 1)
+
+	g.AddEdge(4, 3)
+
+	g.AddEdge(5, 5)
+
+	return g
 }
