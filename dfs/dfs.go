@@ -77,6 +77,20 @@ type Dfs struct {
 	edgesAttr edgeAttrArray // store edges' attr during DFS
 }
 
+// SearchControlCondition will control all search functions' behavior, continue or break
+type SearchControlCondition int
+
+const (
+	// Break will let the search func break immdiately
+	Break SearchControlCondition = iota
+
+	// Continue will let the search func go on
+	Continue
+)
+
+// SearchControl will control all search functions' behavior, continue or break
+type SearchControl func(graph.NodeID) SearchControlCondition
+
 // NewDfs execute the DFS search on a graph, start from the root node
 func NewDfs(g graph.Graph, root graph.NodeID, m implementMethod) (*Dfs, error) {
 	// Initialize
@@ -97,8 +111,31 @@ func NewDfs(g graph.Graph, root graph.NodeID, m implementMethod) (*Dfs, error) {
 	case Recurse:
 		dfsContext.dfsRecurseVisit(g, root)
 	case StackBased:
-		dfsContext.dfsStackBasedVisit(g, root)
+		dfsContext.dfsStackBasedVisit(g, root, nil)
 	}
+
+	return dfsContext, nil
+}
+
+// NewControllableDfs execute the DFS search on a graph, start from the root node
+// can be exit by control condition
+// only stack based implemetation
+func NewControllableDfs(g graph.Graph, root graph.NodeID, control SearchControl) (*Dfs, error) {
+	// Initialize
+	dfsContext := &Dfs{0, []dfsTree{}, nodeAttrArray{}, edgeAttrArray{}}
+	g.IterateAllNodes(func(k graph.NodeID) {
+		dfsContext.nodesAttr[k] = &nodeAttr{0, 0, white, graph.InvalidNodeID} // create node attr for each node
+
+		g.IterateAdjacencyNodes(k, func(v graph.NodeID) {
+			edge := graph.EdgeID{From: k, To: v}
+			dfsContext.edgesAttr[edge] = &edgeAttr{unknown}
+		})
+	})
+
+	dfsContext.forest = append(dfsContext.forest, dfsTree{root}) //record a tree's root
+
+	// execute one tree search
+	dfsContext.dfsStackBasedVisit(g, root, control)
 
 	return dfsContext, nil
 }
@@ -127,14 +164,14 @@ func NewDfsForest(g graph.Graph, m implementMethod) (*Dfs, error) {
 			case Recurse:
 				dfsContext.dfsRecurseVisit(g, k)
 			case StackBased:
-				dfsContext.dfsStackBasedVisit(g, k)
+				dfsContext.dfsStackBasedVisit(g, k, nil)
 			}
 		}
 	})
 	return dfsContext, nil
 }
 
-func (d *Dfs) dfsStackBasedVisit(g graph.Graph, root graph.NodeID) {
+func (d *Dfs) dfsStackBasedVisit(g graph.Graph, root graph.NodeID, control SearchControl) {
 	d.time++
 	d.nodesAttr[root].nodeColor = gray
 	d.nodesAttr[root].timestampD = d.time
@@ -142,43 +179,56 @@ func (d *Dfs) dfsStackBasedVisit(g graph.Graph, root graph.NodeID) {
 	var stack = []graph.NodeID{}
 	stack = append(stack, root)
 
+	exitNow := false // whether exit now or go on traversing
+
 	for len(stack) > 0 {
 
 		currNode := stack[len(stack)-1]
+		if control != nil {
+			if control(currNode) == Break {
+				//fmt.Printf("break at node %v\n", u)
+				exitNow = true
+			}
+		}
 
 		newWhiteNodeFound := false
-		g.ControllableIterateAdjacencyNodes(currNode, func(v graph.NodeID) graph.IterateControl {
-			edge := graph.EdgeID{From: currNode, To: v}
-			if d.nodesAttr[v].nodeColor == white {
-				newWhiteNodeFound = true
 
-				d.nodesAttr[v].parent = currNode
+		// if match exit condition, will not try new nodes
+		// but we still hope to finish nodes which have already been viewed
+		if !exitNow {
+			g.ControllableIterateAdjacencyNodes(currNode, func(v graph.NodeID) graph.IterateControl {
+				edge := graph.EdgeID{From: currNode, To: v}
+				if d.nodesAttr[v].nodeColor == white {
+					newWhiteNodeFound = true
 
-				d.time++
-				d.nodesAttr[v].nodeColor = gray
-				d.nodesAttr[v].timestampD = d.time
+					d.nodesAttr[v].parent = currNode
 
-				stack = append(stack, v) // push stack: push to the end
+					d.time++
+					d.nodesAttr[v].nodeColor = gray
+					d.nodesAttr[v].timestampD = d.time
 
-				// set attr for edge
-				d.edgesAttr[edge].t = branch
-				return graph.BreakIterate
-			} else if d.nodesAttr[v].nodeColor == black {
-				// stack based implementation will see same edge more than 1 time,
-				// let's igore not-first see
-				if d.edgesAttr[edge].t == unknown {
-					if d.nodesAttr[currNode].timestampD < d.nodesAttr[v].timestampD {
-						d.edgesAttr[edge].t = forward
-					} else {
-						d.edgesAttr[edge].t = cross
+					stack = append(stack, v) // push stack: push to the end
+
+					// set attr for edge
+					d.edgesAttr[edge].t = branch
+					return graph.BreakIterate
+				} else if d.nodesAttr[v].nodeColor == black {
+					// stack based implementation will see same edge more than 1 time,
+					// let's igore not-first see
+					if d.edgesAttr[edge].t == unknown {
+						if d.nodesAttr[currNode].timestampD < d.nodesAttr[v].timestampD {
+							d.edgesAttr[edge].t = forward
+						} else {
+							d.edgesAttr[edge].t = cross
+						}
 					}
+				} else if d.nodesAttr[v].nodeColor == gray {
+					d.edgesAttr[edge].t = backward
 				}
-			} else if d.nodesAttr[v].nodeColor == gray {
-				d.edgesAttr[edge].t = backward
-			}
 
-			return graph.ContinueIterate
-		})
+				return graph.ContinueIterate
+			})
+		}
 
 		if !newWhiteNodeFound {
 			d.time++

@@ -78,7 +78,12 @@ func FordFulkerson(f *flownetwork.FlowNetwork, edmondsKarp bool) flownetwork.Edg
 			}
 			augmentingPath = path
 		} else {
-			dfs, _ := dfs.NewDfs(rn.Graph, f.Source(), dfs.Recurse)
+			dfs, _ := dfs.NewControllableDfs(rn.Graph, f.Source(), func(u graph.NodeID) dfs.SearchControlCondition {
+				if u == f.Target() {
+					return dfs.Break
+				}
+				return dfs.Continue
+			})
 			path, err := dfs.Query(f.Source(), f.Target())
 			if err != nil {
 				//fmt.Println(err)
@@ -129,7 +134,12 @@ func Dinic(f *flownetwork.FlowNetwork) flownetwork.EdgeFlowUnit {
 		//  here we use DFS as typical method
 		blockingFlow := flowStorage{}
 		for {
-			dfs, _ := dfs.NewDfs(lg, f.Source(), dfs.Recurse)
+			dfs, _ := dfs.NewControllableDfs(lg, f.Source(), func(u graph.NodeID) dfs.SearchControlCondition {
+				if u == f.Target() {
+					return dfs.Break
+				}
+				return dfs.Continue
+			})
 			path, err := dfs.Query(f.Source(), f.Target())
 			if err != nil {
 				//fmt.Println(err)
