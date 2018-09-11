@@ -30,7 +30,14 @@ type nodeIDNameConverter struct {
 // node name only for print.
 var nodeConverter = nodeIDNameConverter{
 	[]string{"r", "s", "t", "u", "v", "w", "x", "y"},
-	map[string]graph.NodeID{"r": 0, "s": 1, "t": 2, "u": 3, "v": 4, "w": 5, "x": 6, "y": 7},
+	map[string]graph.NodeID{}, // will be inited during import
+}
+
+// initialization during package import
+func init() {
+	for i, v := range nodeConverter.orderedNodesName {
+		nodeConverter.nodeNameToIDMap[v] = graph.NodeID(i)
+	}
 }
 
 // IDToName convert NodeID to human readable name

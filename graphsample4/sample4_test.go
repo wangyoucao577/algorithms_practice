@@ -50,6 +50,10 @@ func TestAdjacencyListGraphSample(t *testing.T) {
 		t.Errorf("new adjacency list graph sample, got edge count %d, want %d", g.EdgeCount(), wantEdgeCount)
 	}
 
+}
+
+func TestIDNameMap(t *testing.T) {
+
 	//id <-> name map verify
 	for i, v := range nodeConverter.orderedNodesName {
 		gotNodeID, ok := nodeConverter.nodeNameToIDMap[v]

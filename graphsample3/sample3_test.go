@@ -50,4 +50,17 @@ func TestAdjacencyListGraphSample(t *testing.T) {
 	if g.EdgeCount() != wantEdgeCount {
 		t.Errorf("new adjacency list graph sample, got edge count %d, want %d", g.EdgeCount(), wantEdgeCount)
 	}
+
+}
+
+func TestIDNameMap(t *testing.T) {
+
+	//id <-> name map verify
+	for i, v := range nodeConverter.orderedNodesName {
+		gotNodeID, ok := nodeConverter.nodeNameToIDMap[v]
+		if !ok || graph.NodeID(i) != gotNodeID {
+			t.Errorf("NodeID of name %v not match, expect NodeID %v but got %v (exist in map %v)",
+				v, graph.NodeID(i), gotNodeID, ok)
+		}
+	}
 }

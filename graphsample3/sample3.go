@@ -47,7 +47,14 @@ type nodeIDNameConverter struct {
 // node name only for print.
 var nodeConverter = nodeIDNameConverter{
 	[]string{"内裤", "袜子", "裤子", "鞋", "衬衣", "腰带", "领带", "夹克", "手表"},
-	map[string]graph.NodeID{"内裤": 0, "袜子": 1, "裤子": 2, "鞋": 3, "衬衣": 4, "腰带": 5, "领带": 6, "夹克": 7, "手表": 8},
+	map[string]graph.NodeID{}, // will be inited during import
+}
+
+// initialization during package import
+func init() {
+	for i, v := range nodeConverter.orderedNodesName {
+		nodeConverter.nodeNameToIDMap[v] = graph.NodeID(i)
+	}
 }
 
 // IDToName convert NodeID to human readable name
