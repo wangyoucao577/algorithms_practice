@@ -30,6 +30,10 @@ func TestDrainageDitches(t *testing.T) {
 		t.Error(err)
 	}
 
+	if f.Directed() != true {
+		t.Errorf("expect directed graph, but got not")
+	}
+
 	maxFlow := FordFulkerson(f, false)
 	if maxFlow != want {
 		t.Errorf("[FordFulkerson] got maximum flow %v, want %v", maxFlow, want)
@@ -77,6 +81,10 @@ func TestFlowProblem(t *testing.T) {
 			strings.NewReader(v.capacityContents))
 		if err != nil {
 			t.Error(err)
+		}
+
+		if f.Directed() != true {
+			t.Errorf("expect directed graph, but got not")
 		}
 
 		maxFlow := FordFulkerson(f, false)

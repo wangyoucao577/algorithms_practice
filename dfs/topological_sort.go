@@ -16,6 +16,10 @@ type dfsTopologicalSort struct {
 // traversing all nodes to get topological sort
 func NewTopologicalSort(g graph.Graph) ([]graph.NodeID, error) {
 
+	if !g.Directed() {
+		return nil, fmt.Errorf("It's not a Directed Graph")
+	}
+
 	// Initialize
 	dfsContext := dfsTopologicalSort{
 		Dfs{0, []dfsTree{}, nodeAttrArray{}, edgeAttrArray{}},

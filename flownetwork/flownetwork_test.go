@@ -26,6 +26,11 @@ func TestConstructDrainageDitchesSampleGraph(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
+	if f.Directed() != true {
+		t.Errorf("expect directed graph, but got not")
+	}
+
 	//fmt.Println(g)
 	if f.NodeCount() != nodeCount {
 		t.Errorf("node count got %d, want %d", f.NodeCount(), nodeCount)

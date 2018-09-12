@@ -20,20 +20,22 @@ func (s StronglyConnectedComponent) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
-// SplitToStronglyConnectedComponents to split the input graph
+// SplitToStronglyConnectedComponents to split the input directed graph
 // to several strongly connected components
 func SplitToStronglyConnectedComponents(g graph.Graph) ([]StronglyConnectedComponent, error) {
-	components := []StronglyConnectedComponent{}
+	if !g.Directed() {
+		return nil, fmt.Errorf("It's not a directed graph")
+	}
 
 	firstDfs, err := NewDfsForest(g, StackBased)
 	if err != nil {
-		return components, err
+		return nil, err
 	}
 
 	// sort nodes by increasing timestampF
 	sortedNodes, err := sortNodesByTimestampF(firstDfs.nodesAttr)
 	if err != nil {
-		return components, err
+		return nil, err
 	}
 
 	transposedG := transposeGraph(g) // calculate transposed graph of original graph
@@ -56,8 +58,10 @@ func SplitToStronglyConnectedComponents(g graph.Graph) ([]StronglyConnectedCompo
 	// retrieve components split by root of forest
 	secondSortedNodes, err := sortNodesByTimestampF(secondDfs.nodesAttr)
 	if err != nil {
-		return components, err
+		return nil, err
 	}
+
+	components := []StronglyConnectedComponent{}
 
 	scc := StronglyConnectedComponent{}
 	for _, v := range secondSortedNodes {
