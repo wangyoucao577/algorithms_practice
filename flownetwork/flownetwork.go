@@ -32,7 +32,7 @@ type FlowNetwork struct {
 // then from r to read contents for adjacency list relationship and edge attr
 func ConstructFlowNetwork(nodeCount, edgeCount int, r io.Reader) (*FlowNetwork, error) {
 	flowGraph := &FlowNetwork{
-		Graph:      graph.NewAdjacencyListGraph(nodeCount),
+		Graph:      graph.NewAdjacencyListGraph(nodeCount, true),
 		capacities: CapacityStorage{},
 		source:     graph.InvalidNodeID,
 		target:     graph.InvalidNodeID}

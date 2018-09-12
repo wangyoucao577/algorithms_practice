@@ -21,7 +21,8 @@ import "github.com/wangyoucao577/algorithms_practice/graph"
 */
 
 const (
-	nodeCount = 6
+	nodeCount     = 6
+	directedGraph = true
 )
 
 type nodeIDNameConverter struct {
@@ -59,14 +60,14 @@ func NameToID(name string) graph.NodeID {
 
 // AdjacencyListGraphSample return the adjacency list based graph sample instance
 func AdjacencyListGraphSample() graph.Graph {
-	sample := graph.NewAdjacencyListGraph(nodeCount)
+	sample := graph.NewAdjacencyListGraph(nodeCount, directedGraph)
 
 	return initializeGraphEdges(sample)
 }
 
 // AdjacencyMatrixGraphSample return the adjacency matrix based graph sample instance
 func AdjacencyMatrixGraphSample() graph.Graph {
-	sample := graph.NewAdjacencyMatrixGraph(nodeCount)
+	sample := graph.NewAdjacencyMatrixGraph(nodeCount, directedGraph)
 
 	return initializeGraphEdges(sample)
 }

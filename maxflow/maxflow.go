@@ -19,7 +19,7 @@ type residualNetwork struct {
 
 // calculateResidualNetwork will calculate residual network with current flow based on flow network
 func calculateResidualNetwork(fn *flownetwork.FlowNetwork, flow flowStorage) *residualNetwork {
-	rn := &residualNetwork{graph.NewAdjacencyListGraph(fn.NodeCount()), flownetwork.CapacityStorage{}}
+	rn := &residualNetwork{graph.NewAdjacencyListGraph(fn.NodeCount(), fn.Directed()), flownetwork.CapacityStorage{}}
 
 	fn.IterateAllNodes(func(u graph.NodeID) {
 		fn.IterateAdjacencyNodes(u, func(v graph.NodeID) {

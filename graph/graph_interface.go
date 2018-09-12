@@ -24,18 +24,29 @@ type IterateActionWithControl func(NodeID) IterateControl
 // whatever Adjacency List or Adjacency Matrix based graph
 type Graph interface {
 
+	// Directed return true if it's a directed graph, otherwise it's a undirected graph.
+	Directed() bool
+
 	// AddEdge add en edge between FromNode and ToNode.
 	// make sure both FromNode and ToNode are already inside the graph.
+	// NOTE: for a undirected graph, this func will add both from-to and to-from into the graph.
+	// Invoker should make sure the edge is not in the graph before call this func.
 	AddEdge(NodeID, NodeID) error
 
 	// DeleteEdge delete en edge between FromNode and ToNode from the graph.
 	// make sure both FromNode and ToNode are already inside the graph.
+	// NOTE: for a undirected graph, this func will delete both from-to and to-from from the graph.
 	DeleteEdge(NodeID, NodeID) error
+
+	// IsEdgeValid check whether a edge in or not in the graph
+	// NOTE: for a undirected graph, it will check both from-to and to-from.
+	IsEdgeValid(NodeID, NodeID) bool
 
 	// NodeCount return how many nodes in the graph
 	NodeCount() int
 
 	// EdgeCount return how many edges in the graph
+	// NOTE: for a undirected graph, from-to and to-from count as same edge.
 	EdgeCount() int
 
 	// IsNodeValid check whether a node in or not in the graph

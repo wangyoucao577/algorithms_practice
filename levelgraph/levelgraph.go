@@ -35,7 +35,7 @@ func (lg LevelGraph) SetNodeLevel(node graph.NodeID, level Level) error {
 func NewLevelGraph(g graph.Graph) *LevelGraph {
 
 	return &LevelGraph{
-		graph.NewAdjacencyListGraph(g.NodeCount()),
+		graph.NewAdjacencyListGraph(g.NodeCount(), g.Directed()),
 		make([]Level, g.NodeCount(), g.NodeCount()),
 	}
 }

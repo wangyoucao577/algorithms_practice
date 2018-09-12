@@ -17,7 +17,8 @@ import "github.com/wangyoucao577/algorithms_practice/graph"
 */
 
 const (
-	nodeCount = 8
+	nodeCount     = 8
+	directedGraph = false
 )
 
 type nodeIDNameConverter struct {
@@ -55,14 +56,14 @@ func NameToID(name string) graph.NodeID {
 
 // AdjacencyListGraphSample return the adjacency list based graph sample instance
 func AdjacencyListGraphSample() graph.Graph {
-	sample := graph.NewAdjacencyListGraph(nodeCount)
+	sample := graph.NewAdjacencyListGraph(nodeCount, directedGraph)
 
 	return initializeGraphEdges(sample)
 }
 
 // AdjacencyMatrixGraphSample return the adjacency matrix based graph sample instance
 func AdjacencyMatrixGraphSample() graph.Graph {
-	sample := graph.NewAdjacencyMatrixGraph(nodeCount)
+	sample := graph.NewAdjacencyMatrixGraph(nodeCount, directedGraph)
 
 	return initializeGraphEdges(sample)
 }
@@ -72,28 +73,28 @@ func initializeGraphEdges(g graph.Graph) graph.Graph {
 	g.AddEdge(0, 1)
 	g.AddEdge(0, 4)
 
-	g.AddEdge(1, 0)
+	//g.AddEdge(1, 0)
 	g.AddEdge(1, 5)
 
 	g.AddEdge(2, 3)
 	g.AddEdge(2, 5)
 	g.AddEdge(2, 6)
 
-	g.AddEdge(3, 2)
+	//g.AddEdge(3, 2)
 	g.AddEdge(3, 7)
 
-	g.AddEdge(4, 0)
+	//g.AddEdge(4, 0)
 
-	g.AddEdge(5, 1)
-	g.AddEdge(5, 2)
+	//g.AddEdge(5, 1)
+	//g.AddEdge(5, 2)
 	g.AddEdge(5, 6)
 
-	g.AddEdge(6, 2)
-	g.AddEdge(6, 5)
+	//g.AddEdge(6, 2)
+	//g.AddEdge(6, 5)
 	g.AddEdge(6, 7)
 
-	g.AddEdge(7, 3)
-	g.AddEdge(7, 6)
+	//g.AddEdge(7, 3)
+	//g.AddEdge(7, 6)
 
 	return g
 }

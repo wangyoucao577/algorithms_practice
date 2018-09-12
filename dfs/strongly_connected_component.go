@@ -77,7 +77,7 @@ func SplitToStronglyConnectedComponents(g graph.Graph) ([]StronglyConnectedCompo
 // generate a new graph based on current one, but reverse all edges
 func transposeGraph(g graph.Graph) graph.Graph {
 
-	newGraph := graph.NewAdjacencyListGraph(g.NodeCount())
+	newGraph := graph.NewAdjacencyListGraph(g.NodeCount(), g.Directed())
 
 	g.IterateAllNodes(func(u graph.NodeID) {
 		g.IterateAdjacencyNodes(u, func(v graph.NodeID) {

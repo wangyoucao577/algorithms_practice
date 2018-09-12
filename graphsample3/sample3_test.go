@@ -22,6 +22,10 @@ func TestAdjacencyListGraphSample(t *testing.T) {
 
 	g := AdjacencyListGraphSample()
 
+	if g.Directed() != directedGraph {
+		t.Errorf("new adjacency list graph sample, got directed %v, want %v", g.Directed(), directedGraph)
+	}
+
 	if g.NodeCount() != nodeCount {
 		t.Errorf("new adjacency list graph sample, got node count %d, want %d", g.NodeCount(), nodeCount)
 	}
