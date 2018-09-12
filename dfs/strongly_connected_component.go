@@ -38,7 +38,10 @@ func SplitToStronglyConnectedComponents(g graph.Graph) ([]StronglyConnectedCompo
 		return nil, err
 	}
 
-	transposedG := transposeGraph(g) // calculate transposed graph of original graph
+	transposedG, err := graph.Transpose(g, graph.NewAdjacencyListGraph) // calculate transposed graph of original graph
+	if err != nil {
+		return nil, err
+	}
 
 	// initialize for second DFS on transposed graph
 	secondDfs := &Dfs{0, []dfsTree{}, nodeAttrArray{}, edgeAttrArray{}}
@@ -76,21 +79,6 @@ func SplitToStronglyConnectedComponents(g graph.Graph) ([]StronglyConnectedCompo
 	}
 
 	return components, nil
-}
-
-// generate a new graph based on current one, but reverse all edges
-func transposeGraph(g graph.Graph) graph.Graph {
-
-	newGraph := graph.NewAdjacencyListGraph(g.NodeCount(), g.Directed())
-
-	g.IterateAllNodes(func(u graph.NodeID) {
-		g.IterateAdjacencyNodes(u, func(v graph.NodeID) {
-			// means u->v exist in current graph
-			newGraph.AddEdge(v, u)
-		})
-	})
-
-	return newGraph
 }
 
 // default increasing

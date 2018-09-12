@@ -2,6 +2,8 @@
 // support both Adjacency List and Adjacency Matrix.
 package graph
 
+import "fmt"
+
 // IterateControl will control all iterate functions' behavior, go on or break
 type IterateControl int
 
@@ -73,4 +75,24 @@ type Graph interface {
 	// call IterateAction for each iterated node.
 	// break the loop immdiately if action return `BreakIterate`
 	ControllableIterateAdjacencyNodes(NodeID, IterateActionWithControl)
+}
+
+// Transpose generate a new transposed graph from current graph.
+// NOTE: only directed graph can have transpose graph, since it's only reverse all edges.
+func Transpose(g Graph, newGraphFunc func(int, bool) Graph) (Graph, error) {
+
+	if !g.Directed() {
+		return nil, fmt.Errorf("input graph is not a directed graph")
+	}
+
+	newGraph := newGraphFunc(g.NodeCount(), g.Directed())
+
+	g.IterateAllNodes(func(u NodeID) {
+		g.IterateAdjacencyNodes(u, func(v NodeID) {
+			// means u->v exist in current graph
+			newGraph.AddEdge(v, u)
+		})
+	})
+
+	return newGraph, nil
 }
