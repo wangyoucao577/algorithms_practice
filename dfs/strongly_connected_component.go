@@ -20,11 +20,6 @@ func (s StronglyConnectedComponent) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
-type dfsSCC struct {
-	Dfs
-	scc StronglyConnectedComponent
-}
-
 // SplitToStronglyConnectedComponents to split the input graph
 // to several strongly connected components
 func SplitToStronglyConnectedComponents(g graph.Graph) ([]StronglyConnectedComponent, error) {
@@ -44,19 +39,35 @@ func SplitToStronglyConnectedComponents(g graph.Graph) ([]StronglyConnectedCompo
 	transposedG := transposeGraph(g) // calculate transposed graph of original graph
 
 	// initialize for second DFS on transposed graph
-	secondDfsContext := dfsSCC{
-		Dfs{0, []dfsTree{}, nodeAttrArray{}, edgeAttrArray{}},
-		StronglyConnectedComponent{}}
-	secondDfsContext.initialize(transposedG)
+	secondDfs := &Dfs{0, []dfsTree{}, nodeAttrArray{}, edgeAttrArray{}}
+	secondDfs.initialize(transposedG)
 
+	secondRootIndicators := make([]bool, transposedG.NodeCount(), transposedG.NodeCount())
 	for i := len(sortedNodes) - 1; i >= 0; i-- { //second iteration by reverse order of topoSort
 		currNode := sortedNodes[i]
-		if secondDfsContext.nodesAttr[currNode].nodeColor == white {
-			secondDfsContext.forest = append(secondDfsContext.forest, dfsTree{currNode})
-			secondDfsContext.scc = StronglyConnectedComponent{} // clear before each dfs
+		if secondDfs.nodesAttr[currNode].nodeColor == white {
+			secondDfs.forest = append(secondDfs.forest, dfsTree{currNode})
+			secondRootIndicators[currNode] = true
 
-			secondDfsContext.stackBasedVisitForSCC(transposedG, currNode)
-			components = append(components, secondDfsContext.scc)
+			secondDfs.dfsStackBasedVisit(transposedG, currNode, nil)
+		}
+	}
+
+	// retrieve components split by root of forest
+	secondSortedNodes, err := sortNodesByTimestampF(secondDfs.nodesAttr)
+	if err != nil {
+		return components, err
+	}
+
+	scc := StronglyConnectedComponent{}
+	for _, v := range secondSortedNodes {
+		scc = append(scc, v)
+
+		// root will always have biggeest timestampF
+		// so the last node MUST be root, and will be append into components
+		if secondRootIndicators[v] {
+			components = append(components, scc)
+			scc = StronglyConnectedComponent{} //clear
 		}
 	}
 
@@ -103,48 +114,6 @@ func sortNodesByTimestampF(nodesAttr nodeAttrArray) ([]graph.NodeID, error) {
 	}
 
 	return sortedNodes, nil
-}
-
-func (d *dfsSCC) stackBasedVisitForSCC(g graph.Graph, root graph.NodeID) {
-	d.time++
-	d.nodesAttr[root].nodeColor = gray
-	d.nodesAttr[root].timestampD = d.time
-
-	var stack = []graph.NodeID{}
-	stack = append(stack, root)
-
-	for len(stack) > 0 {
-		currNode := stack[len(stack)-1]
-
-		newWhiteNodeFound := false
-		g.ControllableIterateAdjacencyNodes(currNode, func(v graph.NodeID) graph.IterateControl {
-			if d.nodesAttr[v].nodeColor == white {
-				newWhiteNodeFound = true
-
-				d.nodesAttr[v].parent = currNode
-
-				d.time++
-				d.nodesAttr[v].nodeColor = gray
-				d.nodesAttr[v].timestampD = d.time
-
-				stack = append(stack, v) // push stack: push to the end
-
-				return graph.BreakIterate
-			}
-
-			return graph.ContinueIterate
-		})
-
-		if !newWhiteNodeFound {
-			d.time++
-			d.nodesAttr[currNode].nodeColor = black
-			d.nodesAttr[currNode].timestampF = d.time
-
-			d.scc = append(d.scc, currNode) //remember for current strongly connect component
-
-			stack = stack[:len(stack)-1] // pop from stack
-		}
-	}
 }
 
 type nodeWithTimestampF struct {
