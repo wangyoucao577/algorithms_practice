@@ -11,6 +11,7 @@ func TestMinSpanningTree(t *testing.T) {
 
 	want := weightedgraph.Weight(37)
 
+	//Kruskal algorithm
 	km, err := Kruskal(*graphsample5.GraphSample())
 	if err != nil {
 		t.Error(err)
@@ -20,6 +21,20 @@ func TestMinSpanningTree(t *testing.T) {
 		t.Error(err)
 	}
 	if kmw != want {
-		t.Errorf("minimum spanning tree by kruskal, weight %v but want %v", kmw, want)
+		t.Errorf("minimum spanning tree by kruskal algorithm, weight %v but want %v", kmw, want)
 	}
+
+	//Prim algorithm
+	pm, err := Prim(*graphsample5.GraphSample())
+	if err != nil {
+		t.Error(err)
+	}
+	pmw, err := pm.Weight()
+	if err != nil {
+		t.Error(err)
+	}
+	if pmw != want {
+		t.Errorf("minimum spanning tree by prim algorithm, weight %v but want %v", pmw, want)
+	}
+
 }

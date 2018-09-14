@@ -7,7 +7,7 @@ import (
 	"github.com/wangyoucao577/algorithms_practice/weightedgraph"
 )
 
-// Kruskal calculate minimum spanning tree on the input undirected graph
+// Kruskal algorithm calculate minimum spanning tree on the input undirected graph
 func Kruskal(g weightedgraph.WeightedGraph) (MinSpanningTree, error) {
 
 	mst := MinSpanningTree{[]graph.EdgeID{}, g}
