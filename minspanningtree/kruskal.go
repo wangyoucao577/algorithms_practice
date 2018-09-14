@@ -14,14 +14,10 @@ func Kruskal(g weightedgraph.WeightedGraph) (MinSpanningTree, error) {
 
 	// collect all edges with weight
 	edges := edgeWithWeightArray{}
-	g.IterateAllNodes(func(u graph.NodeID) {
-		g.IterateAdjacencyNodes(u, func(v graph.NodeID) {
-			weight, _ := g.Weight(u, v) //TODO: check err if necessary
-			edge := graph.EdgeID{From: u, To: v}
-			if !edges.Exist(edge) { // filter equal undirected edge
-				edges = append(edges, edgeWithWeight{edge, weight})
-			}
-		})
+	g.IterateEdges(func(edge graph.EdgeID) {
+		weight, _ := g.Weight(edge.From, edge.To) //TODO: check err if necessary
+		edges = append(edges, edgeWithWeight{edge, weight})
+
 	})
 
 	sort.Sort(edges) // sort by weight increasing
@@ -46,16 +42,6 @@ type edgeWithWeight struct {
 	w weightedgraph.Weight
 }
 type edgeWithWeightArray []edgeWithWeight
-
-// TODO: it should be a func of graph inteface
-func (e edgeWithWeightArray) Exist(edge graph.EdgeID) bool {
-	for _, v := range e {
-		if v.UndirectedEqual(edge) {
-			return true
-		}
-	}
-	return false
-}
 
 func (e edgeWithWeightArray) Len() int { return len(e) }
 func (e edgeWithWeightArray) Less(i, j int) bool {

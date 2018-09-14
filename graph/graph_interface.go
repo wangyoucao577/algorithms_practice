@@ -22,6 +22,9 @@ type IterateAction func(NodeID)
 // if it returned with `BreakIterate` then stop the iterate function immediately
 type IterateActionWithControl func(NodeID) IterateControl
 
+// ActionOnEdge will be called in each Iterate functions of edges
+type ActionOnEdge func(EdgeID)
+
 // Graph defined common interfaces of a graph,
 // whatever Adjacency List or Adjacency Matrix based graph
 type Graph interface {
@@ -75,6 +78,11 @@ type Graph interface {
 	// call IterateAction for each iterated node.
 	// break the loop immdiately if action return `BreakIterate`
 	ControllableIterateAdjacencyNodes(NodeID, IterateActionWithControl)
+
+	// IterateEdges for/range on all edges of the graph,
+	// call ActionOnEdge for each iterated edge
+	// NOTE: for undirected graph, will only iterate each edge once
+	IterateEdges(ActionOnEdge)
 }
 
 // Transpose generate a new transposed graph from current graph.

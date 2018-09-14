@@ -1,6 +1,8 @@
 package graph
 
-import "fmt"
+import (
+	"fmt"
+)
 
 /************************* Adjacency Matrix Based Graph Representation *****************************/
 
@@ -172,6 +174,26 @@ func (g adjacencyMatrixGraph) ControllableIterateAdjacencyNodes(currNode NodeID,
 			}
 		}
 	}
+}
+
+// IterateEdges for/range on all edges of the graph,
+// call ActionOnEdge for each iterated edge
+// NOTE: for undirected graph, will only iterate each edge once
+func (g adjacencyMatrixGraph) IterateEdges(action ActionOnEdge) {
+
+	set := map[EdgeID]struct{}{} //used to filter setteled edge
+	g.IterateAllNodes(func(u NodeID) {
+		g.IterateAdjacencyNodes(u, func(v NodeID) {
+			edge := EdgeID{From: u, To: v}
+			_, okFromTo := set[edge]
+			_, okToFrom := set[edge.Reverse()]
+			if !okFromTo && !okToFrom {
+				// not touch before
+				action(edge)
+				set[edge] = struct{}{}
+			}
+		})
+	})
 }
 
 /************************* Adjacency Matrix Based Graph Representation *****************************/

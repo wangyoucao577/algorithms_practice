@@ -1,6 +1,8 @@
 package graph
 
-import "fmt"
+import (
+	"fmt"
+)
 
 /************************* Adjacency  List  Based Graph Representation *****************************/
 
@@ -185,6 +187,34 @@ func (g adjacencyListGraph) ControllableIterateAdjacencyNodes(currNode NodeID, a
 			break
 		}
 	}
+}
+
+// IterateEdges for/range on all edges of the graph,
+// call ActionOnEdge for each iterated edge
+// NOTE: for undirected graph, will only iterate each edge once
+func (g adjacencyListGraph) IterateEdges(action ActionOnEdge) {
+
+	directedGraph := g.Directed()
+
+	set := map[EdgeID]struct{}{} //used to filter setteled edge
+	g.IterateAllNodes(func(u NodeID) {
+		g.IterateAdjacencyNodes(u, func(v NodeID) {
+			edge := EdgeID{From: u, To: v}
+			if directedGraph { //for directed graph, each edge is valid
+				action(edge)
+				return
+			}
+
+			//for undirected graph, we have to filter same edge(i.e. from-to , to-from)
+			_, okFromTo := set[edge]
+			_, okToFrom := set[edge.Reverse()]
+			if !okFromTo && !okToFrom {
+				// not touch before
+				action(edge)
+				set[edge] = struct{}{}
+			}
+		})
+	})
 }
 
 /************************* Adjacency  List  Based Graph Representation *****************************/

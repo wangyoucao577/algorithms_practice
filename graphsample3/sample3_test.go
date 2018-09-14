@@ -55,6 +55,13 @@ func TestAdjacencyListGraphSample(t *testing.T) {
 		t.Errorf("new adjacency list graph sample, got edge count %d, want %d", g.EdgeCount(), wantEdgeCount)
 	}
 
+	var iteratedEdgeCount int
+	g.IterateEdges(func(edge graph.EdgeID) {
+		iteratedEdgeCount++
+	})
+	if iteratedEdgeCount != wantEdgeCount {
+		t.Errorf("new adjacency list graph sample, got iterated edge count %d, want %d", iteratedEdgeCount, wantEdgeCount)
+	}
 }
 
 func TestIDNameMap(t *testing.T) {
