@@ -30,6 +30,10 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 - graphsample4    
 来自《算法导论 第3版》ch22.5 Strongly Connected Component 中的示例`Directed Graph`, 基于`package graph`的定义的实现, 从而方便后面的实验.    
 
+- graphsample5    
+来自《算法导论 第3版》ch23.2 Kruskal和Prim算法 中的示例`Undirected Graph`, 基于`package graph`和`package weightedgraph`的定义的实现, 从而方便后面的实验.    
+
+
 - bfs    
     - **O(V+E)**    
     - 实现《算法导论 第3版》ch22.2 广度优先搜索 中的算法描述, [Breadth First Search](https://en.wikipedia.org/wiki/Breadth-first_search). 基本思路为搜索过程中从`queue`(借助其先入先出的特性)头上取下一次迭代的初始节点, 并将迭代到的节点存储到`queue`尾, 从而实现**广度优先**. 搜索过程中的`tree`的信息及`depth`等通过节点属性的形式保存在一个节点数组中.    
@@ -59,6 +63,19 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 
 - maxflow_main    
 调用`maxflow`以解决[maximum flow problem](https://en.wikipedia.org/wiki/Maximum_flow_problem), 支持从`stdin`来构造`flownetwork`, 以更容易测试新的问题.     
+
+- weightedgraph    
+即在`package graph`定义的`directed/undirected graph`的基础操作上, 为每个`edge`增加一个`weight`值.     
+
+- minspanningtree    
+《算法导论 第3版》ch23 中所描述的最小生成树问题, 即在一张每条`edge`都有其`weight`的连通图上(一般是基于`undirected graph`讨论), 找到经过的所有`node`的`sum(weight)`最小的生成树. 
+    - 此处实验中实现了书上提到的两种算法: 
+        - Kruskal: 按`weight`排序所有的`edge`, 从最小`weight`的`edge`开始一条一条取出来生成树. 每条取出的`edge`的两个`node`不属于同一个集合, 才是有效的`edge`.      
+        - Prim: TODO 其实没看理解这个方法为什么有效. 按照伪码先进行了实现, 以后再尝试深入理解.     
+    - 注: 关于最小生成树的问题, 个人认为几个视频讲的比书上要好, FYI:    
+        - [Youtube Minimum Spanning Tree](https://www.youtube.com/watch?v=5INWifzqStU)
+        - [Youtube Kruskal Algorithm](https://www.youtube.com/watch?v=5xosHRdxqHA)
+        - [Youtube Prim Algorithm](https://www.youtube.com/watch?v=z1L3rMzG1_A)
 
 
 ## C/C++ 实践
