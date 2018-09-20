@@ -1,6 +1,6 @@
 %% Call below command to convert .mmd to .png
 %%  Adjust -w or -H if necessary
-%% mmdc -p puppeteer-config.json -i golang_pkg_import_graph.mmd -o golang_pkg_import_graph.mmd.png -w 960 -H 540
+%% mmdc -p puppeteer-config.json -i golang_pkg_import_graph.mmd -o golang_pkg_import_graph.mmd.png -w 1920 -H 1080
 
 %%```mermaid
 
@@ -17,6 +17,11 @@ pkggraphsample3["(pkg)graphsample3"] --> pkggraph
 pkggraphsample4["(pkg)graphsample4"] --> pkggraph
 
 pkglevelgraph["(pkg)levelgraph"] --> pkggraph
+pkgweightedgraph["(pkg)weightedgraph"] --> pkggraph
+
+pkggraphsample5["(pkg)graphsample5"] --> pkggraph
+pkggraphsample5["(pkg)graphsample5"] --> pkgweightedgraph
+
 
 pkgbfs["(pkg)bfs"] --> pkggraph
 pkgbfs --> pkggraphsample1
@@ -42,5 +47,10 @@ pkgmaxflow --> pkglevelgraph
 
 maxflow_main("(bin)maxflow_main") --> pkgflownetwork
 maxflow_main("(bin)maxflow_main") --> pkgmaxflow
+
+pkgminspanningtree["(pkg)minspanningtree"] --> pkggraph
+pkgminspanningtree --> pkgweightedgraph
+pkgminspanningtree --> pkggraphsample5
+
 
 %%```
