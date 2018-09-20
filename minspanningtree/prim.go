@@ -1,7 +1,7 @@
 package minspanningtree
 
 import (
-	"sort"
+	"container/heap"
 
 	"github.com/wangyoucao577/algorithms_practice/graph"
 	"github.com/wangyoucao577/algorithms_practice/weightedgraph"
@@ -12,30 +12,27 @@ func Prim(g weightedgraph.WeightedGraph) (MinSpanningTree, error) {
 
 	mst := MinSpanningTree{[]graph.EdgeID{}, g}
 
-	priorityQueue := nodeItemsArray{}
+	pqHeap := priorityQueue{}
 	g.IterateAllNodes(func(u graph.NodeID) {
-		priorityQueue = append(priorityQueue, &nodeItem{self: u, parent: graph.InvalidNodeID, key: maxKey})
+		pqHeap = append(pqHeap, &nodeItem{self: u, parent: graph.InvalidNodeID, key: maxKey})
 	})
-	priorityQueue[0].key = 0 // starting node
+	pqHeap[0].key = 0 // random starting node
+	heap.Init(&pqHeap)
 
 	//assign key for each node
-	for len(priorityQueue) > 0 {
+	for len(pqHeap) > 0 {
 
-		sort.Sort(priorityQueue)
+		uItem := pqHeap.popMin() //pop min key node
 
-		u := priorityQueue[0]
-		priorityQueue = priorityQueue[1:] //pop min node
-
-		if u.parent != graph.InvalidNodeID {
-			mst.edges = append(mst.edges, graph.EdgeID{From: u.parent, To: u.self})
+		if uItem.parent != graph.InvalidNodeID {
+			mst.edges = append(mst.edges, graph.EdgeID{From: uItem.parent, To: uItem.self})
 		}
 
-		g.IterateAdjacencyNodes(u.self, func(v graph.NodeID) {
-			item, ok := priorityQueue.find(v)
-			uvWeight, _ := g.Weight(u.self, v)
+		g.IterateAdjacencyNodes(uItem.self, func(v graph.NodeID) {
+			item, ok := pqHeap.find(v)
+			uvWeight, _ := g.Weight(uItem.self, v)
 			if ok && uvWeight < item.key {
-				item.parent = u.self
-				item.key = uvWeight
+				pqHeap.update(item, uItem.self, uvWeight)
 			}
 		})
 	}
@@ -52,22 +49,55 @@ type nodeItem struct {
 	parent graph.NodeID
 
 	key weightedgraph.Weight
-}
-type nodeItemsArray []*nodeItem
 
-func (n nodeItemsArray) Len() int { return len(n) }
-func (n nodeItemsArray) Less(i, j int) bool {
-	return n[i].key < n[j].key
+	// The index is needed by update and is maintained by the heap.Interface methods.
+	index int // The index of the item in the heap.
 }
-func (n nodeItemsArray) Swap(i, j int) {
-	n[i], n[j] = n[j], n[i]
+type priorityQueue []*nodeItem
+
+// Below 5 functions implement interfaces of Heap
+func (pq priorityQueue) Len() int { return len(pq) }
+func (pq priorityQueue) Less(i, j int) bool {
+	return pq[i].key < pq[j].key
+}
+func (pq priorityQueue) Swap(i, j int) {
+	pq[i], pq[j] = pq[j], pq[i]
+	pq[i].index = i
+	pq[j].index = j
+}
+func (pq *priorityQueue) Push(x interface{}) {
+	n := len(*pq)
+	item := x.(*nodeItem)
+	item.index = n
+	*pq = append(*pq, item)
+}
+func (pq *priorityQueue) Pop() interface{} {
+	old := *pq
+	n := len(old)
+	item := old[n-1]
+	item.index = -1 // for safety
+	*pq = old[0 : n-1]
+	return item
 }
 
-func (n nodeItemsArray) find(v graph.NodeID) (*nodeItem, bool) {
-	for _, vItem := range n {
+//TODO: should be better way to implement the find function
+func (pq priorityQueue) find(v graph.NodeID) (*nodeItem, bool) {
+	for _, vItem := range pq {
 		if vItem.self == v {
 			return vItem, true
 		}
 	}
 	return nil, false
+}
+
+func (pq *priorityQueue) popMin() *nodeItem {
+	x := heap.Pop(pq).(*nodeItem)
+	return x
+}
+
+// update modifies the key and value of an Item in the queue.
+func (pq *priorityQueue) update(item *nodeItem, parent graph.NodeID, key weightedgraph.Weight) {
+	item.parent = parent
+	item.key = key
+	heap.Fix(pq, item.index)
 }
