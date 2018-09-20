@@ -12,15 +12,18 @@ func Prim(g weightedgraph.WeightedGraph) (MinSpanningTree, error) {
 
 	mst := MinSpanningTree{[]graph.EdgeID{}, g}
 
-	pqHeap := priorityQueue{}
+	// initialize for queryHeap
+	pqHeap := &queryHeap{priorityQueue{}, map[graph.NodeID]*nodeItem{}}
 	g.IterateAllNodes(func(u graph.NodeID) {
-		pqHeap = append(pqHeap, &nodeItem{self: u, parent: graph.InvalidNodeID, key: maxKey})
+		item := &nodeItem{self: u, parent: graph.InvalidNodeID, key: maxKey}
+		pqHeap.priorityQueue = append(pqHeap.priorityQueue, item)
+		pqHeap.nodeToItem[u] = item
 	})
-	pqHeap[0].key = 0 // random starting node
-	heap.Init(&pqHeap)
+	pqHeap.priorityQueue[0].key = 0 // random starting node
+	heap.Init(&pqHeap.priorityQueue)
 
-	//assign key for each node
-	for len(pqHeap) > 0 {
+	// iterate all nodes by decreasing key
+	for pqHeap.Len() > 0 {
 
 		uItem := pqHeap.popMin() //pop min key node
 
@@ -75,29 +78,36 @@ func (pq *priorityQueue) Pop() interface{} {
 	old := *pq
 	n := len(old)
 	item := old[n-1]
-	item.index = -1 // for safety
+	item.index = -1 // for safety in find
 	*pq = old[0 : n-1]
 	return item
 }
 
-//TODO: should be better way to implement the find function
-func (pq priorityQueue) find(v graph.NodeID) (*nodeItem, bool) {
-	for _, vItem := range pq {
-		if vItem.self == v {
-			return vItem, true
-		}
-	}
-	return nil, false
+// queryHeap designed for both min-heap and find-by-node
+type queryHeap struct {
+	priorityQueue
+	nodeToItem map[graph.NodeID]*nodeItem
 }
 
-func (pq *priorityQueue) popMin() *nodeItem {
-	x := heap.Pop(pq).(*nodeItem)
+func (qh *queryHeap) popMin() *nodeItem {
+	x := heap.Pop(&qh.priorityQueue).(*nodeItem)
 	return x
 }
+func (qh *queryHeap) find(node graph.NodeID) (*nodeItem, bool) {
+	item, ok := qh.nodeToItem[node]
+	if !ok {
+		return nil, false
+	}
+	if item.index == -1 { //have been popped
+		return nil, false
+	}
+	return item, true
+}
+func (qh *queryHeap) update(item *nodeItem, parent graph.NodeID, key weightedgraph.Weight) {
+	//NOTE: this update will only affect nodeItem of nodeToItem,
+	// since the nodeToItem and priorityQueue shared the same pointer
 
-// update modifies the key and value of an Item in the queue.
-func (pq *priorityQueue) update(item *nodeItem, parent graph.NodeID, key weightedgraph.Weight) {
 	item.parent = parent
 	item.key = key
-	heap.Fix(pq, item.index)
+	heap.Fix(&qh.priorityQueue, item.index)
 }
