@@ -1,9 +1,9 @@
 package mysorts
 
-// insertionSort implements Insertion Sort
-func insertionSort(in []int) []int {
+// insertionSort implements Insertion Sort in-place
+func insertionSort(in []int) {
 	if len(in) <= 1 {
-		return in
+		return
 	}
 
 	// sort in-place
@@ -20,6 +20,4 @@ func insertionSort(in []int) []int {
 			}
 		}
 	}
-
-	return in
 }

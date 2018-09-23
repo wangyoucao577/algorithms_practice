@@ -42,9 +42,9 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 		testCase := generateRandomCase(maxArrayLen)
 
 		//insertion sort
-		testResult := insertionSort(testCase)
-		if !isSorted(testResult, true) {
-			t.Errorf("insertionSort failed on \n%v\n", testResult)
+		insertionSort(testCase)
+		if !isSorted(testCase, true) {
+			t.Errorf("insertionSort failed on \n%v\n", testCase)
 			break
 		}
 	}
