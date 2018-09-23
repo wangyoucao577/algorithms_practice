@@ -11,6 +11,12 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 
 ## 实验代码
 
+### [Golang] 排序
+- mysorts    
+实现各种排序算法的实验代码, 基于`sort.Interface`来实现.     
+    - `insertion_sort.go`: **O(n^2)** 实现《算法导论 第3版》 ch2.1 介绍的插入排序算法, 算法原理为从第2个元素开始遍历整个数组, 对每个元素, 向前进行遍历比较, `Less()`条件为`false`则`Swap()`, 直到`Less()`条件为`true`是退出. 由于是`in-place`实现, 空间复杂度为 **O(1)**.     
+
+
 ### [Golang] 图算法
 ![golang_pkg_import_graph](golang_pkg_import_graph.mmd.png)
 
