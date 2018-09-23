@@ -1,20 +1,20 @@
 package mysorts
 
 // insertionSort implements Insertion Sort in-place
-func insertionSort(in []int) {
-	if len(in) <= 1 {
+func insertionSort(in myInterface) {
+	if in.Len() <= 1 {
 		return
 	}
 
 	// sort in-place
-	for i := 1; i < len(in); i++ {
+	for i := 1; i < in.Len(); i++ {
 
 		// insert in[i] into sorted in[0] ~ in[i-1]
 		// compare from i-1 to 0
 		j := i - 1
 		for ; j >= 0; j-- {
-			if in[j+1] < in[j] { //Less()
-				in[j], in[j+1] = in[j+1], in[j] //swap()
+			if in.Less(j+1, j) { //Less()
+				in.Swap(j, j+1) //Swap()
 			} else {
 				break
 			}

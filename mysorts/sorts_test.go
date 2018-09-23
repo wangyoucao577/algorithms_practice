@@ -5,7 +5,15 @@ import (
 	"testing"
 )
 
-func generateRandomCase(maxArrayLen int) []int {
+type intSlice []int
+
+func (s intSlice) Len() int           { return len(s) }
+func (s intSlice) Less(i, j int) bool { return s[i] < s[j] }
+func (s intSlice) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func generateRandomCase(maxArrayLen int) intSlice {
 	arrayLen := rand.Intn(maxArrayLen)
 
 	result := make([]int, arrayLen, arrayLen)
@@ -17,7 +25,7 @@ func generateRandomCase(maxArrayLen int) []int {
 	return result
 }
 
-func isSorted(in []int, ascending bool) bool {
+func isSorted(in intSlice, ascending bool) bool {
 
 	for i := 0; i < len(in)-1; i++ {
 		if ascending {
