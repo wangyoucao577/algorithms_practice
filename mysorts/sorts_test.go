@@ -14,7 +14,7 @@ func (s intSlice) Swap(i, j int) {
 }
 
 func (s intSlice) deepCopy() intSlice {
-	newCopy := make(intSlice, s.Len(), s.Len())
+	newCopy := intSlice{}
 	newCopy = append(newCopy, s...)
 	return newCopy
 }
