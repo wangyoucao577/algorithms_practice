@@ -13,6 +13,12 @@ func (s intSlice) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
+func (s intSlice) deepCopy() intSlice {
+	newCopy := make(intSlice, s.Len(), s.Len())
+	newCopy = append(newCopy, s...)
+	return newCopy
+}
+
 func generateRandomCase(maxArrayLen int) intSlice {
 	arrayLen := rand.Intn(maxArrayLen)
 
@@ -50,9 +56,18 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 		testCase := generateRandomCase(maxArrayLen)
 
 		//insertion sort
-		insertionSort(testCase)
-		if !isSorted(testCase, true) {
-			t.Errorf("insertionSort failed on \n%v\n", testCase)
+		caseForInsertionSort := testCase.deepCopy()
+		insertionSort(caseForInsertionSort)
+		if !isSorted(caseForInsertionSort, true) {
+			t.Errorf("insertionSort failed on \n%v\n", caseForInsertionSort)
+			break
+		}
+
+		//merge sort
+		caseForMergeSort := testCase.deepCopy()
+		mergeSort(caseForMergeSort)
+		if !isSorted(caseForMergeSort, true) {
+			t.Errorf("mergeSort failed on \n%v\n", caseForMergeSort)
 			break
 		}
 	}
