@@ -31,6 +31,22 @@ func generateRandomCase(maxArrayLen int) intSlice {
 	return result
 }
 
+func generateBestCase(maxArrayLen int) intSlice {
+	bestCase := make([]int, maxArrayLen, maxArrayLen)
+	for i := 0; i < maxArrayLen; i++ {
+		bestCase[i] = i // ascending sorted
+	}
+	return bestCase
+}
+
+func generateWorstCase(maxArrayLen int) intSlice {
+	worstCase := make([]int, maxArrayLen, maxArrayLen)
+	for i := 0; i < maxArrayLen; i++ {
+		worstCase[i] = maxArrayLen - i // descending sorted by expect ascending
+	}
+	return worstCase
+}
+
 func isSorted(in intSlice, ascending bool) bool {
 
 	for i := 0; i < len(in)-1; i++ {
@@ -80,5 +96,45 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 			break
 		}
 
+	}
+}
+
+const (
+	benchmarkMaxArrayLen int = 1000
+)
+
+func BenchmarkBestCaseInsertionSort(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		insertionSort(generateBestCase(benchmarkMaxArrayLen))
+	}
+}
+
+func BenchmarkBestCaseMergeSort(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		mergeSort(generateBestCase(benchmarkMaxArrayLen))
+	}
+}
+
+func BenchmarkBestCaseMergeSortAuxArrayBased(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		mergeSortAuxArrayBased(generateBestCase(benchmarkMaxArrayLen))
+	}
+}
+
+func BenchmarkWorstCaseInsertionSort(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		insertionSort(generateWorstCase(benchmarkMaxArrayLen))
+	}
+}
+
+func BenchmarkWorstCaseMergeSort(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		mergeSort(generateWorstCase(benchmarkMaxArrayLen))
+	}
+}
+
+func BenchmarkWorstCaseMergeSortAuxArrayBased(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		mergeSortAuxArrayBased(generateWorstCase(benchmarkMaxArrayLen))
 	}
 }
