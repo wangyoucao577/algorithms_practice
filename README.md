@@ -13,8 +13,11 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 
 ### [Golang] 排序
 - mysorts    
-实现各种排序算法的实验代码, 基于`sort.Interface`来实现.     
+实现各种排序算法的实验代码, 基于`sort.Interface`来实现. (可通过命令`go test -v -bench=. -benchmem`来进行功能测试和Benchmark)     
     - `insertion_sort.go`: **O(n^2)** 实现《算法导论 第3版》 ch2.1 介绍的插入排序算法, 算法原理为从第2个元素开始遍历整个数组, 对每个元素, 向前进行遍历比较, `Less()`条件为`false`则`Swap()`, 直到`Less()`条件为`true`是退出. 由于是`in-place`实现, 空间复杂度为 **O(1)**.     
+    - `merge_sort.go`: **O(n*log(n))** 实现《算法导论 第3版》 ch2.3 介绍的归并排序算法. 算法原理为分治法(归并排序其实是二分法), 即将问题分解为2个子问题, 求解每个子问题(对于每个子问题可递归地继续分解, 直至不可分割), 然后递归地向上合并子问题的解.    
+        - `aux array based implementation`: 书上介绍的方法, 每次`merge`时需要对每个子问题申请一块辅助的子数组内存来暂存子问题, 空间复杂度为 **O(n)**. 时间复杂度为 **O(n*log(n))**, 缺点为需要申请额外的空间, 以及无法使用典型的`Swap`接口来实现排序过程.    
+        - `in-place implementation`: 不需要辅助空间的实现, 借鉴了`insertion_sort`的方法来实现`merge`时的`in-place`. 空间复杂度为 **O(1)**. Benchmark 实测的运行时间比`aux array based implementation`慢很多, 接近`insertion_sort`(比它稍快).    
 
 
 ### [Golang] 图算法
