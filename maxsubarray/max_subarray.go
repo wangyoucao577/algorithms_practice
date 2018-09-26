@@ -2,6 +2,7 @@
 package maxsubarray
 
 // findMaxSubarray find a maximum subarray (maximum sum of the subarray) from the input array,
+// by Divide and Conquer Algorithm
 // return the the subarray
 func findMaxSubarray(in []int) []int {
 	if in == nil || len(in) == 0 {
