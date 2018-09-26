@@ -4,6 +4,9 @@ package maxsubarray
 // findMaxSubarray find a maximum subarray (maximum sum of the subarray) from the input array,
 // return the the subarray
 func findMaxSubarray(in []int) []int {
+	if in == nil || len(in) == 0 {
+		return in
+	}
 
 	l, r, _ := findMaxSubarrayImpl(in, 0, len(in)-1)
 	out := in[l : r+1]
