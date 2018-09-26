@@ -16,8 +16,9 @@ func TestMaxSubarray(t *testing.T) {
 		{[]int{0}, []int{0}},
 		{[]int{1}, []int{1}},
 		{[]int{-1}, []int{-1}},
-		{[]int{0, 1}, []int{1}},
+		{[]int{1, 2}, []int{1, 2}},
 		{[]int{0, -1}, []int{0}},
+		{[]int{-1, -2}, []int{-1}},
 
 		/* This test case comes from
 		"Introduction to Algorithms - Third Edition" 4.1 Maximum Subarray */
@@ -33,4 +34,12 @@ func TestMaxSubarray(t *testing.T) {
 			t.Errorf("findMaxSubarray on %v \ngot %v \nbut want %v", v.input, out, v.want)
 		}
 	}
+
+	for _, v := range testCases {
+		out := FindMaxSubarrayByViolent(v.input)
+		if !reflect.DeepEqual(v.want, out) {
+			t.Errorf("FindMaxSubarrayByViolent on %v \ngot %v \nbut want %v", v.input, out, v.want)
+		}
+	}
+
 }
