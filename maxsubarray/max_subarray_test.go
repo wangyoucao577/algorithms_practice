@@ -29,9 +29,9 @@ func TestMaxSubarray(t *testing.T) {
 	}
 
 	for _, v := range testCases {
-		out := findMaxSubarray(v.input)
+		out := FindMaxSubarrayByDivideAndConquer(v.input)
 		if !reflect.DeepEqual(v.want, out) {
-			t.Errorf("findMaxSubarray on %v \ngot %v \nbut want %v", v.input, out, v.want)
+			t.Errorf("FindMaxSubarrayByDivideAndConquer on %v \ngot %v \nbut want %v", v.input, out, v.want)
 		}
 	}
 

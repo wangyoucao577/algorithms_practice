@@ -1,10 +1,11 @@
-// Package maxsubarray try to solve the maximum subarray problem
+// Package maxsubarray try to solve the maximum subarray problem by several algorithms
+// e.g. divide and conquer algorithm, violent solution, etc.
 package maxsubarray
 
-// findMaxSubarray find a maximum subarray (maximum sum of the subarray) from the input array,
+// FindMaxSubarrayByDivideAndConquer find a maximum subarray (maximum sum of the subarray) from the input array,
 // by Divide and Conquer Algorithm
 // return the the subarray
-func findMaxSubarray(in []int) []int {
+func FindMaxSubarrayByDivideAndConquer(in []int) []int {
 	if in == nil || len(in) == 0 {
 		return in
 	}
