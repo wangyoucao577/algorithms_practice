@@ -42,4 +42,11 @@ func TestMaxSubarray(t *testing.T) {
 		}
 	}
 
+	for _, v := range testCases {
+		out := FindMaxSubarrayByKadane(v.input)
+		if !reflect.DeepEqual(v.want, out) {
+			t.Errorf("FindMaxSubarrayByKadane on %v \ngot %v \nbut want %v", v.input, out, v.want)
+		}
+	}
+
 }
