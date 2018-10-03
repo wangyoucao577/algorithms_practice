@@ -18,6 +18,7 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
     - `merge_sort.go`: **O(n*log(n))** 实现《算法导论 第3版》 ch2.3 介绍的归并排序算法. 算法原理为分治法(归并排序其实是二分法), 即将问题分解为2个子问题, 求解每个子问题(对于每个子问题可递归地继续分解, 直至不可分割), 然后递归地向上合并子问题的解.    
         - `aux array based implementation`: 书上介绍的方法, 每次`merge`时需要对每个子问题申请一块辅助的子数组内存来暂存子问题, 空间复杂度为 **O(n)**. 时间复杂度为 **O(n*log(n))**, 缺点为需要申请额外的空间, 以及无法使用典型的`Swap`接口来实现排序过程.    
         - `in-place implementation`: 不需要辅助空间的实现, 借鉴了`insertion_sort`的方法来实现`merge`时的`in-place`. 空间复杂度为 **O(1)**. Benchmark 实测的运行时间比`aux array based implementation`慢很多, 接近`insertion_sort`(比它稍快).    
+    - `heap_sort.go`: **O(n*log(n))** 实现《算法导论 第3版》 ch6.1~6.4 介绍的堆排序算法. 算法原理为借助Heap(一般是用二叉堆) 的性质, 即`root`元素总是最大的(`maxHeap`中; 若是`minHeap`则反之). 首先构建出`maxHeap`, 那么`root`元素一定是数组中的最大值. 将`root`元素与数组最后元素交换, 再针对新的`root`节点维护堆的性质则又可以获得剩余堆(除刚刚的最大元素)中的最大值, 如此循环操作直至遍历完整个数组.     
 
 ### [Golang] 最大子数组问题
 - maxsubarray    
