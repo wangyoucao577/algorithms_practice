@@ -37,5 +37,13 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 			break
 		}
 
+		//heap sort in-place implementation
+		caseForHeapSort := testCase.deepCopy()
+		heapSort(caseForHeapSort)
+		if !isSorted(caseForHeapSort, true) {
+			t.Errorf("in-place heapSort failed on \n%v\n", caseForHeapSort)
+			break
+		}
+
 	}
 }
