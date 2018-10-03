@@ -8,48 +8,48 @@ const (
 
 func BenchmarkBestCaseInsertionSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		insertionSort(generateBestCase(benchmarkMaxArrayLen))
+		InsertionSort(generateBestCase(benchmarkMaxArrayLen))
 	}
 }
 
 func BenchmarkBestCaseMergeSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		mergeSort(generateBestCase(benchmarkMaxArrayLen))
+		MergeSort(generateBestCase(benchmarkMaxArrayLen))
 	}
 }
 
 func BenchmarkBestCaseMergeSortAuxArrayBased(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		mergeSortAuxArrayBased(generateBestCase(benchmarkMaxArrayLen))
+		MergeSortAuxArrayBased(generateBestCase(benchmarkMaxArrayLen))
 	}
 }
 
 func BenchmarkBestCaseHeapSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		heapSort(generateBestCase(benchmarkMaxArrayLen))
+		HeapSort(generateBestCase(benchmarkMaxArrayLen))
 	}
 }
 
 func BenchmarkWorstCaseInsertionSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		insertionSort(generateWorstCase(benchmarkMaxArrayLen))
+		InsertionSort(generateWorstCase(benchmarkMaxArrayLen))
 	}
 }
 
 func BenchmarkWorstCaseMergeSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		mergeSort(generateWorstCase(benchmarkMaxArrayLen))
+		MergeSort(generateWorstCase(benchmarkMaxArrayLen))
 	}
 }
 
 func BenchmarkWorstCaseMergeSortAuxArrayBased(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		mergeSortAuxArrayBased(generateWorstCase(benchmarkMaxArrayLen))
+		MergeSortAuxArrayBased(generateWorstCase(benchmarkMaxArrayLen))
 	}
 }
 
 func BenchmarkWorstCaseHeapSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		heapSort(generateWorstCase(benchmarkMaxArrayLen))
+		HeapSort(generateWorstCase(benchmarkMaxArrayLen))
 	}
 }

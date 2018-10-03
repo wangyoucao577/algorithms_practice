@@ -14,7 +14,7 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 
 		//insertion sort
 		caseForInsertionSort := testCase.deepCopy()
-		insertionSort(caseForInsertionSort)
+		InsertionSort(caseForInsertionSort)
 		if !isSorted(caseForInsertionSort, true) {
 			t.Errorf("insertionSort failed on \n%v\n", caseForInsertionSort)
 			break
@@ -22,7 +22,7 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 
 		//merge sort in-place implementation
 		caseForMergeSort := testCase.deepCopy()
-		mergeSort(caseForMergeSort)
+		MergeSort(caseForMergeSort)
 		if !isSorted(caseForMergeSort, true) {
 			t.Errorf("in-place mergeSort failed on \n%v\n", caseForMergeSort)
 			break
@@ -31,7 +31,7 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 		//merge sort aux array based implementation
 		// NOTE: can not done by only sort.Interface
 		caseForMergeSortAuxArrayBased := testCase.deepCopy()
-		mergeSortAuxArrayBased(caseForMergeSortAuxArrayBased)
+		MergeSortAuxArrayBased(caseForMergeSortAuxArrayBased)
 		if !isSorted(caseForMergeSortAuxArrayBased, true) {
 			t.Errorf("aux array based mergeSort failed on \n%v\n", caseForMergeSortAuxArrayBased)
 			break
@@ -39,7 +39,7 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 
 		//heap sort in-place implementation
 		caseForHeapSort := testCase.deepCopy()
-		heapSort(caseForHeapSort)
+		HeapSort(caseForHeapSort)
 		if !isSorted(caseForHeapSort, true) {
 			t.Errorf("in-place heapSort failed on \n%v\n", caseForHeapSort)
 			break

@@ -1,7 +1,7 @@
 package mysorts
 
-// heapSort implements Sort by MaxHeap in-place
-func heapSort(in myInterface) {
+// HeapSort implements Sort by MaxHeap in-place
+func HeapSort(in myInterface) {
 	if in.Len() <= 1 {
 		return
 	}

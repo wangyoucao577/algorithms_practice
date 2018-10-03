@@ -1,7 +1,7 @@
 package mysorts
 
-// insertionSort implements Insertion Sort in-place
-func insertionSort(in myInterface) {
+// InsertionSort implements Insertion Sort in-place
+func InsertionSort(in myInterface) {
 	if in.Len() <= 1 {
 		return
 	}
