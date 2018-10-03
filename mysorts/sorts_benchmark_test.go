@@ -14,13 +14,13 @@ func BenchmarkBestCaseInsertionSort(b *testing.B) {
 
 func BenchmarkBestCaseMergeSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		MergeSort(generateBestCase(benchmarkMaxArrayLen))
+		MergeSortInPlace(generateBestCase(benchmarkMaxArrayLen))
 	}
 }
 
 func BenchmarkBestCaseMergeSortAuxArrayBased(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		MergeSortAuxArrayBased(generateBestCase(benchmarkMaxArrayLen))
+		MergeSort(generateBestCase(benchmarkMaxArrayLen))
 	}
 }
 
@@ -38,13 +38,13 @@ func BenchmarkWorstCaseInsertionSort(b *testing.B) {
 
 func BenchmarkWorstCaseMergeSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		MergeSort(generateWorstCase(benchmarkMaxArrayLen))
+		MergeSortInPlace(generateWorstCase(benchmarkMaxArrayLen))
 	}
 }
 
 func BenchmarkWorstCaseMergeSortAuxArrayBased(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		MergeSortAuxArrayBased(generateWorstCase(benchmarkMaxArrayLen))
+		MergeSort(generateWorstCase(benchmarkMaxArrayLen))
 	}
 }
 

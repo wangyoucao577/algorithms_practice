@@ -6,8 +6,8 @@ import (
 
 /************************* In-place implementation *************************/
 
-// MergeSort implements Merge Sort In-place
-func MergeSort(in myInterface) {
+// MergeSortInPlace implements Merge Sort In-place
+func MergeSortInPlace(in myInterface) {
 
 	mergeSortImpl(in, 0, in.Len()-1)
 }
@@ -49,8 +49,8 @@ func merge(in myInterface, p, q, r int) {
 
 /************************* With aux array implementation *************************/
 
-// MergeSortAuxArrayBased implements Merge Sort with aux array
-func MergeSortAuxArrayBased(in []int) {
+// MergeSort implements Merge Sort with aux array
+func MergeSort(in []int) {
 	mergeSortImplAuxArrayBased(in, 0, len(in)-1)
 }
 
