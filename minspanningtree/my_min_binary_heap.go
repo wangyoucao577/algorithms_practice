@@ -52,15 +52,17 @@ func (mh *myMinBinaryHeap) minHeapity(n int) { // i.e. down
 	}
 }
 
-func (mh *myMinBinaryHeap) decreaseKey(i int, key weightedgraph.Weight) { // i.e. up
+func (mh *myMinBinaryHeap) decreaseKey(node *heapNode, key weightedgraph.Weight) { // i.e. up
+
+	if node.key < key {
+		return // don't allow increase key for min heap
+	}
+	node.key = key
+
+	i := node.index
 	if i >= mh.Len() || i < 0 {
 		return
 	}
-
-	if (*mh)[i].key <= key {
-		return // don't allow increase key for min heap
-	}
-	(*mh)[i].key = key
 
 	n := i + 1
 	for {
@@ -83,7 +85,7 @@ func (mh *myMinBinaryHeap) insert(node *heapNode) {
 	node.index = mh.Len()
 	*mh = append(*mh, node)
 
-	mh.decreaseKey(node.index, node.key)
+	mh.decreaseKey(node, node.key)
 }
 
 func (mh *myMinBinaryHeap) extractMin() *heapNode {
