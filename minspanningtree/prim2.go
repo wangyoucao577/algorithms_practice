@@ -32,7 +32,7 @@ func Prim2(g weightedgraph.WeightedGraph) (MinSpanningTree, error) {
 			item, ok := queringHeap.find(v)
 			uvWeight, _ := g.Weight(uItem.self, v)
 			if ok && uvWeight < item.key {
-				queringHeap.decreaseKey(item.index+1, uvWeight)
+				queringHeap.decreaseKey(item.index, uvWeight)
 			}
 		})
 	}
