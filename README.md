@@ -31,7 +31,7 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 - cc_heaps    
 《算法导论 第3版》 ch6.5 介绍的基于最大堆/最小堆的优先队列的设计.     
     - 最大优先队列[Max Priority Queue](https://en.wikipedia.org/wiki/Priority_queue)一般支持`Insert/Maximum/ExtractMax/IncreaseKey/Delete`等操作(最小优先队列对应的为`Insert/Minimum/ExtractMin/DecreaseKey/Delete`). 
-    - 其基本原理仍然是基于最大堆/最小堆(与堆排序的原理非常类似), 即`Insert`时将新元素放在数组末尾然后进行`up`操作, 而`ExtractMax/Delete`时将对应元素与末尾元素交换后, 对当前元素进行`down`(i.e. `MaxHeapity`)操作, 从而维护堆的性质. 特殊处在于`IncreaseKey/DecreaseKey`操作, 需要记录针对每一个`HeapNode`的`handle`才能发起此操作. 实验中的`handle`直接用的是`HeapNode`的编号进行表示.([std::priority_queue](http://www.cplusplus.com/reference/queue/priority_queue/)干脆就没有暴露这个接口, 所以看起来接口简单很多.)      
+    - 其基本原理仍然是基于最大堆/最小堆(与堆排序的原理非常类似), 即`Insert`时将新元素放在数组末尾然后进行`up`操作, 而`ExtractMax/Delete`时将对应元素与末尾元素交换后, 对当前元素进行`down`(i.e. `MaxHeapity`)操作, 从而维护堆的性质. 特殊处在于`IncreaseKey/DecreaseKey`操作, 需要记录针对每一个`HeapNode`的`handle`才能发起此操作. 实验中的`handle`直接用的是`HeapNode`的指针来表示.([std::priority_queue](http://www.cplusplus.com/reference/queue/priority_queue/)干脆就没有暴露这个接口, 所以看起来接口简单很多.)      
     - NOTE:     
         - 此处的实现代码, 基于`BinaryHeap`进行实现的, 且仅实现了`MaxPriorityQueue`. 而实际上同样可以基于`d-ary heap`来实现, 区别只是`2-dry`或`d-ary`.     
         - `Golang`中目前不支持泛型, 也没有`class/object`等概念, 不太好实现一个封装起来的`PriorityQueue`. `Golang`源码库中的实现是给出了一些`heap`的操作函数`Fix/Init/Push/Pop`等, 而把内部的数据结构实现交给了使用者. 实现和使用思路都与一般的面向对象思路不同, 个人感觉是不太直观的, 所以这里用`c++`来实现了此处的实验代码, 看起来或许更直观些.     
