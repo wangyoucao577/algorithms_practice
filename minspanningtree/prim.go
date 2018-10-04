@@ -8,6 +8,7 @@ import (
 )
 
 // Prim algorithm calculate minimum spanning tree on the input undirected graph
+// Note that MinHeap in this implmenetation is based on "container/heap"
 func Prim(g weightedgraph.WeightedGraph) (MinSpanningTree, error) {
 
 	mst := MinSpanningTree{[]graph.EdgeID{}, g}
@@ -43,19 +44,6 @@ func Prim(g weightedgraph.WeightedGraph) (MinSpanningTree, error) {
 	return mst, nil
 }
 
-const (
-	maxKey weightedgraph.Weight = weightedgraph.Weight((^uint(0)) >> 1)
-)
-
-type heapNode struct {
-	self   graph.NodeID
-	parent graph.NodeID
-
-	key weightedgraph.Weight
-
-	// The index is needed by update and is maintained by the heap.Interface methods.
-	index int // The index of the item in the heap.
-}
 type minHeap []*heapNode // priority queue with minimum key at the top
 
 // Below 5 functions implement interfaces of Heap

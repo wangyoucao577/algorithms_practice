@@ -37,4 +37,17 @@ func TestMinSpanningTree(t *testing.T) {
 		t.Errorf("minimum spanning tree by prim algorithm, weight %v but want %v", pmw, want)
 	}
 
+	//Prim2 algorithm - with my implemented min heap
+	pm2, err := Prim2(*graphsample5.GraphSample())
+	if err != nil {
+		t.Error(err)
+	}
+	pmw2, err := pm2.Weight()
+	if err != nil {
+		t.Error(err)
+	}
+	if pmw != want {
+		t.Errorf("minimum spanning tree by prim algorithm (based on my implemented min heap), weight %v but want %v", pmw2, want)
+	}
+
 }
