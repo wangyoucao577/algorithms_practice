@@ -17,7 +17,7 @@ func Prim2(g weightedgraph.WeightedGraph) (MinSpanningTree, error) {
 		queringHeap.insert(item)
 		queringHeap.nodeToItem[u] = item
 	})
-	queringHeap.decreaseKey(1, 0) // random starting node
+	queringHeap.decreaseKey(0, 0) // random starting node
 
 	// iterate all nodes by decreasing key
 	for queringHeap.Len() > 0 {
