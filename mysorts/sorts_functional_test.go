@@ -61,5 +61,13 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 			break
 		}
 
+		//radix sort implementation
+		caseForRadixSort := testCase.deepCopy()
+		RadixSort(caseForRadixSort)
+		if !isSorted(caseForRadixSort, true) {
+			t.Errorf("in-place RadixSort failed on \n%v\n", caseForRadixSort)
+			break
+		}
+
 	}
 }
