@@ -25,7 +25,8 @@ func CountingSort(in []int) {
 		counting[i] += counting[i-1]
 	}
 
-	for _, v := range in {
+	for j := len(in) - 1; j >= 0; j-- {
+		v := in[j]
 		out[counting[v]-1] = v
 		counting[v]--
 	}
