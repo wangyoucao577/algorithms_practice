@@ -45,5 +45,13 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 			break
 		}
 
+		//quick sort in-place implementation
+		caseForQuickSort := testCase.deepCopy()
+		QuickSort(caseForQuickSort)
+		if !isSorted(caseForQuickSort, true) {
+			t.Errorf("in-place QuickSort failed on \n%v\n", caseForQuickSort)
+			break
+		}
+
 	}
 }
