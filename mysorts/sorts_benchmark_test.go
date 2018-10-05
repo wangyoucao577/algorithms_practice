@@ -34,6 +34,12 @@ func BenchmarkBestCaseQuickSort(b *testing.B) {
 		QuickSort(generateBestCase(benchmarkMaxArrayLen))
 	}
 }
+
+func BenchmarkBestCaseCountingSort(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		CountingSort(generateBestCase(benchmarkMaxArrayLen))
+	}
+}
 func BenchmarkWorstCaseInsertionSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		InsertionSort(generateWorstCase(benchmarkMaxArrayLen))
@@ -61,5 +67,11 @@ func BenchmarkWorstCaseHeapSort(b *testing.B) {
 func BenchmarkWorstCaseQuickSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		QuickSort(generateWorstCase(benchmarkMaxArrayLen))
+	}
+}
+
+func BenchmarkWorstCaseCountingSort(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		CountingSort(generateWorstCase(benchmarkMaxArrayLen))
 	}
 }

@@ -53,5 +53,13 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 			break
 		}
 
+		//counting sort implementation
+		caseForCountingSort := testCase.deepCopy()
+		CountingSort(caseForCountingSort)
+		if !isSorted(caseForCountingSort, true) {
+			t.Errorf("in-place CountingSort failed on \n%v\n", caseForCountingSort)
+			break
+		}
+
 	}
 }
