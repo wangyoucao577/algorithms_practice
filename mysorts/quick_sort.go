@@ -1,5 +1,7 @@
 package mysorts
 
+import "math/rand"
+
 // QuickSort implements Quick Sort in-place
 func QuickSort(in myInterface) {
 
@@ -8,7 +10,8 @@ func QuickSort(in myInterface) {
 
 func quickSortImpl(in myInterface, p, r int) {
 	if p < r {
-		q := partition(in, p, r)
+		//q := partition(in, p, r)
+		q := randomizedPartition(in, p, r)
 		quickSortImpl(in, p, q-1)
 		quickSortImpl(in, q+1, r)
 	}
@@ -34,4 +37,17 @@ func partition(in myInterface, p, r int) int {
 	}
 
 	return i + 1
+}
+
+func randomizedPartition(in myInterface, p, r int) int {
+
+	// pick up random x in [p,r]
+	x := rand.Intn(r + 1 - p)
+	x += p
+
+	if x != r {
+		in.Swap(x, r) // let x being the pivot element
+	}
+
+	return partition(in, p, r)
 }
