@@ -8,12 +8,7 @@ func CountingSort(in []int) {
 	}
 
 	// find max value from in
-	k := in[0]
-	for _, v := range in {
-		if k < v {
-			k = v
-		}
-	}
+	k := findMaxElement(in)
 
 	counting := make([]int, k+1, k+1) // all elements will be initialized by 0
 	out := make([]int, len(in), len(in))

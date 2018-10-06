@@ -11,12 +11,7 @@ func RadixSort(in []int) {
 	}
 
 	// find max value from in
-	k := in[0]
-	for _, v := range in {
-		if k < v {
-			k = v
-		}
-	}
+	k := findMaxElement(in)
 
 	s := 10 // decimal
 	var d int

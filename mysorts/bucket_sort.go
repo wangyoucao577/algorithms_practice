@@ -10,12 +10,8 @@ func BucketSort(in []int) {
 	bucketsCount := len(in)
 
 	// find max value from in
-	k := in[0]
-	for _, v := range in {
-		if k < v {
-			k = v
-		}
-	}
+	k := findMaxElement(in)
+
 	piece := k / bucketsCount
 	if piece == 0 {
 		piece = 1 // to avoid divide by zero
