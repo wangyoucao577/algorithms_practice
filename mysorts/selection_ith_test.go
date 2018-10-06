@@ -10,13 +10,13 @@ func TestSelectByPredefinedCases(t *testing.T) {
 	}{
 		{intSlice{}, 0, -1},
 		{intSlice{}, -1, -1},
-		{intSlice{0}, 0, 0},
-		{intSlice{1}, 0, 0},
-		{intSlice{0, 1}, 1, 1},
+		{intSlice{0}, 1, 0},
+		{intSlice{1}, 1, 0},
+		{intSlice{0, 1}, 2, 1},
 	}
 
 	for _, v := range cases {
-		got := Select(v.array, v.i)
+		got := SelectNth(v.array, v.i)
 		if got != v.want {
 			t.Errorf("for %d-th of input array %v, expect %v but got %v", v.i, v.array, v.want, got)
 		}
@@ -44,13 +44,14 @@ func TestSelectByRandomCases(t *testing.T) {
 
 		median := testCase.Len() / 2
 		caseForSelection := testCase.deepCopy()
-		got := Select(caseForSelection, median)
-		if caseForSelection[got] != caseForQuickSort[median] {
-			t.Errorf("Select median %v in %v, want %v but got %v", median, testCase, caseForQuickSort[median], caseForSelection[got])
+		got := SelectNth(caseForSelection, median)
+		gotV := caseForSelection[got]
+		medianV := caseForQuickSort[median-1]
+		if gotV != medianV {
+			t.Errorf("Select median %v in %v, want %v but got %v", median, testCase, medianV, gotV)
 			break
 		}
 
-		medianV := caseForSelection[got]
 		for k, selectedV := range caseForSelection {
 			if k < got {
 				// expect all elements before got are smaller than value of got
@@ -73,7 +74,7 @@ func BenchmarkWorstCaseSelectionMedian(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		testCase := generateWorstCase(benchmarkMaxArrayLen)
 		median := testCase.Len() / 2
-		Select(testCase, median)
+		SelectNth(testCase, median)
 	}
 }
 
@@ -81,6 +82,6 @@ func BenchmarkBestCaseSelectionMedian(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		testCase := generateBestCase(benchmarkMaxArrayLen)
 		median := testCase.Len() / 2
-		Select(testCase, median)
+		SelectNth(testCase, median)
 	}
 }

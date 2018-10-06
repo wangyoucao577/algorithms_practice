@@ -1,15 +1,15 @@
 package mysorts
 
-// Select select i-th order statistic from the input array,
-// return the index of the i-th element if succeed, -1 if failed.
+// SelectNth select n-th (n start by 1) order statistic from the input array,
+// return the index of the n-th element if succeed, -1 if failed.
 // based on randomizedPartition() of quicksort
-func Select(in myInterface, i int) int {
-	if i < 0 || i >= in.Len() {
+func SelectNth(in myInterface, n int) int {
+	if n <= 0 || n > in.Len() {
 		return -1
 	}
 
-	//return selectImplByRescurse(in, i, 0, in.Len()-1)
-	return selectImplByLoop(in, i, 0, in.Len()-1)
+	//return selectImplByRescurse(in, n-1, 0, in.Len()-1)
+	return selectImplByLoop(in, n-1, 0, in.Len()-1)
 }
 
 func selectImplByRescurse(in myInterface, i, p, r int) int {
