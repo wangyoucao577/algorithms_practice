@@ -46,6 +46,12 @@ func BenchmarkBestCaseRadixSort(b *testing.B) {
 		RadixSort(generateBestCase(benchmarkMaxArrayLen))
 	}
 }
+
+func BenchmarkBestCaseBucketSort(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		BucketSort(generateBestCase(benchmarkMaxArrayLen))
+	}
+}
 func BenchmarkWorstCaseInsertionSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		InsertionSort(generateWorstCase(benchmarkMaxArrayLen))
@@ -85,5 +91,11 @@ func BenchmarkWorstCaseCountingSort(b *testing.B) {
 func BenchmarkWorstCaseRadixSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		RadixSort(generateWorstCase(benchmarkMaxArrayLen))
+	}
+}
+
+func BenchmarkWorstCaseBucketSort(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		BucketSort(generateWorstCase(benchmarkMaxArrayLen))
 	}
 }
