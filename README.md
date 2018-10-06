@@ -12,8 +12,13 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 ## 实验代码
 
 ### [Golang] 排序
-学习各种排序的实验代码, 主要参考《算法导论 第3版》, 包括插入排序(Insertion Sort)、归并排序(Merge Sort)、堆排序(Heap Sort)、快速排序(Quick Sort)等比较排序算法以及计数排序(Counting Sort)、基数排序(Radix Sort)、桶排序(Bucket Sort)等非比较排序算法. 详见:     
-- [pkg - mysorts](./mysorts/)
+学习各种排序的实验代码，主要参考《算法导论 第3版》，
+- 包括:     
+    - 比较排序算法: 插入排序(Insertion Sort)、归并排序(Merge Sort)、堆排序(Heap Sort)、快速排序(Quick Sort)    
+    - 非比较排序算法: 计数排序(Counting Sort)、基数排序(Radix Sort)、桶排序(Bucket Sort)     
+    - 其他算法: 选择第`n-th`元素(Select n-th Element)    
+- 详见:    
+[pkg - mysorts](./mysorts/)    
 
 
 ### [Golang] 最大子数组问题
