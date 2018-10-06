@@ -49,6 +49,23 @@ func TestSelectByRandomCases(t *testing.T) {
 			t.Errorf("Select median %v in %v, want %v but got %v", median, testCase, caseForQuickSort[median], caseForSelection[got])
 			break
 		}
+
+		medianV := caseForSelection[got]
+		for k, selectedV := range caseForSelection {
+			if k < got {
+				// expect all elements before got are smaller than value of got
+				if selectedV > medianV {
+					t.Errorf("expect %v <= %v but not, array after select: %v", selectedV, medianV, caseForQuickSort)
+					break
+				}
+			} else if k > got {
+				// expect all elements before got are bigger than value of got
+				if selectedV < medianV {
+					t.Errorf("expect %v >= %v but not, array after select: %v", selectedV, medianV, caseForQuickSort)
+					break
+				}
+			}
+		}
 	}
 }
 
