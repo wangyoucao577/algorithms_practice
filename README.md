@@ -109,3 +109,23 @@ NOTE: `flownetwork` 与 `weightedgraph` 非常相似, 所以其实完全可以�
     
 ## References
 - 《算法导论 第3版》    
+- [Package sort](https://golang.org/pkg/sort/)
+- [Package heap](https://golang.org/pkg/container/heap/)
+- [Maximum Subarray Problem](https://en.wikipedia.org/wiki/Maximum_subarray_problem)
+- [Divide and Conquer Alogrithm](https://en.wikipedia.org/wiki/Divide_and_conquer_algorithm)
+- [Maximum Subarray Problem - Kadane's algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem)
+- [Max Priority Queue](https://en.wikipedia.org/wiki/Priority_queue)
+- [std::priority_queue](http://www.cplusplus.com/reference/queue/priority_queue/)
+- [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap)
+- [Breadth First Search](https://en.wikipedia.org/wiki/Breadth-first_search)
+- [Depth-first search - Wikipedia](https://en.wikipedia.org/wiki/Depth-first_search)
+- [Topological Sorting](https://en.wikipedia.org/wiki/Topological_sorting)
+- [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
+- [Continuous Delivery](https://en.wikipedia.org/wiki/Continuous_delivery)
+- [Strongly Connected Component](https://en.wikipedia.org/wiki/Strongly_connected_component)
+- [maximum flow problem](https://en.wikipedia.org/wiki/Maximum_flow_problem)
+- [Drainage Ditches](http://poj.org/problem?id=1273)
+- [Youtube Minimum Spanning Tree](https://www.youtube.com/watch?v=5INWifzqStU)
+- [Youtube Kruskal Algorithm](https://www.youtube.com/watch?v=5xosHRdxqHA)
+- [Youtube Prim Algorithm](https://www.youtube.com/watch?v=z1L3rMzG1_A)
+
