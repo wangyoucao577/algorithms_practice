@@ -121,6 +121,17 @@ func (b BinarySearchTree) PostorderTreeWalk(action IterateAction) {
 	postorderTreeWalk(b.root, action)
 }
 
+// Count to calculate how many nodes of the tree
+func (b BinarySearchTree) Count() int {
+	var count int
+	action := func(key int, payload interface{}) {
+		count++
+	}
+
+	inorderTreeWalk(b.root, action)
+	return count
+}
+
 // Insert to insert a key-payload pair into tree
 func (b *BinarySearchTree) Insert(key int, payload interface{}) {
 
