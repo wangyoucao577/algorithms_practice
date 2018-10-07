@@ -18,9 +18,17 @@ func TestSelectByPredefinedCases(t *testing.T) {
 	for _, v := range cases {
 		got := RandomizedSelectNth(v.array, v.i)
 		if got != v.want {
-			t.Errorf("for %d-th of input array %v, expect %v but got %v", v.i, v.array, v.want, got)
+			t.Errorf("for RandomizedSelectNth %d-th of input array %v, expect %v but got %v", v.i, v.array, v.want, got)
 		}
 	}
+
+	for _, v := range cases {
+		got := SelectNth(v.array, v.i)
+		if got != v.want {
+			t.Errorf("for SelectNth %d-th of input array %v, expect %v but got %v", v.i, v.array, v.want, got)
+		}
+	}
+
 }
 
 func TestSelectByRandomCases(t *testing.T) {
@@ -43,12 +51,36 @@ func TestSelectByRandomCases(t *testing.T) {
 		}
 
 		median := testCase.Len() / 2
-		caseForSelection := testCase.deepCopy()
-		got := RandomizedSelectNth(caseForSelection, median)
-		gotV := caseForSelection[got]
+		caseForRandomizedSelection := testCase.deepCopy()
+		got := RandomizedSelectNth(caseForRandomizedSelection, median)
+		gotV := caseForRandomizedSelection[got]
 		medianV := caseForQuickSort[median-1]
 		if gotV != medianV {
-			t.Errorf("Select median %v in %v, want %v but got %v", median, testCase, medianV, gotV)
+			t.Errorf("RandomizedSelectNth median %v in %v, want %v but got %v", median, testCase, medianV, gotV)
+			break
+		}
+
+		for k, selectedV := range caseForRandomizedSelection {
+			if k < got {
+				// expect all elements before got are smaller than value of got
+				if selectedV > medianV {
+					t.Errorf("RandomizedSelectNth expect %v <= %v but not, array after select: %v", selectedV, medianV, caseForQuickSort)
+					break
+				}
+			} else if k > got {
+				// expect all elements before got are bigger than value of got
+				if selectedV < medianV {
+					t.Errorf("RandomizedSelectNth expect %v >= %v but not, array after select: %v", selectedV, medianV, caseForQuickSort)
+					break
+				}
+			}
+		}
+
+		caseForSelection := testCase.deepCopy()
+		got = SelectNth(caseForSelection, median)
+		gotV = caseForSelection[got]
+		if gotV != medianV {
+			t.Errorf("SelectNth median %v in %v, want %v but got %v", median, testCase, medianV, gotV)
 			break
 		}
 
@@ -56,13 +88,13 @@ func TestSelectByRandomCases(t *testing.T) {
 			if k < got {
 				// expect all elements before got are smaller than value of got
 				if selectedV > medianV {
-					t.Errorf("expect %v <= %v but not, array after select: %v", selectedV, medianV, caseForQuickSort)
+					t.Errorf("SelectNth expect %v <= %v but not, array after select: %v", selectedV, medianV, caseForQuickSort)
 					break
 				}
 			} else if k > got {
 				// expect all elements before got are bigger than value of got
 				if selectedV < medianV {
-					t.Errorf("expect %v >= %v but not, array after select: %v", selectedV, medianV, caseForQuickSort)
+					t.Errorf("SelectNth expect %v >= %v but not, array after select: %v", selectedV, medianV, caseForQuickSort)
 					break
 				}
 			}
@@ -70,9 +102,25 @@ func TestSelectByRandomCases(t *testing.T) {
 	}
 }
 
+func BenchmarkWorstCaseRandomizedSelectionMedian(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		testCase := generateWorstCase(benchmarkMaxArrayLen)
+		median := testCase.Len() / 2
+		RandomizedSelectNth(testCase, median)
+	}
+}
+
 func BenchmarkWorstCaseSelectionMedian(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		testCase := generateWorstCase(benchmarkMaxArrayLen)
+		median := testCase.Len() / 2
+		SelectNth(testCase, median)
+	}
+}
+
+func BenchmarkBestCaseRandomizedSelectionMedian(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		testCase := generateBestCase(benchmarkMaxArrayLen)
 		median := testCase.Len() / 2
 		RandomizedSelectNth(testCase, median)
 	}
@@ -82,6 +130,6 @@ func BenchmarkBestCaseSelectionMedian(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		testCase := generateBestCase(benchmarkMaxArrayLen)
 		median := testCase.Len() / 2
-		RandomizedSelectNth(testCase, median)
+		SelectNth(testCase, median)
 	}
 }
