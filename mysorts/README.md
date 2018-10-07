@@ -35,8 +35,12 @@
         - 基数排序虽然看起来是线性排序, 运行低于快速排序等比较排序方法. 但实际使用时由于快速排序的每次循环更快、`in-place`等因素, 通常快速排序更好.     
     - `bucket_sort.go`: 平均情况下 **O(n)**, 且需假设前提为输入数组服从均匀分布.     
         - 实现《算法导论 第3版》ch8.4 介绍的桶排序, 又一种非比较排序的方法. 其原理为将所有的输入元素均匀的放到`n`个桶中, 然后对每个桶内进行排序, 最后按次序遍历桶放回原数组即可得到排序后的结果. 输入数组服从均匀分布的前提下, 每个桶内的元素个数是接近且均匀的, 于是每个桶内排序(一般采用`insertion sort`, 当然也可以采用`counting sort`等方法)就会很快, 从而整体可以做到线性.      
-    - `selection_nth.go`: 期望运行时间 **O(n)**, 最坏情况下 **O(n^2)**.    
-        - 实现《算法导论 第3版》ch9.2 介绍的选择第`n-th`大的元素的问题, 更多可参考 [Selection Algorithm - Wikipedia](https://en.wikipedia.org/wiki/Selection_algorithm). 其原理是基于`quick sort`的`randomized partition`, 同样采用分治法递归地将数组分割为两个子数组, 与`quick sort`不同的是, 只需要选取到的`pivot element`是第`n-th`元素即可返回, 且递归时两个子数组中只需要处理一个即可. 当取到了第`n-th`元素时, 即意味着数组中在其前面的都已经小于等于它, 而其后面的都已经大于等于它.     
+    - `selection_nth_randomized.go, selection_nth.go`: 期望运行时间 **O(n)**, 最坏情况下 **O(n^2)**.    
+        - 实现《算法导论 第3版》ch9.2~9.3 介绍的选择第`n-th`大的元素的问题, 更多可参考 [Selection Algorithm - Wikipedia](https://en.wikipedia.org/wiki/Selection_algorithm). 其原理是基于`quick sort`的`partition`, 同样采用分治法递归地将数组分割为两个子数组, 与`quick sort`不同的是, 只需要选取到的`pivot element`是第`n-th`元素即可返回, 且递归时两个子数组中只需要处理一个即可. 当取到了第`n-th`元素时, 即意味着数组中在其前面的都已经小于等于它, 而其后面的都已经大于等于它.     
+            - `RandomizedSelectNth()`: 基于`quick sort`的`randomized partition`实现, 实现代码非常简单.    
+            - `SelectNth()`: ch9.3 介绍的最坏情况为线性时间的算法. 原理是先通过分治的方法找到`median`, 然后每次都以`median`来分治子数组迭代. 主要是每次找`median`的设计比较复杂, 将原输入数组分隔成每`5`个元素一个子数组, 每个子数组内部排序以得到每个子数组的`median`, 再把这些`median`抽取成一个新的数组再迭代寻找`median`, 直至找到最终的`median`, 所以这个过程更像是一个稀疏化的过程. 
+                - 虽然书上介绍此方法是理论上最坏情况为线性时间, 但实现上远比`RandomizedSelectNth()`复杂. 并且迭代的次数更多, 还需要额外分配不少辅助内存, 实测的运行时间比`RandomizedSelectNth()`慢很多.    
+                - 另外, 为什么最坏情况是线性时间的推导部分没太看懂...     
             - 猜测一下, [std::nth_element](https://en.cppreference.com/w/cpp/algorithm/nth_element) 和 [std::partial_sort](https://zh.cppreference.com/w/cpp/algorithm/partial_sort) 均应是基于此原理实现的.    
 
 
