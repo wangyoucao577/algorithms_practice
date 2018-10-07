@@ -16,7 +16,7 @@ func TestSelectByPredefinedCases(t *testing.T) {
 	}
 
 	for _, v := range cases {
-		got := SelectNth(v.array, v.i)
+		got := RandomizedSelectNth(v.array, v.i)
 		if got != v.want {
 			t.Errorf("for %d-th of input array %v, expect %v but got %v", v.i, v.array, v.want, got)
 		}
@@ -44,7 +44,7 @@ func TestSelectByRandomCases(t *testing.T) {
 
 		median := testCase.Len() / 2
 		caseForSelection := testCase.deepCopy()
-		got := SelectNth(caseForSelection, median)
+		got := RandomizedSelectNth(caseForSelection, median)
 		gotV := caseForSelection[got]
 		medianV := caseForQuickSort[median-1]
 		if gotV != medianV {
@@ -74,7 +74,7 @@ func BenchmarkWorstCaseSelectionMedian(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		testCase := generateWorstCase(benchmarkMaxArrayLen)
 		median := testCase.Len() / 2
-		SelectNth(testCase, median)
+		RandomizedSelectNth(testCase, median)
 	}
 }
 
@@ -82,6 +82,6 @@ func BenchmarkBestCaseSelectionMedian(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		testCase := generateBestCase(benchmarkMaxArrayLen)
 		median := testCase.Len() / 2
-		SelectNth(testCase, median)
+		RandomizedSelectNth(testCase, median)
 	}
 }
