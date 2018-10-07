@@ -42,6 +42,7 @@
                 - 虽然书上介绍此方法是理论上最坏情况为线性时间, 但实现上远比`RandomizedSelectNth()`复杂. 并且迭代的次数更多, 还需要额外分配不少辅助内存, 实测的运行时间比`RandomizedSelectNth()`慢很多.    
                 - 另外, 为什么最坏情况是线性时间的推导部分没太看懂...     
             - 猜测一下, [std::nth_element](https://en.cppreference.com/w/cpp/algorithm/nth_element) 和 [std::partial_sort](https://zh.cppreference.com/w/cpp/algorithm/partial_sort) 均应是基于此原理实现的.    
+                - 看了下`VC 2017`中这两个函数分别的实现, [std::nth_element](https://en.cppreference.com/w/cpp/algorithm/nth_element) 确实是基于这个原理实现的, 但[std::partial_sort](https://zh.cppreference.com/w/cpp/algorithm/partial_sort)则是基于的`HeapSort`.    
 
 
 ## References
