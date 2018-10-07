@@ -24,7 +24,7 @@ func (b BinarySearchTree) Search(key int) (interface{}, error) {
 	if node == nil {
 		return nil, fmt.Errorf("key %v does not exist", key)
 	}
-	return node.key, nil
+	return node.payload, nil
 }
 
 // Minimum return the minimum key node in the binary search tree

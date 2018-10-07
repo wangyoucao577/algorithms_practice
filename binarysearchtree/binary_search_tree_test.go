@@ -49,19 +49,21 @@ func TestBinarySearchTreeSample1(t *testing.T) {
 		{20, 2}, //error
 	}
 
+	payloadFactor := 2 // use a simple factor for payload, easy to verify
+
 	// construct tree
 	var tree BinarySearchTree
-	tree.Insert(15, nil)
-	tree.Insert(6, nil)
-	tree.Insert(3, nil)
-	tree.Insert(2, nil)
-	tree.Insert(4, nil)
-	tree.Insert(7, nil)
-	tree.Insert(13, nil)
-	tree.Insert(9, nil)
-	tree.Insert(18, nil)
-	tree.Insert(17, nil)
-	tree.Insert(20, nil)
+	tree.Insert(15, 15*payloadFactor)
+	tree.Insert(6, 6*payloadFactor)
+	tree.Insert(3, 3*payloadFactor)
+	tree.Insert(2, 2*payloadFactor)
+	tree.Insert(4, 4*payloadFactor)
+	tree.Insert(7, 7*payloadFactor)
+	tree.Insert(13, 13*payloadFactor)
+	tree.Insert(9, 9*payloadFactor)
+	tree.Insert(18, 18*payloadFactor)
+	tree.Insert(17, 17*payloadFactor)
+	tree.Insert(20, 20*payloadFactor)
 
 	if tree.Count() != want.count {
 		t.Errorf("expect tree count %v but got %v", want.count, tree.Count())
@@ -125,6 +127,21 @@ func TestBinarySearchTreeSample1(t *testing.T) {
 		if gotPrecessor != v.precessor {
 			t.Errorf("expect %v for precessor of key %v but got %v", v.precessor, v.successor, gotPrecessor)
 		}
+	}
+
+	for _, key := range want.postorderWalked {
+		payload, err := tree.Search(key)
+		if err != nil {
+			t.Errorf("search key %v failed, err %v", key, err)
+		}
+		payloadValue := payload.(int)
+		if payloadValue != key*payloadFactor {
+			t.Errorf("search key %v, expect payload %v but got %v", key, key*payloadFactor, payloadValue)
+		}
+	}
+	_, err := tree.Search(100)
+	if err == nil {
+		t.Error("search key 100, expect failed but return successed")
 	}
 
 }
