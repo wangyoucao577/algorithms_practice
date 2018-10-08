@@ -38,7 +38,7 @@ func (b BinarySearchTree) Minimum() (int, interface{}, error) {
 	if b.Empty() {
 		return 0, nil, fmt.Errorf("empty tree")
 	}
-	node := b.minimumNode()
+	node := minimumNode(b.root)
 	return node.key, node.payload, nil
 }
 
@@ -48,7 +48,7 @@ func (b BinarySearchTree) Maximum() (int, interface{}, error) {
 	if b.Empty() {
 		return 0, nil, fmt.Errorf("empty tree")
 	}
-	node := b.maximumNode()
+	node := maximumNode(b.root)
 	return node.key, node.payload, nil
 }
 
@@ -60,9 +60,8 @@ func (b BinarySearchTree) Successor(key int) (int, error) {
 	}
 
 	if node.rightChild != nil {
-		subTree := BinarySearchTree{node.rightChild}
-		newKey, _, err := subTree.Minimum()
-		return newKey, err
+		newNode := minimumNode(node.rightChild)
+		return newNode.key, nil
 	}
 
 	p := node.parent
@@ -85,9 +84,8 @@ func (b BinarySearchTree) Predecessor(key int) (int, error) {
 	}
 
 	if node.leftChild != nil {
-		subTree := BinarySearchTree{node.leftChild}
-		newKey, _, err := subTree.Maximum()
-		return newKey, err
+		newNode := maximumNode(node.leftChild)
+		return newNode.key, nil
 	}
 
 	p := node.parent
@@ -182,8 +180,7 @@ func (b *BinarySearchTree) Delete(key int) error {
 		// find successor of current node
 		// The successor of node MUST be in right-sub-tree of current node,
 		// and it will not have a leftChild.
-		subTree := BinarySearchTree{node.rightChild}
-		y := subTree.minimumNode()
+		y := minimumNode(node.rightChild)
 
 		if y != node.rightChild { // y in node's subTree but not the rightChild of node
 			b.transplant(y, y.rightChild)

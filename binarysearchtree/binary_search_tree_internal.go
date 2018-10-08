@@ -25,16 +25,16 @@ func (b *BinarySearchTree) searchNode(key int) *treeNode {
 	return nil
 }
 
-func (b BinarySearchTree) minimumNode() *treeNode {
-	node := b.root
+func minimumNode(root *treeNode) *treeNode {
+	node := root
 	for node.leftChild != nil {
 		node = node.leftChild
 	}
 	return node
 }
 
-func (b BinarySearchTree) maximumNode() *treeNode {
-	node := b.root
+func maximumNode(root *treeNode) *treeNode {
+	node := root
 	for node.rightChild != nil {
 		node = node.rightChild
 	}
