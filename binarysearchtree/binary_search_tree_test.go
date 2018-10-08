@@ -1,6 +1,7 @@
 package binarysearchtree
 
 import (
+	"math/rand"
 	"reflect"
 	"testing"
 )
@@ -144,4 +145,87 @@ func TestBinarySearchTreeSample1(t *testing.T) {
 		t.Error("search key 100, expect failed but return successed")
 	}
 
+	if tree.Delete(13) != nil {
+		t.Error("Delete 13, expect succeed but failed")
+	}
+	if tree.Delete(13) == nil {
+		t.Error("Delete 13 again, expect failed but succeed")
+	}
+
+	tree.Clear()
+	if !tree.Empty() || tree.Count() > 0 {
+		t.Errorf("Expect empty tree after clear, but got count %v", tree.Count())
+	}
+}
+
+func TestBinarySearchTreeRandomizedInsertDelete(t *testing.T) {
+
+	maxTreeCount := 100
+	maxRandomCount := 1000
+	maxTestKeyCount := 2000
+
+	for i := 0; i < maxTreeCount; i++ {
+
+		var tree BinarySearchTree
+		var insert bool
+		keys := make([]bool, maxTestKeyCount, maxTestKeyCount)
+
+		for j := 0; j < maxRandomCount; j++ {
+
+			if rand.Intn(2) != 0 {
+				insert = true
+			}
+
+			key := rand.Intn(maxTestKeyCount)
+			if insert {
+				countBeforeInsert := tree.Count()
+				tree.Insert(key, key)
+				countAfterInsert := tree.Count()
+
+				if countAfterInsert != countBeforeInsert+1 {
+					t.Errorf("insert key %v, but count before insert %v +1 != count after insert %v", key, countBeforeInsert, countAfterInsert)
+				}
+				keys[key] = true
+
+				if !tree.Validate() {
+					t.Errorf("tree going to invalid after insert key %v", key)
+				}
+
+			} else { //delete
+				countBeforeDelete := tree.Count()
+				deleteErr := tree.Delete(key)
+				countAfterDelete := tree.Count()
+
+				if keys[key] {
+					// expect delete succeed
+
+					if deleteErr != nil {
+						t.Errorf("delete key %v except succeed, but got failed, err %v", key, deleteErr)
+					}
+
+					if countAfterDelete != countBeforeDelete-1 {
+						t.Errorf("delete key %v except succeed, but count before delete %v -1 != count after delete %v", key, countBeforeDelete, countAfterDelete)
+					}
+
+				} else {
+					// expect delete failed
+
+					if deleteErr == nil {
+						t.Errorf("delete key %v except failed, but got succeed", key)
+					}
+
+					if countAfterDelete != countBeforeDelete {
+						t.Errorf("delete key %v except failed, but count before delete %v != count after delete %v", key, countBeforeDelete, countAfterDelete)
+					}
+
+				}
+				keys[key] = false
+
+				if !tree.Validate() {
+					t.Errorf("tree going to invalid after delete key %v", key)
+				}
+
+			}
+		}
+	}
 }

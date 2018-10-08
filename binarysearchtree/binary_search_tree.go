@@ -16,6 +16,11 @@ func (b BinarySearchTree) Empty() bool {
 	return b.root == nil
 }
 
+// Clear to clear all nodes of the tree
+func (b *BinarySearchTree) Clear() {
+	b.root = nil
+}
+
 // Search to find the key in the binarySearchTree,
 // return payload if found, nil if not found
 // NOTE that if there're multiple nodes with same key, will only return the first one
@@ -33,10 +38,7 @@ func (b BinarySearchTree) Minimum() (int, interface{}, error) {
 	if b.Empty() {
 		return 0, nil, fmt.Errorf("empty tree")
 	}
-	node := b.root
-	for node.leftChild != nil {
-		node = node.leftChild
-	}
+	node := b.minimumNode()
 	return node.key, node.payload, nil
 }
 
@@ -46,10 +48,7 @@ func (b BinarySearchTree) Maximum() (int, interface{}, error) {
 	if b.Empty() {
 		return 0, nil, fmt.Errorf("empty tree")
 	}
-	node := b.root
-	for node.rightChild != nil {
-		node = node.rightChild
-	}
+	node := b.maximumNode()
 	return node.key, node.payload, nil
 }
 
@@ -165,6 +164,58 @@ func (b *BinarySearchTree) Insert(key int, payload interface{}) {
 }
 
 // Delete to delete the node with the key from the tree
-func (b *BinarySearchTree) Delete(key int) {
-	//TODO:
+func (b *BinarySearchTree) Delete(key int) error {
+	node := b.searchNode(key)
+	if node == nil {
+		return fmt.Errorf("key %v does not exist", key)
+	}
+
+	if node.leftChild == nil { // only have a rightChild or no child
+		b.transplant(node, node.rightChild) //whatever node.rightChild is nil or not nil
+	} else if node.rightChild == nil { // only have a leftChild
+		b.transplant(node, node.leftChild)
+	} else { // both have leftChild and rightChild
+
+		// Here's the most complex process of binary search tree.
+		// Refer to "Introduction to Algorithms - Third Edition" ch12.3 for more details if necessary.
+
+		// find successor of current node
+		// The successor of node MUST be in right-sub-tree of current node,
+		// and it will not have a leftChild.
+		subTree := BinarySearchTree{node.rightChild}
+		y := subTree.minimumNode()
+
+		if y != node.rightChild { // y in node's subTree but not the rightChild of node
+			b.transplant(y, y.rightChild)
+			y.rightChild = node.rightChild
+			y.rightChild.parent = y
+		}
+
+		b.transplant(node, y)
+		y.leftChild = node.leftChild
+		y.leftChild.parent = y
+	}
+
+	return nil
+}
+
+// Validate to validate whether b is a valid binary search tree.
+// return true if it's valid, false if it's not match the property of binary search tree.
+func (b BinarySearchTree) Validate() bool {
+	if b.Empty() {
+		return true
+	}
+
+	var walked []int
+	b.InorderTreeWalk(func(key int, payload interface{}) {
+		walked = append(walked, key)
+	})
+
+	for i := 1; i < len(walked); i++ {
+		if walked[i-1] > walked[i] {
+			return false
+		}
+	}
+
+	return true
 }
