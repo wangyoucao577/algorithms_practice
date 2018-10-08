@@ -7,7 +7,8 @@ import (
 
 // BinarySearchTree represent a binary search tree structure
 type BinarySearchTree struct {
-	root *treeNode
+	root  *treeNode
+	count int
 }
 
 // Empty to check whether tree is empty,
@@ -19,6 +20,7 @@ func (b BinarySearchTree) Empty() bool {
 // Clear to clear all nodes of the tree
 func (b *BinarySearchTree) Clear() {
 	b.root = nil
+	b.count = 0
 }
 
 // Search to find the key in the binarySearchTree,
@@ -118,15 +120,9 @@ func (b BinarySearchTree) PostorderTreeWalk(action IterateAction) {
 	postorderTreeWalk(b.root, action)
 }
 
-// Count to calculate how many nodes of the tree
+// Count how many nodes in the tree
 func (b BinarySearchTree) Count() int {
-	var count int
-	action := func(key int, payload interface{}) {
-		count++
-	}
-
-	inorderTreeWalk(b.root, action)
-	return count
+	return b.count
 }
 
 // Insert to insert a key-payload pair into tree
@@ -138,6 +134,7 @@ func (b *BinarySearchTree) Insert(key int, payload interface{}) {
 
 	if b.root == nil {
 		b.root = newNode
+		b.count++
 		return
 	}
 
@@ -147,6 +144,7 @@ func (b *BinarySearchTree) Insert(key int, payload interface{}) {
 			if node.leftChild == nil {
 				node.leftChild = newNode
 				newNode.parent = node
+				b.count++
 				return
 			}
 			node = node.leftChild
@@ -154,6 +152,7 @@ func (b *BinarySearchTree) Insert(key int, payload interface{}) {
 			if node.rightChild == nil {
 				node.rightChild = newNode
 				newNode.parent = node
+				b.count++
 				return
 			}
 			node = node.rightChild
@@ -193,6 +192,7 @@ func (b *BinarySearchTree) Delete(key int) error {
 		y.leftChild.parent = y
 	}
 
+	b.count--
 	return nil
 }
 
@@ -207,6 +207,10 @@ func (b BinarySearchTree) Validate() bool {
 	b.InorderTreeWalk(func(key int, payload interface{}) {
 		walked = append(walked, key)
 	})
+
+	if len(walked) != b.count {
+		return false
+	}
 
 	for i := 1; i < len(walked); i++ {
 		if walked[i-1] > walked[i] {
