@@ -76,5 +76,14 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 			t.Errorf("in-place BucketSort failed on \n%v\n", caseForBucketSort)
 			break
 		}
+
+		//tree sort implementation
+		caseForTreeSort := testCase.deepCopy()
+		TreeSort(caseForTreeSort)
+		if !isSorted(caseForTreeSort, true) {
+			t.Errorf("TreeSort failed on \n%v\n", caseForTreeSort)
+			break
+		}
+
 	}
 }
