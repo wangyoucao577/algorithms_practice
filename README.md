@@ -16,7 +16,7 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 - 包括:     
     - 比较排序算法: 插入排序(Insertion Sort)、归并排序(Merge Sort)、堆排序(Heap Sort)、快速排序(Quick Sort)    
     - 非比较排序算法: 计数排序(Counting Sort)、基数排序(Radix Sort)、桶排序(Bucket Sort)     
-    - 其他算法: 选择第`n-th`元素(Select n-th Element)    
+    - 其他算法: 选择第`n-th`元素(Select n-th Element)、基于Binary Search Tree的排序(Tree Sort)      
 - 详见:    
 [pkg - mysorts](./mysorts/)    
 
