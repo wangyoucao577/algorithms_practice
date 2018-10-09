@@ -46,8 +46,8 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
     - 二叉搜索树性质: 设`x`为二叉搜索树中的一个节点, 若`y`是`x`的左子树中的一个节点, 则`y.key <= x.key`; 若`y`是`x`的右子树中的一个节点, 则`y.key >= x.key`.    
     - 二叉搜索树实现时, 一般每个`node`中都会记录`parent/leftChild/rightChild`三个指针以维护树的结构, 同时`node`中需记录`key`以维护二叉搜索树的性质. 可选的`node`中可能会记录额外的`payload`.    
     - 二叉搜索树一般至少会提供接口: (实现在`binary_search_tree.go`中)    
-        - `Minimum()`: `O(lg(n))` 返回最小`key`的节点(同`MinHeap`中的`Minimum()`)    
-        - `Maximum()`: `O(lg(n))` 返回最大`key`的节点(同`MaxHeap`中的`Maximum()`)    
+        - `Minimum()/Maximum()`: `O(lg(n))` 返回最小/最大`key`的节点(同`MinHeap/MaxHeap`中的`Minimum()/Maximum()`)    
+            - 故[Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree)也可以作为一个可以同时方便地查询`Max/Min`的[Priority Queue](https://en.wikipedia.org/wiki/Priority_queue)来使用.     
         - `Successor()/Predecessor()`: `O(lg(n))` 返回当前`node`的`Succesor/Predecessor`节点    
             - `Successor`节点: `>= node.key` 的最小`key`节点    
             - `Predecessor`节点: `<= node.key` 的最大`key`节点    
@@ -137,7 +137,7 @@ NOTE: `flownetwork` 与 `weightedgraph` 非常相似, 所以其实完全可以�
 - [Maximum Subarray Problem](https://en.wikipedia.org/wiki/Maximum_subarray_problem)
 - [Divide and Conquer Alogrithm](https://en.wikipedia.org/wiki/Divide_and_conquer_algorithm)
 - [Maximum Subarray Problem - Kadane's algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem)
-- [Max Priority Queue](https://en.wikipedia.org/wiki/Priority_queue)
+- [Priority Queue](https://en.wikipedia.org/wiki/Priority_queue)
 - [std::priority_queue](http://www.cplusplus.com/reference/queue/priority_queue/)
 - [Fibonacci heap](https://en.wikipedia.org/wiki/Fibonacci_heap)
 - [Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree)
