@@ -46,18 +46,19 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
     - 二叉搜索树性质: 设`x`为二叉搜索树中的一个节点, 若`y`是`x`的左子树中的一个节点, 则`y.key <= x.key`; 若`y`是`x`的右子树中的一个节点, 则`y.key >= x.key`.    
     - 二叉搜索树实现时, 一般每个`node`中都会记录`parent/leftChild/rightChild`三个指针以维护树的结构, 同时`node`中需记录`key`以维护二叉搜索树的性质. 可选的`node`中可能会记录额外的`payload`.    
     - 二叉搜索树一般至少会提供接口: (实现在`binary_search_tree.go`中)    
-        - `Minimum()/Maximum()`: `O(lg(n))` 返回最小/最大`key`的节点(同`MinHeap/MaxHeap`中的`Minimum()/Maximum()`)    
+        - `Minimum()/Maximum()`: `O(h)` 返回最小/最大`key`的节点(同`MinHeap/MaxHeap`中的`Minimum()/Maximum()`)    
             - 故[Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree)也可以作为一个可以同时方便地查询`Max/Min`的[Priority Queue](https://en.wikipedia.org/wiki/Priority_queue)来使用.     
-        - `Successor()/Predecessor()`: `O(lg(n))` 返回当前`node`的`Succesor/Predecessor`节点    
+        - `Successor()/Predecessor()`: `O(h)` 返回当前`node`的`Succesor/Predecessor`节点    
             - `Successor`节点: `>= node.key` 的最小`key`节点    
             - `Predecessor`节点: `<= node.key` 的最大`key`节点    
-        - `Insert()`: `O(lg(n))` 插入一个新的节点(总是会插入为`tree`的`leaf`)    
-        - `Delete()`: `O(lg(n))` 删除一个新的节点. 实现上最复杂的一个接口, 主要是要删除的节点同时存在`leftChild`和`rightChild`时的情况比较复杂.    
-        - `Search()`: `O(lg(n))` 搜索一个指定`key`的`node`.    
+        - `Insert()`: `O(h)` 插入一个新的节点(总是会插入为`tree`的`leaf`)    
+        - `Delete()`: `O(h)` 删除一个新的节点. 实现上最复杂的一个接口, 主要是要删除的节点同时存在`leftChild`和`rightChild`时的情况比较复杂.    
+        - `Search()`: `O(h)` 搜索一个指定`key`的`node`.    
         - `InorderTreeWalk()`: `O(n)` 中序遍历, 即总是按照 `node.leftChild => node => node.rightChild` 的顺序递归遍历.     
             - 注: 由于二叉搜索树的性质, 中序遍历的结果总是按照`key`升序排序的. 也即可以通过二叉搜索树来实现排序. 我的实验代码见 [mysorts - tree sort](./mysorts/tree_sort.go).    
         - `PreorderTreeWalk()`: `O(n)` 先序遍历, 即总是按照 `node => node.leftChild => node.rightChild` 的顺序递归遍历.     
         - `postorderTreeWalk()`: `O(n)` 后续遍历, 即总是按照 `node.leftChild => node.rightChild => node` 的顺序递归遍历.    
+    - 注: 以上分析的`O(n)`中的`n`为树中的总的节点数, `O(h)`中的`h`为树的高度, 最坏情况下`h == n`, 但平均情况接近最好情况即`lg(n)`. 也即平均情况下[Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree)的接口的运行时间为`O(lg(n))`.       
 
 ### [Golang] 图算法
 ![golang_pkg_import_graph](golang_pkg_import_graph.mmd.png)

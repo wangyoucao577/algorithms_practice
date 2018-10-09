@@ -35,9 +35,9 @@
         - 基数排序虽然看起来是线性排序, 运行低于快速排序等比较排序方法. 但实际使用时由于快速排序的每次循环更快、`in-place`等因素, 通常快速排序更好.     
     - `bucket_sort.go`: 平均情况下 **O(n)**, 且需假设前提为输入数组服从均匀分布.     
         - 实现《算法导论 第3版》ch8.4 介绍的桶排序, 又一种非比较排序的方法. 其原理为将所有的输入元素均匀的放到`n`个桶中, 然后对每个桶内进行排序, 最后按次序遍历桶放回原数组即可得到排序后的结果. 输入数组服从均匀分布的前提下, 每个桶内的元素个数是接近且均匀的, 于是每个桶内排序(一般采用`insertion sort`, 当然也可以采用`counting sort`等方法)就会很快, 从而整体可以做到线性.      
-    - `tree_sort.go`: **O(n*log(n))** 基于[Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree) 实现的排序.     
+    - `tree_sort.go`: 平均情况下 **O(n*log(n))** 基于[Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree) 实现的排序.     
         - 具体为将输入数组的每个元素都作为`key`构建[Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree), 然后中序遍历整棵树, 即可得到按照`key`升序排序后的结果.     
-        - 构建树的过程运行时间为 `O(n*log(n))`, 中序遍历的过程运行时间为 `O(n)`, 故总体运行时间为 **O(n*log(n))**. 但由于[Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree) 通常都通过指针链接的方式实现而并非基于数组等连续存储, 且并非一种`in-place`的方式, 工程实现时仅就排序而言效率通常不如其他基于数组的排序方式.     
+        - 构建树的过程平均情况下运行时间为 `O(n*log(n))`, 中序遍历的过程运行时间为 `O(n)`, 故总体运行时间为 **O(n*log(n))**. 但由于[Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree) 通常都通过指针链接的方式实现而并非基于数组等连续存储, 且并非一种`in-place`的方式, 工程实现时仅就排序而言效率通常不如其他基于数组的排序方式.     
     - `selection_nth_randomized.go, selection_nth.go`: 期望运行时间 **O(n)**, 最坏情况下 **O(n^2)**.    
         - 实现《算法导论 第3版》ch9.2~9.3 介绍的选择第`n-th`大的元素的问题, 更多可参考 [Selection Algorithm - Wikipedia](https://en.wikipedia.org/wiki/Selection_algorithm). 其原理是基于`quick sort`的`partition`, 同样采用分治法递归地将数组分割为两个子数组, 与`quick sort`不同的是, 只需要选取到的`pivot element`是第`n-th`元素即可返回, 且递归时两个子数组中只需要处理一个即可. 当取到了第`n-th`元素时, 即意味着数组中在其前面的都已经小于等于它, 而其后面的都已经大于等于它.     
             - `RandomizedSelectNth()`: 基于`quick sort`的`randomized partition`实现, 实现代码非常简单.    
