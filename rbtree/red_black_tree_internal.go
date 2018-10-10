@@ -87,6 +87,58 @@ func (rb RBTree) postorderTreeWalk(node *treeNode, action IterateAction) {
 	}
 }
 
+//	|          |
+//	x          y
+//	 \	==>   /
+//    y      x
+// Test idea: will get same inorderTreeWalk result whatever rotate which node
+func (rb *RBTree) leftRotate(x *treeNode) {
+
+	y := x.rightChild          // set y
+	x.rightChild = y.leftChild // turn y's left subtree into x's right subtree
+	if y.leftChild != rb.nil() {
+		y.leftChild.parent = x
+	}
+	y.parent = x.parent // link x's parent to y
+	if x.parent == rb.nil() {
+		rb.root = y
+	} else {
+		if x.parent.leftChild == x {
+			x.parent.leftChild = y
+		} else {
+			x.parent.rightChild = y
+		}
+	}
+
+	y.leftChild = x // put x on y's left
+	x.parent = y
+}
+
+//	 |       |
+//	 y       x
+//  /	==>   \
+// x           y
+// Test idea: will get same inorderTreeWalk result whatever rotate which node
+func (rb *RBTree) rightRotate(y *treeNode) {
+	x := y.leftChild           // set x
+	y.leftChild = x.rightChild // turn x's right subtree into y's left subtree
+	if x.rightChild != rb.nil() {
+		x.rightChild.parent = y
+	}
+	x.parent = y.parent // link y's parent to x
+	if y.parent == rb.nil() {
+		rb.root = x
+	} else {
+		if y == y.parent.leftChild {
+			y.parent.leftChild = x
+		} else {
+			y.parent.rightChild = x
+		}
+	}
+	x.rightChild = y // put y on x's right
+	y.parent = x
+}
+
 func (rb RBTree) validateBinarySearchTreeProperties() bool {
 	if rb.Empty() {
 		return true
