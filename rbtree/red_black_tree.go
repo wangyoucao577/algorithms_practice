@@ -133,7 +133,35 @@ func (rb RBTree) Count() int {
 
 // Insert to insert a key-payload pair into tree
 func (rb *RBTree) Insert(key int, payload interface{}) {
-	//TODO: implement
+	newNode := &treeNode{rb.nil(), rb.nil(), rb.nil(), key, payload, rbRed}
+
+	defer func() {
+		rb.count++
+		rb.insertFixup(newNode) // fixup red-black tree before return
+	}()
+
+	if rb.root == rb.nil() {
+		rb.root = newNode
+		return
+	}
+
+	node := rb.root
+	for node != rb.nil() {
+		if newNode.key < node.key {
+			if node.leftChild == rb.nil() {
+				node.leftChild = newNode
+				break
+			}
+			node = node.leftChild
+		} else { // >= can allow multiple nodes have same key
+			if node.rightChild == rb.nil() {
+				node.rightChild = newNode
+				break
+			}
+			node = node.rightChild
+		}
+	}
+	newNode.parent = node
 }
 
 // Delete to delete the node with the key from the tree

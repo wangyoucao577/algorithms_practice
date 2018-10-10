@@ -139,6 +139,41 @@ func (rb *RBTree) rightRotate(y *treeNode) {
 	y.parent = x
 }
 
+func (rb *RBTree) insertFixup(z *treeNode) {
+	defer func() { rb.root.color = rbBlack }() // case 0
+
+	for z.parent.color == rbRed {
+		if z.parent.parent.rightChild.color == rbRed && z.parent.parent.leftChild.color == rbRed { // z.parent.parent must exist here
+			z.parent.parent.color = rbRed              // case 1
+			z.parent.parent.rightChild.color = rbBlack // case 1
+			z.parent.parent.leftChild.color = rbBlack  // case 1
+			z = z.parent.parent                        // case 1
+			continue
+		}
+
+		// case 2
+		if z.parent == z.parent.parent.leftChild && z == z.parent.rightChild {
+			z = z.parent // for case 3 operation
+			rb.leftRotate(z)
+		} else if z.parent == z.parent.parent.rightChild && z == z.parent.leftChild {
+			z = z.parent // for case 3 operation
+			rb.rightRotate(z)
+		}
+
+		// case 3
+		if z.parent == z.parent.parent.leftChild && z == z.parent.leftChild {
+			z.parent.color = rbBlack
+			z.parent.parent.color = rbRed
+			rb.rightRotate(z.parent.parent)
+		} else if z.parent == z.parent.parent.rightChild && z == z.parent.rightChild {
+			z.parent.color = rbBlack
+			z.parent.parent.color = rbRed
+			rb.leftRotate(z.parent.parent)
+		}
+	}
+
+}
+
 func (rb RBTree) validateBinarySearchTreeProperties() bool {
 	if rb.Empty() {
 		return true
