@@ -145,6 +145,7 @@ func (rb *RBTree) Delete(key int) error {
 
 // Validate to validate whether b is a valid red-black tree.
 // return true if it's valid, false if it's not match the property of red-black tree.
+// NOTE: It's better to set this func only as a test func since it's too complex and low efficiency.
 func (rb RBTree) Validate() bool {
 
 	//0. First of all, it should be a binary search tree
@@ -165,6 +166,8 @@ func (rb RBTree) Validate() bool {
 		return false
 	}
 
+	nonNilLeaves := []*treeNode{}
+
 	//3. Every RED node has two BLACK child nodes.
 	valid := true
 	rb.inorderTreeWalkNodes(rb.root, func(node *treeNode) {
@@ -173,13 +176,42 @@ func (rb RBTree) Validate() bool {
 				valid = false
 			}
 		}
+
+		if node.leftChild == rb.nil() && node.rightChild == rb.nil() {
+			nonNilLeaves = append(nonNilLeaves, node)
+		}
 	})
 	if !valid {
 		return false
 	}
 
 	//4. Every path from node x (calculte without x) down to leaf node(must be rb.nil()) has the same number of BLACK nodes.
-	//TODO: implement
+	nonLeafNodesBH := map[*treeNode]int{} //black-high for non-leaf nodes
+	for _, v := range nonNilLeaves {
 
+		//calculate each non-leaf node's black-high until root,
+		// start from each non-nil-leaf node
+		node := v.parent
+		currBh := 0
+		if v.color == rbBlack {
+			currBh++
+		}
+
+		for node != rb.nil() {
+			bh, ok := nonLeafNodesBH[node]
+			if !ok {
+				nonLeafNodesBH[node] = currBh
+			} else {
+				if bh != currBh {
+					return false
+				}
+			}
+
+			if node.color == rbBlack {
+				currBh++
+			}
+			node = node.parent
+		}
+	}
 	return true
 }
