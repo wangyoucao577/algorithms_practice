@@ -7,7 +7,7 @@ import (
 )
 
 // similar functional test comes from binarysearchtree.TestBinarySearchTreeSample1()
-func TestBinarySearchTreeSample1(t *testing.T) {
+func TestRedBlackTreeSample1(t *testing.T) {
 
 	/* This sample tree comes from
 		"Introduction to Algorithms - Third Edition" 12.2
@@ -169,7 +169,7 @@ func TestBinarySearchTreeSample1(t *testing.T) {
 	}
 }
 
-func TestBinarySearchTreeRandomizedInsertDelete(t *testing.T) {
+func TestRedBlackTreeRandomizedInsertDelete(t *testing.T) {
 
 	maxTreeCount := 100
 	maxRandomCount := 1000
