@@ -166,8 +166,51 @@ func (rb *RBTree) Insert(key int, payload interface{}) {
 
 // Delete to delete the node with the key from the tree
 func (rb *RBTree) Delete(key int) error {
+	node := rb.searchNode(key)
+	if node == rb.nil() {
+		return fmt.Errorf("key %v does not exist", key)
+	}
 
-	//TODO: implement
+	y := node
+	yOriginalColor := node.color
+	x := rb.nil()
+
+	// Below process is very similar with `Delete()` of binary search tree.
+	// Refer to "Introduction to Algorithms - Third Edition" ch12.3
+	// and "Introduction to Algorithms - Third Edition" ch13.4 for more details if necessary.
+
+	if node.leftChild == rb.nil() { // only have a rightChild or no child
+		x = node.rightChild
+		rb.transplant(node, node.rightChild)
+	} else if node.rightChild == rb.nil() { // only have a leftChild
+		x = node.leftChild
+		rb.transplant(node, node.leftChild)
+	} else { // have both leftChild and rightChild
+
+		// find successor of current node
+		// The successor of node MUST be in right-sub-tree of current node,
+		// and it will not have a leftChild.
+		y = rb.minimumNode(node.rightChild)
+		yOriginalColor = y.color
+		x = y.rightChild
+
+		// same condition of binary search tree `Delete()`
+		if y != node.rightChild { // y in node's subTree but not the rightChild of node
+			rb.transplant(y, y.rightChild)
+			y.rightChild = node.rightChild
+			y.rightChild.parent = y
+		}
+		rb.transplant(node, y)
+		y.leftChild = node.leftChild
+		y.leftChild.parent = y
+		y.color = node.color
+	}
+
+	if yOriginalColor == rbBlack { // if yOriginalColor is RED, will not affect red-black tree properties
+		rb.deleteFixup(x) // the most complex part of red-black tree deletion
+	}
+
+	rb.count--
 	return nil
 }
 

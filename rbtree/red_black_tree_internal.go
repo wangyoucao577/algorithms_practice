@@ -197,3 +197,28 @@ func (rb RBTree) validateBinarySearchTreeProperties() bool {
 	}
 	return true
 }
+
+// use `v` instead of `u`, `u` must not be `nil` here
+func (rb *RBTree) transplant(u, v *treeNode) {
+	if u == nil || v == nil || u == rb.nil() {
+		return // could be panic actually
+	}
+
+	if u.parent == rb.nil() {
+		rb.root = v
+	} else {
+		if u == u.parent.leftChild {
+			u.parent.leftChild = v
+		} else {
+			u.parent.rightChild = v
+		}
+	}
+
+	if v != rb.nil() {
+		v.parent = u.parent
+	}
+}
+
+func (rb *RBTree) deleteFixup(x *treeNode) {
+	//TODO: implementation
+}
