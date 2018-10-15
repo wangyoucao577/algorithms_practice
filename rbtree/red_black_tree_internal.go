@@ -26,7 +26,7 @@ func (rb RBTree) nil() *treeNode {
 func (rb RBTree) searchNode(key int) *treeNode {
 
 	node := rb.root
-	for node != rb.nilNode {
+	for node != rb.nil() {
 		if key == node.key {
 			return node
 		}
@@ -36,18 +36,18 @@ func (rb RBTree) searchNode(key int) *treeNode {
 			node = node.rightChild
 		}
 	}
-	return rb.nilNode
+	return rb.nil()
 }
 
 func (rb RBTree) minimumNode(node *treeNode) *treeNode {
-	for node.leftChild != rb.nilNode {
+	for node.leftChild != rb.nil() {
 		node = node.leftChild
 	}
 	return node
 }
 
 func (rb RBTree) maximumNode(node *treeNode) *treeNode {
-	for node.rightChild != rb.nilNode {
+	for node.rightChild != rb.nil() {
 		node = node.rightChild
 	}
 	return node
