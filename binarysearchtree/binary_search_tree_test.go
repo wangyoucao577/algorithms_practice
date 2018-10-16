@@ -167,11 +167,11 @@ func TestBinarySearchTreeRandomizedInsertDelete(t *testing.T) {
 	for i := 0; i < maxTreeCount; i++ {
 
 		var tree BinarySearchTree
-		var insert bool
-		keys := make([]bool, maxTestKeyCount, maxTestKeyCount)
+		keys := make([]int, maxTestKeyCount, maxTestKeyCount)
 
 		for j := 0; j < maxRandomCount; j++ {
 
+			var insert bool
 			if rand.Intn(2) != 0 {
 				insert = true
 			}
@@ -185,7 +185,7 @@ func TestBinarySearchTreeRandomizedInsertDelete(t *testing.T) {
 				if countAfterInsert != countBeforeInsert+1 {
 					t.Errorf("insert key %v, but count before insert %v +1 != count after insert %v", key, countBeforeInsert, countAfterInsert)
 				}
-				keys[key] = true
+				keys[key]++
 
 				if !tree.Validate() {
 					t.Errorf("tree going to invalid after insert key %v", key)
@@ -196,7 +196,7 @@ func TestBinarySearchTreeRandomizedInsertDelete(t *testing.T) {
 				deleteErr := tree.Delete(key)
 				countAfterDelete := tree.Count()
 
-				if keys[key] {
+				if keys[key] > 0 {
 					// expect delete succeed
 
 					if deleteErr != nil {
@@ -207,6 +207,7 @@ func TestBinarySearchTreeRandomizedInsertDelete(t *testing.T) {
 						t.Errorf("delete key %v except succeed, but count before delete %v -1 != count after delete %v", key, countBeforeDelete, countAfterDelete)
 					}
 
+					keys[key]--
 				} else {
 					// expect delete failed
 
@@ -219,7 +220,6 @@ func TestBinarySearchTreeRandomizedInsertDelete(t *testing.T) {
 					}
 
 				}
-				keys[key] = false
 
 				if !tree.Validate() {
 					t.Errorf("tree going to invalid after delete key %v", key)
