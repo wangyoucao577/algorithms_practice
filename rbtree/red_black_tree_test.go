@@ -156,11 +156,20 @@ func TestRedBlackTreeSample1(t *testing.T) {
 		t.Error("search key 100, expect failed but return successed")
 	}
 
-	if tree.Delete(13) != nil {
-		t.Error("Delete 13, expect succeed but failed")
+	if !tree.Validate() {
+		t.Errorf("tree is not a valid red-black tree")
 	}
-	if tree.Delete(13) == nil {
-		t.Error("Delete 13 again, expect failed but succeed")
+
+	// Below are modification test.
+
+	if tree.Delete(7) != nil {
+		t.Error("Delete 7, expect succeed but failed")
+	}
+	if tree.Delete(7) == nil {
+		t.Error("Delete 7 again, expect failed but succeed")
+	}
+	if !tree.Validate() {
+		t.Errorf("tree is not a valid red-black tree after delete key %v", 7)
 	}
 
 	tree.Clear()
@@ -178,11 +187,11 @@ func TestRedBlackTreeRandomizedInsertDelete(t *testing.T) {
 	for i := 0; i < maxTreeCount; i++ {
 
 		tree := NewRBTree()
-		var insert bool
-		keys := make([]bool, maxTestKeyCount, maxTestKeyCount)
+		keys := make([]int, maxTestKeyCount, maxTestKeyCount)
 
 		for j := 0; j < maxRandomCount; j++ {
 
+			var insert bool
 			if rand.Intn(2) != 0 {
 				insert = true
 			}
@@ -196,7 +205,7 @@ func TestRedBlackTreeRandomizedInsertDelete(t *testing.T) {
 				if countAfterInsert != countBeforeInsert+1 {
 					t.Errorf("insert key %v, but count before insert %v +1 != count after insert %v", key, countBeforeInsert, countAfterInsert)
 				}
-				keys[key] = true
+				keys[key]++
 
 				if !tree.Validate() {
 					t.Errorf("tree going to invalid after insert key %v", key)
@@ -207,7 +216,7 @@ func TestRedBlackTreeRandomizedInsertDelete(t *testing.T) {
 				deleteErr := tree.Delete(key)
 				countAfterDelete := tree.Count()
 
-				if keys[key] {
+				if keys[key] > 0 {
 					// expect delete succeed
 
 					if deleteErr != nil {
@@ -218,6 +227,7 @@ func TestRedBlackTreeRandomizedInsertDelete(t *testing.T) {
 						t.Errorf("delete key %v except succeed, but count before delete %v -1 != count after delete %v", key, countBeforeDelete, countAfterDelete)
 					}
 
+					keys[key]--
 				} else {
 					// expect delete failed
 
@@ -230,12 +240,10 @@ func TestRedBlackTreeRandomizedInsertDelete(t *testing.T) {
 					}
 
 				}
-				keys[key] = false
 
 				if !tree.Validate() {
 					t.Errorf("tree going to invalid after delete key %v", key)
 				}
-
 			}
 		}
 	}
