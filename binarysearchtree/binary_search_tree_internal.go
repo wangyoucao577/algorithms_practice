@@ -49,12 +49,12 @@ func (b *BinarySearchTree) transplant(u *treeNode, v *treeNode) {
 
 	if u.parent == nil { // b.root == u
 		b.root = v
-	}
-
-	if u == u.parent.leftChild {
-		u.parent.leftChild = v
 	} else {
-		u.parent.rightChild = v
+		if u == u.parent.leftChild {
+			u.parent.leftChild = v
+		} else {
+			u.parent.rightChild = v
+		}
 	}
 
 	if v != nil {
