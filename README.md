@@ -1,5 +1,5 @@
 # algorithms_practice
-Learn and practice algorithms and data structures. 来源包括但不限于《算法导论》, [hankerrank](https://www.hackerrank.com), [leecode](https://leetcode.com/), [北京大学 PKU JudgeOnline](http://poj.org/), etc.
+Learn and practice algorithms and data structures. 来源包括但不限于《算法导论》, [hankerrank](https://www.hackerrank.com), [leecode](https://leetcode.com/), [北京大学 PKU JudgeOnline](http://poj.org/), etc.     
 
 
 ## 实验环境
@@ -10,6 +10,7 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 - `go version go1.10.1 linux/amd64`
 
 ## 实验代码
+虽说都是实验代码, 但大部分提供了封装好的`golang pkg`, 可直接导入作为基础库使用. 内部进行实验时, 也尽可能地拆分成`pkg`以解耦.    
 
 ### [Golang] 排序
 学习各种排序的实验代码，主要参考《算法导论 第3版》，
@@ -59,6 +60,24 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
         - `PreorderTreeWalk()`: `O(n)` 先序遍历, 即总是按照 `node => node.leftChild => node.rightChild` 的顺序递归遍历.     
         - `postorderTreeWalk()`: `O(n)` 后续遍历, 即总是按照 `node.leftChild => node.rightChild => node` 的顺序递归遍历.    
     - 注: 以上分析的`O(n)`中的`n`为树中的总的节点数, `O(h)`中的`h`为树的高度, 最坏情况下`h == n`, 但平均情况接近最好情况即`lg(n)`. 也即平均情况下[Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree)的接口的运行时间为`O(lg(n))`.       
+
+### [Golang] 红黑树
+- rbtree    
+实现《算法导论 第3版》ch13 介绍的红黑树的实验代码.     
+    - 红黑树的性质(满足红黑性质的二叉搜索树即为红黑树):    
+        - 每个`node`都有一个`color`的属性, 要么是红色, 要么是黑色;    
+        - `root node`总是黑色的;    
+        - 每个`leat node`总是黑色的(为了实现的简便, 一般总是用一个`sentinal nil node`作为实现时的`nil`, 也即每个`leaf node`都是这个`sentinal nil node`, 只要它置为黑色即可满足此性质);    
+        - 如果一个`node`是红色的, 那么它的两个子`node`总是黑色的;    
+        - 对于每个`node`, 从该`node`到其所有后代`leaf node`的简单路径上, 均包含相同数目的黑色`node`.    
+    - 黑高(Black-Height)的定义: 从某个`node`出发(不包含该`node`)到达一个`leaf node`的任意一条简单路径上的黑色`node`数目, 即为黑高(Black-Height), 一般记作`bh(node)`.    
+        - 定义`root`节点的黑高为红黑树的黑高.    
+    - 红黑树的`Insert/Delete`除了类似二叉搜索树的操作外, 都需要去维护红黑性质; 而维护了红黑性质后, 红黑树非常接近平衡树, 从而可以带来较好的平均性能.    
+    - 红黑树提供的接口与二叉搜索树完全一致, 复杂度分析也同样一致. 只是由于红黑树几乎为平衡二叉树, 树的高度总是为`log(n)`的, 所以接口的运行时间总是可以做到`O(log(n))`.    
+    - 非常好的学习资料(红黑树的`Insert`和`Delete`过程比较复杂, 以下资料个人认为讲的远好于书上. 而可能本质上就是需要枚举出所有的可能情况, 相对来讲书上枚举的不够详细. 跟着教程自己推导一遍, 收货颇丰):     
+        - [Youtube 红黑树的插入](https://www.youtube.com/watch?v=axa2g5oOzCE)    
+        - [红黑树的删除](https://segmentfault.com/a/1190000012115424)    
+
 
 ### [Golang] 图算法
 ![golang_pkg_import_graph](golang_pkg_import_graph.mmd.png)
@@ -154,3 +173,11 @@ NOTE: `flownetwork` 与 `weightedgraph` 非常相似, 所以其实完全可以�
 - [Youtube Minimum Spanning Tree](https://www.youtube.com/watch?v=5INWifzqStU)
 - [Youtube Kruskal Algorithm](https://www.youtube.com/watch?v=5xosHRdxqHA)
 - [Youtube Prim Algorithm](https://www.youtube.com/watch?v=z1L3rMzG1_A)
+- [Red Black Tree](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree)
+- [Youtube 红黑树的插入](https://www.youtube.com/watch?v=axa2g5oOzCE)    
+- [红黑树的删除](https://segmentfault.com/a/1190000012115424)    
+
+
+
+
+
