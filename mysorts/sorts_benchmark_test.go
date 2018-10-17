@@ -53,9 +53,15 @@ func BenchmarkBestCaseBucketSort(b *testing.B) {
 	}
 }
 
-func BenchmarkBestCaseTreeSort(b *testing.B) {
+func BenchmarkBestCaseBinarySearchTreeSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		TreeSort(generateBestCase(benchmarkMaxArrayLen))
+		BinarySearchTreeSort(generateBestCase(benchmarkMaxArrayLen))
+	}
+}
+
+func BenchmarkBestCaseRedBlackTreeSort(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		RedBlackTreeSort(generateBestCase(benchmarkMaxArrayLen))
 	}
 }
 
@@ -107,8 +113,14 @@ func BenchmarkWorstCaseBucketSort(b *testing.B) {
 	}
 }
 
-func BenchmarkWorstCaseTreeSort(b *testing.B) {
+func BenchmarkWorstCaseBinarySearchTreeSort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		TreeSort(generateWorstCase(benchmarkMaxArrayLen))
+		BinarySearchTreeSort(generateWorstCase(benchmarkMaxArrayLen))
+	}
+}
+
+func BenchmarkWorstCaseRedBlackTreeSort(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		RedBlackTreeSort(generateWorstCase(benchmarkMaxArrayLen))
 	}
 }

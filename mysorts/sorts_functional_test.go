@@ -77,11 +77,19 @@ func TestSortFunctionalWithRandomCases(t *testing.T) {
 			break
 		}
 
-		//tree sort implementation
-		caseForTreeSort := testCase.deepCopy()
-		TreeSort(caseForTreeSort)
-		if !isSorted(caseForTreeSort, true) {
-			t.Errorf("TreeSort failed on \n%v\n", caseForTreeSort)
+		//binary search tree sort implementation
+		caseForBinarySearchTreeSort := testCase.deepCopy()
+		BinarySearchTreeSort(caseForBinarySearchTreeSort)
+		if !isSorted(caseForBinarySearchTreeSort, true) {
+			t.Errorf("BinarySearchTreeSort failed on \n%v\n", caseForBinarySearchTreeSort)
+			break
+		}
+
+		// red-black tree sort implementation
+		caseForRedBlackTreeSort := testCase.deepCopy()
+		RedBlackTreeSort(caseForRedBlackTreeSort)
+		if !isSorted(caseForRedBlackTreeSort, true) {
+			t.Errorf("RedBlackTreeSort failed on \n%v\n", caseForRedBlackTreeSort)
 			break
 		}
 

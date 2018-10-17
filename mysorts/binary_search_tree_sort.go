@@ -2,8 +2,8 @@ package mysorts
 
 import "github.com/wangyoucao577/algorithms_practice/binarysearchtree"
 
-// TreeSort execute sort based by binary search tree, not in-place sort
-func TreeSort(in []int) {
+// BinarySearchTreeSort execute sort based by binary search tree, not in-place sort
+func BinarySearchTreeSort(in []int) {
 	if len(in) <= 1 {
 		return
 	}
