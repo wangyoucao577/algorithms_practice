@@ -23,6 +23,15 @@ func (rb RBTree) nil() *treeNode {
 	return rb.nilNode
 }
 
+func (rb *RBTree) clearDoubleBlackNil() {
+	rb.doubleBlackNil.parent = nil
+	rb.doubleBlackNil.leftChild = nil
+	rb.doubleBlackNil.rightChild = nil
+	rb.doubleBlackNil.key = 0
+	rb.doubleBlackNil.payload = nil
+	rb.doubleBlackNil.color = rbBlack
+}
+
 func (rb RBTree) searchNode(key int) *treeNode {
 
 	node := rb.root
@@ -220,5 +229,91 @@ func (rb *RBTree) transplant(u, v *treeNode) {
 }
 
 func (rb *RBTree) deleteFixup(x *treeNode) {
-	//TODO: implementation
+
+	// 以下的 case xxx 都对应于 "红黑树-Delete-我的推导" 笔记中的case xxx,
+	//  而非算法导论书上的 case
+	// 本函数中主要会处理 case 2 的所有case, 以及case 4的着色
+
+	for x != rb.root && x.color == rbBlack {
+		if x == x.parent.leftChild {
+			if x.parent.rightChild.color == rbRed { // case 2-4
+				x.parent.color = rbRed              // case 2-4
+				x.parent.rightChild.color = rbBlack // case 2-4
+				rb.leftRotate(x.parent)             // case 2-4
+				// then will going to case 2-1 or 2-2 or 2-3-1 in next loop
+			} else {
+				if x.parent.rightChild.rightChild.color == rbBlack && x.parent.rightChild.leftChild.color == rbBlack { // case 2-3
+					if x.parent.color == rbRed { // case 2-3-1
+						x.parent.color = rbBlack          // case 2-3-1
+						x.parent.rightChild.color = rbRed // case 2-3-1
+
+						// can be done here
+						break // case 2-3-1
+					} else { // case 2-3-2
+						x.parent.rightChild.color = rbRed // case 2-3-2
+						x = x.parent                      // case 2-3-2
+						if x.leftChild == rb.doubleBlackNil {
+							rb.transplant(x.leftChild, rb.nil()) // replace by normal sentinal nil node
+						}
+					}
+				} else if x.parent.rightChild.rightChild.color == rbRed { // case 2-1
+					x.parent.rightChild.rightChild.color = rbBlack // case 2-1
+					x.parent.rightChild.color = x.parent.color     // case 2-1
+					x.parent.color = rbBlack                       // case 2-1
+					rb.leftRotate(x.parent)                        // case 2-1
+
+					// can be done here
+					break // case 2-1
+				} else { // case 2-2, x.parent.rightChild.leftChild.color == rbRed
+					x.parent.rightChild.color = rbRed             // case 2-2
+					x.parent.rightChild.leftChild.color = rbBlack // case 2-2
+					rb.rightRotate(x.parent.rightChild)           // case 2-2
+
+					// next loop going into case 2-1
+				}
+			}
+		} else { // 与上述处理对称的, x == x.parent.rightChild
+			if x.parent.leftChild.color == rbRed { // case 2-4
+				x.parent.color = rbRed             // case 2-4
+				x.parent.leftChild.color = rbBlack // case 2-4
+				rb.rightRotate(x.parent)           // case 2-4
+				// then will going to case 2-1 or 2-2 or 2-3-1 in next loop
+			} else {
+				if x.parent.leftChild.rightChild.color == rbBlack && x.parent.leftChild.leftChild.color == rbBlack { // case 2-3
+					if x.parent.color == rbRed { // case 2-3-1
+						x.parent.color = rbBlack         // case 2-3-1
+						x.parent.leftChild.color = rbRed // case 2-3-1
+
+						// can be done here
+						break // case 2-3-1
+					} else { // case 2-3-2
+						x.parent.leftChild.color = rbRed // case 2-3-2
+						x = x.parent                     // case 2-3-2
+						if x.rightChild == rb.doubleBlackNil {
+							rb.transplant(x.rightChild, rb.nil()) // replace by normal sentinal nil node
+						}
+					}
+				} else if x.parent.leftChild.leftChild.color == rbRed { // case 2-1
+					x.parent.leftChild.leftChild.color = rbBlack // case 2-1
+					x.parent.leftChild.color = x.parent.color    // case 2-1
+					x.parent.color = rbBlack                     // case 2-1
+					rb.rightRotate(x.parent)                     // case 2-1
+
+					// can be done here
+					break // case 2-1
+				} else { // case 2-2, x.parent.leftChild.rightChild.color == rbRed
+					x.parent.leftChild.color = rbRed              // case 2-2
+					x.parent.leftChild.rightChild.color = rbBlack // case 2-2
+					rb.leftRotate(x.parent.leftChild)             // case 2-2
+
+					// next loop going into case 2-1
+				}
+			}
+		}
+	}
+
+	if x == rb.doubleBlackNil {
+		rb.transplant(x, rb.nil())
+	}
+	x.color = rbBlack //  case 4
 }

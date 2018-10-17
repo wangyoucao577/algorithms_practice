@@ -4,15 +4,17 @@ import "fmt"
 
 // RBTree represent a red-black tree structure
 type RBTree struct {
-	root    *treeNode
-	nilNode *treeNode // sentinel node to represent nil
-	count   int       // won't count the nil node
+	root           *treeNode
+	nilNode        *treeNode // sentinel node to represent nil
+	doubleBlackNil *treeNode // another sentinel for deletion, double-black nil node
+	count          int       // won't count the nil node
 }
 
 // NewRBTree create a new emtpy red-black tree
 func NewRBTree() *RBTree {
 	var tree RBTree
 	tree.nilNode = &treeNode{nil, nil, nil, -1, nil, rbBlack}
+	tree.doubleBlackNil = &treeNode{nil, nil, nil, -1, nil, rbBlack}
 	tree.root = tree.nilNode
 	return &tree
 }
@@ -172,14 +174,22 @@ func (rb *RBTree) Delete(key int) error {
 	}
 
 	y := node
-	yOriginalColor := node.color
-	x := rb.nil()
+
+	// 参考 "红黑树-Delete-我的推导" 笔记中的 x 和 yOrignalColor 的解释
+	yOriginalColor := node.color // the node's color which will affect red-black properties if delete
+	x := rb.nil()                // the node which may have double-black, so that we need to maintain red-black properties start from here
 
 	// Below process is very similar with `Delete()` of binary search tree.
 	// Refer to "Introduction to Algorithms - Third Edition" ch12.3
 	// and "Introduction to Algorithms - Third Edition" ch13.4 for more details if necessary.
+	// A better introduction: https://segmentfault.com/a/1190000012115424
 
-	if node.leftChild == rb.nil() { // only have a rightChild or no child
+	if node.leftChild == rb.nil() && node.rightChild == rb.nil() { //no child
+		if yOriginalColor == rbBlack {
+			x = rb.doubleBlackNil // remember parent of x
+		}
+		rb.transplant(node, x)
+	} else if node.leftChild == rb.nil() { // only have a rightChild
 		x = node.rightChild
 		rb.transplant(node, node.rightChild)
 	} else if node.rightChild == rb.nil() { // only have a leftChild
@@ -193,6 +203,11 @@ func (rb *RBTree) Delete(key int) error {
 		y = rb.minimumNode(node.rightChild)
 		yOriginalColor = y.color
 		x = y.rightChild
+		if yOriginalColor == rbBlack && x == rb.nil() {
+			x = rb.doubleBlackNil // remember parent of x
+			y.rightChild = x
+			x.parent = y
+		}
 
 		// same condition of binary search tree `Delete()`
 		if y != node.rightChild { // y in node's subTree but not the rightChild of node
@@ -200,6 +215,7 @@ func (rb *RBTree) Delete(key int) error {
 			y.rightChild = node.rightChild
 			y.rightChild.parent = y
 		}
+
 		rb.transplant(node, y)
 		y.leftChild = node.leftChild
 		y.leftChild.parent = y
@@ -207,7 +223,8 @@ func (rb *RBTree) Delete(key int) error {
 	}
 
 	if yOriginalColor == rbBlack { // if yOriginalColor is RED, will not affect red-black tree properties
-		rb.deleteFixup(x) // the most complex part of red-black tree deletion
+		rb.deleteFixup(x)        // the most complex part of red-black tree deletion
+		rb.clearDoubleBlackNil() // if yOriginalColor == rbRed, this doubleBlackNil will be changed
 	}
 
 	rb.count--
