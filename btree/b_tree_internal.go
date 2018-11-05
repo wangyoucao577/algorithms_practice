@@ -13,6 +13,10 @@ type treeNode struct {
 	payload interface{} // satellite information
 }
 
+func (b *BTree) allocateNode() *treeNode {
+	return &treeNode{0, []int{}, false, []*treeNode{}, nil}
+}
+
 func (b BTree) validateNode(x *treeNode) error {
 	if x == nil {
 		return nil
@@ -56,9 +60,6 @@ func (b BTree) isFullNode(x *treeNode) (bool, error) {
 	if x == nil {
 		return false, fmt.Errorf("node is nil")
 	}
-	if x == b.root {
-		return false, fmt.Errorf("node is root")
-	}
 
 	if x.n == 2*b.t-1 {
 		return true, nil
@@ -85,4 +86,69 @@ func (b BTree) searchNode(x *treeNode, key int) (*treeNode, int) {
 
 	diskRead(x.childs[i])
 	return b.searchNode(x.childs[i], key)
+}
+
+func (b *BTree) splitChild(x *treeNode, i int) {
+	z := b.allocateNode()
+	y := x.childs[i] // y is the full node
+
+	z.isLeaf = y.isLeaf
+	z.n = b.t - 1
+	z.keys = make([]int, z.n, z.n)
+	for j := 0; j < b.t-1; j++ {
+		z.keys[j] = y.keys[b.t+j]
+	}
+	if !y.isLeaf {
+		z.childs = make([]*treeNode, z.n+1, z.n+1)
+		for j := 0; j < b.t; j++ {
+			z.childs[j] = y.childs[b.t+j]
+		}
+	}
+
+	x.keys = append(x.keys, 0)
+	x.childs = append(x.childs, nil)
+	for j := x.n; j > i; j-- {
+		x.keys[j] = x.keys[j-1]
+		x.childs[j+1] = x.childs[j]
+	}
+	x.keys[i] = y.keys[b.t-1]
+	x.childs[i+1] = z
+	x.n++
+
+	y.n = b.t - 1
+	y.keys = y.keys[:b.t-1]
+	y.childs = y.childs[:b.t-1]
+
+	diskWrite(y)
+	diskWrite(z)
+	diskWrite(x)
+}
+
+func (b *BTree) insertNonFull(x *treeNode, key int) {
+
+	i := x.n - 1
+	if x.isLeaf {
+
+		x.keys = append(x.keys, 0)
+		for ; i >= 0 && key < x.keys[i]; i-- {
+			x.keys[i+1] = x.keys[i]
+		}
+		x.keys[i+1] = key
+		x.n++
+		diskWrite(x)
+	} else {
+
+		for ; i >= 0 && key < x.keys[i]; i-- {
+		}
+		i = i + 1
+		diskRead(x.childs[i])
+
+		if ok, _ := b.isFullNode(x.childs[i]); ok {
+			b.splitChild(x, i)
+			if key > x.keys[i] {
+				i = i + 1
+			}
+		}
+		b.insertNonFull(x.childs[i], key)
+	}
 }
