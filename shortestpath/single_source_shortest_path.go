@@ -19,12 +19,11 @@ type shortestPath struct {
 	nodesMap map[graph.NodeID]*nodeAttr
 }
 
-func (sp *shortestPath) initializeSingleSource(g weightedgraph.WeightedGraph, s graph.NodeID) {
+func (sp *shortestPath) initializeSingleSource(g *weightedgraph.WeightedGraph, s graph.NodeID) {
 
 	sp.nodesMap = map[graph.NodeID]*nodeAttr{}
 	g.IterateAllNodes(func(u graph.NodeID) {
-		sp.nodesMap[u].d = infinitelyWeight
-		sp.nodesMap[u].parent = graph.InvalidNodeID
+		sp.nodesMap[u] = &nodeAttr{infinitelyWeight, graph.InvalidNodeID}
 	})
 
 	sp.nodesMap[s].d = 0

@@ -6,7 +6,7 @@ import (
 )
 
 // BellmanFord implements bellman-ford algorithm for single-source shortest path problem
-func BellmanFord(g weightedgraph.WeightedGraph, s graph.NodeID) bool {
+func BellmanFord(g *weightedgraph.WeightedGraph, s graph.NodeID) bool {
 
 	sp := &shortestPath{}
 	sp.initializeSingleSource(g, s)
@@ -29,5 +29,8 @@ func BellmanFord(g weightedgraph.WeightedGraph, s graph.NodeID) bool {
 		}
 	})
 
-	return !negativeCycle
+	if negativeCycle {
+		return false
+	}
+	return true
 }
