@@ -1,4 +1,4 @@
-package shortestpath
+package singlesourceshortestpaths
 
 import (
 	"testing"
