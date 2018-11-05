@@ -1,4 +1,4 @@
-package singlesourceshortestpaths
+package shortestpaths
 
 import (
 	"reflect"

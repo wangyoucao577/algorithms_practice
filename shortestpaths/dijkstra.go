@@ -1,4 +1,4 @@
-package singlesourceshortestpaths
+package shortestpaths
 
 import (
 	"github.com/wangyoucao577/algorithms_practice/graph"

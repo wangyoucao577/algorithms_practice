@@ -1,5 +1,5 @@
-// Package singlesourceshortestpaths implmenets single-source shortest paths algorithms
-package singlesourceshortestpaths
+// Package shortestpaths implmenets single-source shortest paths algorithms
+package shortestpaths
 
 import (
 	"github.com/wangyoucao577/algorithms_practice/graph"
