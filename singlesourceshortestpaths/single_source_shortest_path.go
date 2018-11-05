@@ -54,6 +54,10 @@ func (sp ShortestPaths) RetrievePath(v graph.NodeID) (graph.Path, weightedgraph.
 	path := graph.Path{}
 	weight := sp.nodesMap[v].d
 
+	if weight == infinitelyWeight { // no valid path
+		return path, weight
+	}
+
 	path = append(path, v)
 	for v != sp.s {
 		path = append(path, sp.nodesMap[v].parent)

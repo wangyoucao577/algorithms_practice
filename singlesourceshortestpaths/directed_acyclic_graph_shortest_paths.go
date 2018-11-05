@@ -17,7 +17,17 @@ func DirectedAcyclicGraphShortestPaths(g *weightedgraph.WeightedGraph, s graph.N
 	sp := &ShortestPaths{}
 	sp.initializeSingleSource(g, s)
 
+	sourceFound := false
 	for _, u := range sorted {
+
+		// start relax from the excepted source node
+		if !sourceFound {
+			if u != s {
+				continue
+			}
+			sourceFound = true
+		}
+
 		g.IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			w, _ := g.Weight(u, v)
 			sp.relax(u, v, w)
