@@ -148,7 +148,12 @@ NOTE: `flownetwork` 与 `weightedgraph` 非常相似, 所以其实完全可以�
         - [Youtube Kruskal Algorithm](https://www.youtube.com/watch?v=5xosHRdxqHA)
         - [Youtube Prim Algorithm](https://www.youtube.com/watch?v=z1L3rMzG1_A)
 
-
+- shortestpaths    
+《算法导论 第3版》ch24 中所讨论的 Single-Source Shorest Paths 问题, 即在一张每条`edge`都有其`weight`的连通图上(一般是基于`directed graph`, 但其实只要`weight`非负, 也完全可以在`undirected graph`上讨论), 找到从某个`source-node`开始到其他任意`node`的最短`weight`路径.    
+    - `bellman-ford.go`: **O(VE)** 迭代`V-1`次, 每次所有的`edge`以更新每个`node`上的`cost`(从`source-node`到当前`node`). 最后再迭代一次所有的`edge`以判断是非存在`negative-cycle`. `bellman-ford`算法实现比较简单, 但迭代次数较多, 主要优势是可以支持`negative weight`(不能有`negative-cycle`).    
+    - `dijkstra.go`: **O((V+E)log(V))** 基于`PriorityQueue`每次总是以最小`weight`的`node`开始`relax`, 从而可以大大减少迭代的次数. 此处的复杂度是基于二叉堆实现的`PriorityQueue`来分析的. `Dijkstra`算法必须要求`weight`为非负的.     
+        - 注意: 参照书上伪代码实现的此`Dijkstra`, 流程是首先将所有的`node-priority pair`加入到`PriroityQueue`中, 过程中有`priority`发生变化时再`DecreaseKey`, 所以会有非常大量的`DecreaseKey`动作. 但实际工程上实现时多半都是先只将`source-node`加入到`PriorityQueue`中, 过程中再将新`relax`到的`node`加入`PriorityQueue`, 所以会有大量的`Push`动作, `DecreaseKey`则大大减少, 同时`PriorityQueue`的规模也是动态增加的而不是一开始加满. 这也是为什么学术上经常会讨论如何优化`DecreaseKey`效率从而提升`Dijkstra`的性能, 但却并不适用于工程实现.    
+    - `directed_acyclic_graph_shortest_paths.go`: **O(V+E)** 先将所有的`node`使用`dfs`拓扑排序, 再按照拓扑排序的顺序从`source-node`开始遍历一次`edge`即可. 适用于有向无环图的特殊情况, 复杂度主要是由于拓扑排序.    
     
 ## References
 - 《算法导论 第3版》    
