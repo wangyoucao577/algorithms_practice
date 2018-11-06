@@ -34,11 +34,15 @@ func (sp *ShortestPaths) initializeSingleSource(g *weightedgraph.WeightedGraph, 
 	sp.nodesMap[s].d = 0
 }
 
-func (sp *ShortestPaths) relax(u, v graph.NodeID, w weightedgraph.Weight) {
+// relax return the new weight if updated
+func (sp *ShortestPaths) relax(u, v graph.NodeID, w weightedgraph.Weight) weightedgraph.Weight {
 	if sp.nodesMap[v].d > sp.nodesMap[u].d+w { // can handle infinitelyWeight since we set it's too max
 		sp.nodesMap[v].d = sp.nodesMap[u].d + w
 		sp.nodesMap[v].parent = u
+
+		return sp.nodesMap[v].d
 	}
+	return 0
 }
 
 func (sp ShortestPaths) relaxable(u, v graph.NodeID, w weightedgraph.Weight) bool {

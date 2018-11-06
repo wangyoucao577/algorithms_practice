@@ -1,6 +1,8 @@
 package shortestpaths
 
 import (
+	"container/heap"
+
 	"github.com/wangyoucao577/algorithms_practice/graph"
 	"github.com/wangyoucao577/algorithms_practice/weightedgraph"
 )
@@ -11,43 +13,74 @@ func Dijkstra(g *weightedgraph.WeightedGraph, s graph.NodeID) *ShortestPaths {
 	sp := &ShortestPaths{}
 	sp.initializeSingleSource(g, s)
 
-	q := []graph.NodeID{}
+	h := queryHeap{priorityQueue{}, map[graph.NodeID]*pqItem{}}
 	g.IterateAllNodes(func(u graph.NodeID) {
-		q = append(q, u)
+		item := &pqItem{u, sp.nodesMap[u].d, h.Len()}
+		h.priorityQueue = append(h.priorityQueue, item)
+		h.m[u] = item
 	})
+	heap.Init(&h.priorityQueue)
 
-	for len(q) > 0 {
-		u, newQ := sp.extractMin(q)
-		q = newQ
+	for h.Len() > 0 {
+		u := sp.extractMin(&h)
 
 		g.IterateAdjacencyNodes(u, func(v graph.NodeID) {
 			w, _ := g.Weight(u, v)
-			sp.relax(u, v, w)
+			newWeight := sp.relax(u, v, w)
+			if newWeight > 0 {
+				// update key
+				if vItem, ok := h.m[v]; ok {
+					vItem.priority = newWeight
+					heap.Fix(&h.priorityQueue, vItem.index)
+				}
+			}
 		})
 	}
 
 	return sp
 }
 
-func (sp *ShortestPaths) extractMin(q []graph.NodeID) (graph.NodeID, []graph.NodeID) {
-	i := 0
-	min := sp.nodesMap[q[i]].d
+type pqItem struct {
+	u        graph.NodeID         // The value of the item; arbitrary.
+	priority weightedgraph.Weight // The priority of the item in the queue.
+	// The index is needed by update and is maintained by the heap.Interface methods.
+	index int // The index of the item in the heap.
+}
 
-	for j := 1; j < len(q); j++ {
-		if sp.nodesMap[q[j]].d < min {
-			i = j
-			min = sp.nodesMap[q[j]].d
-		}
-	}
-	u := q[i]
+type priorityQueue []*pqItem
 
-	if i == 0 {
-		q = q[1:]
-	} else if i == len(q)-1 {
-		q = q[:i]
-	} else {
-		q = append(q[:i], q[i+1:]...)
-	}
+func (pq priorityQueue) Len() int { return len(pq) }
+func (pq priorityQueue) Less(i, j int) bool {
+	return pq[i].priority < pq[j].priority
+}
+func (pq priorityQueue) Swap(i, j int) {
+	pq[i], pq[j] = pq[j], pq[i]
+	pq[i].index = i
+	pq[j].index = j
+}
+func (pq *priorityQueue) Push(x interface{}) {
+	n := len(*pq)
+	item := x.(*pqItem)
+	item.index = n
+	*pq = append(*pq, item)
+}
+func (pq *priorityQueue) Pop() interface{} {
+	old := *pq
+	n := len(old)
+	item := old[n-1]
+	item.index = -1 // for safety
+	*pq = old[0 : n-1]
+	return item
+}
 
-	return u, q
+type queryHeap struct {
+	priorityQueue
+	m map[graph.NodeID]*pqItem
+}
+
+func (sp *ShortestPaths) extractMin(h *queryHeap) graph.NodeID {
+
+	min := heap.Pop(h).(*pqItem)
+	delete(h.m, min.u) // also remove from the map
+	return min.u
 }
