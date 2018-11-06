@@ -22,6 +22,16 @@ pkgweightedgraph["(pkg)weightedgraph"] --> pkggraph
 pkggraphsample5["(pkg)graphsample5"] --> pkggraph
 pkggraphsample5["(pkg)graphsample5"] --> pkgweightedgraph
 
+pkggraphsample6["(pkg)graphsample6"] --> pkggraph
+pkggraphsample6["(pkg)graphsample6"] --> pkgweightedgraph
+
+pkggraphsample7["(pkg)graphsample7"] --> pkggraph
+pkggraphsample7["(pkg)graphsample7"] --> pkgweightedgraph
+
+pkggraphsample8["(pkg)graphsample8"] --> pkggraph
+pkggraphsample8["(pkg)graphsample8"] --> pkgweightedgraph
+
+
 
 pkgbfs["(pkg)bfs"] --> pkggraph
 pkgbfs --> pkggraphsample1
@@ -51,6 +61,14 @@ maxflow_main("(bin)maxflow_main") --> pkgmaxflow
 pkgminspanningtree["(pkg)minspanningtree"] --> pkggraph
 pkgminspanningtree --> pkgweightedgraph
 pkgminspanningtree --> pkggraphsample5
+
+pkgshortestpaths["(pkg)shortestpaths"] --> pkggraph
+pkgshortestpaths --> pkgweightedgraph
+pkgshortestpaths --> pkggraphsample6
+pkgshortestpaths --> pkggraphsample7
+pkgshortestpaths --> pkggraphsample8
+pkgshortestpaths --> pkgdfs
+
 
 
 %%```
