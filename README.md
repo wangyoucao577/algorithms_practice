@@ -101,6 +101,14 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 - graphsample5    
 来自《算法导论 第3版》ch23.2 Kruskal和Prim算法 中的示例`Undirected Graph`, 基于`package graph`和`package weightedgraph`的定义的实现, 从而方便后面的实验.    
 
+- graphsample6    
+来自《算法导论 第3版》ch24.1 Bellman-Ford算法 中的示例`Directed Weighted Graph`, 基于`package graph`和`package weightedgraph`的定义的实现, 从而方便后面的实验.    
+
+- graphsample7    
+来自《算法导论 第3版》ch24.2 有向无环图中的单源最短路径问题 中的示例`Directed Weighted Graph`, 基于`package graph`和`package weightedgraph`的定义的实现, 从而方便后面的实验.    
+
+- graphsample8    
+来自《算法导论 第3版》ch24.3 Dijkstra算法 中的示例`Directed Weighted Graph`, 基于`package graph`和`package weightedgraph`的定义的实现, 从而方便后面的实验.    
 
 - bfs    
     - **O(V+E)**    
