@@ -11,40 +11,40 @@ Title-->pkggraph
 style Title fill:#FFF,stroke:#FFF
 linkStyle 0 stroke:#FFF,stroke-width:0;
 
-pkggraphsample1["(pkg)graphsample1"] --> pkggraph["(pkg)graph"]
-pkggraphsample2["(pkg)graphsample2"] --> pkggraph
-pkggraphsample3["(pkg)graphsample3"] --> pkggraph
-pkggraphsample4["(pkg)graphsample4"] --> pkggraph
+%% pkggraphsample1["(pkg)graphsample1"] --> pkggraph["(pkg)graph"]
+%% pkggraphsample2["(pkg)graphsample2"] --> pkggraph
+%% pkggraphsample3["(pkg)graphsample3"] --> pkggraph
+%% pkggraphsample4["(pkg)graphsample4"] --> pkggraph
 
-pkglevelgraph["(pkg)levelgraph"] --> pkggraph
+pkglevelgraph["(pkg)levelgraph"] --> pkggraph["(pkg)graph"]
 pkgweightedgraph["(pkg)weightedgraph"] --> pkggraph
 
-pkggraphsample5["(pkg)graphsample5"] --> pkggraph
-pkggraphsample5["(pkg)graphsample5"] --> pkgweightedgraph
+%% pkggraphsample5["(pkg)graphsample5"] --> pkggraph
+%% pkggraphsample5["(pkg)graphsample5"] --> pkgweightedgraph
 
-pkggraphsample6["(pkg)graphsample6"] --> pkggraph
-pkggraphsample6["(pkg)graphsample6"] --> pkgweightedgraph
+%% pkggraphsample6["(pkg)graphsample6"] --> pkggraph
+%% pkggraphsample6["(pkg)graphsample6"] --> pkgweightedgraph
 
-pkggraphsample7["(pkg)graphsample7"] --> pkggraph
-pkggraphsample7["(pkg)graphsample7"] --> pkgweightedgraph
+%% pkggraphsample7["(pkg)graphsample7"] --> pkggraph
+%% pkggraphsample7["(pkg)graphsample7"] --> pkgweightedgraph
 
-pkggraphsample8["(pkg)graphsample8"] --> pkggraph
-pkggraphsample8["(pkg)graphsample8"] --> pkgweightedgraph
+%% pkggraphsample8["(pkg)graphsample8"] --> pkggraph
+%% pkggraphsample8["(pkg)graphsample8"] --> pkgweightedgraph
 
 
 
 pkgbfs["(pkg)bfs"] --> pkggraph
-pkgbfs --> pkggraphsample1
+%% pkgbfs --> pkggraphsample1
 pkgbfs --> pkglevelgraph
 
-test_bfs("(bin)cmd/test_bfs") --> pkgbfs
-test_bfs --> pkggraphsample1
-test_bfs --> pkggraph
+%% test_bfs("(bin)cmd/test_bfs") --> pkgbfs
+%% test_bfs --> pkggraphsample1
+%% test_bfs --> pkggraph
 
 pkgdfs["(pkg)dfs"] --> pkggraph
-pkgdfs --> pkggraphsample2
-pkgdfs --> pkggraphsample3
-pkgdfs --> pkggraphsample4
+%% pkgdfs --> pkggraphsample2
+%% pkgdfs --> pkggraphsample3
+%% pkgdfs --> pkggraphsample4
 
 pkgflownetwork["(pkg)flownetwork"] --> pkggraph
 
@@ -55,18 +55,18 @@ pkgmaxflow --> pkggraph
 pkgmaxflow --> pkglevelgraph
 
 
-test_maxflow("(bin)cmd/test_maxflow") --> pkgflownetwork
-test_maxflow("(bin)cmd/test_maxflow") --> pkgmaxflow
+%% test_maxflow("(bin)cmd/test_maxflow") --> pkgflownetwork
+%% test_maxflow("(bin)cmd/test_maxflow") --> pkgmaxflow
 
 pkgminspanningtree["(pkg)minspanningtree"] --> pkggraph
 pkgminspanningtree --> pkgweightedgraph
-pkgminspanningtree --> pkggraphsample5
+%% pkgminspanningtree --> pkggraphsample5
 
 pkgshortestpaths["(pkg)shortestpaths"] --> pkggraph
 pkgshortestpaths --> pkgweightedgraph
-pkgshortestpaths --> pkggraphsample6
-pkgshortestpaths --> pkggraphsample7
-pkgshortestpaths --> pkggraphsample8
+%% pkgshortestpaths --> pkggraphsample6
+%% pkgshortestpaths --> pkggraphsample7
+%% pkgshortestpaths --> pkggraphsample8
 pkgshortestpaths --> pkgdfs
 
 
