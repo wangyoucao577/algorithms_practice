@@ -86,36 +86,16 @@ Learn and practice algorithms and data structures. 来源包括但不限于《�
 通常使用符号 **G(V, E)** 来表示一张图, 其中 **V** 为点数, **E** 为边数. 此`pkg`定义了一堆表示`graph`的类型与通用接口, 支持包括邻接链表(Adjacency List)和邻接矩阵(Adjacency Matrix)两种图的表示方法. 其中点通过从`0`开始的`uint`来表示, 所以邻接链表和邻接矩阵都基于了基础的`slice`来实现. 基础概念可参考《算法导论 第3版》 ch22.1 图的表示.     
 注: 图论中的各种涉及到路径的算法, 通常都基于`point-to-point`来讨论, 而不是`edge-to-edge`, 从`graph`的表现形式就可以反映出这一点.     
 
-- graphsample1     
-来自《算法导论 第3版》ch22.2 广度优先搜索 中的示例`Undirected Graph`, 基于上面的`package graph`的定义的实现, 从而方便后续的实验.    
+- graphsamples    
+构建好的`graph`的例子, 方便进行各种测试. 详见 [graphsamples](./graphsamples/).     
 
-- graphsample2    
-来自《算法导论 第3版》ch22.1 中的示例`Directed Graph`, 基于`package graph`的定义的实现, 从而方便后面的实验.    
-
-- graphsample3    
-来自《算法导论 第3版》ch22.3 中的示例`Directed Acyclic Graph`, 基于`package graph`的定义的实现, 从而方便后面的实验.    
-
-- graphsample4    
-来自《算法导论 第3版》ch22.5 Strongly Connected Component 中的示例`Directed Graph`, 基于`package graph`的定义的实现, 从而方便后面的实验.    
-
-- graphsample5    
-来自《算法导论 第3版》ch23.2 Kruskal和Prim算法 中的示例`Undirected Graph`, 基于`package graph`和`package weightedgraph`的定义的实现, 从而方便后面的实验.    
-
-- graphsample6    
-来自《算法导论 第3版》ch24.1 Bellman-Ford算法 中的示例`Directed Weighted Graph`, 基于`package graph`和`package weightedgraph`的定义的实现, 从而方便后面的实验.    
-
-- graphsample7    
-来自《算法导论 第3版》ch24.2 有向无环图中的单源最短路径问题 中的示例`Directed Weighted Graph`, 基于`package graph`和`package weightedgraph`的定义的实现, 从而方便后面的实验.    
-
-- graphsample8    
-来自《算法导论 第3版》ch24.3 Dijkstra算法 中的示例`Directed Weighted Graph`, 基于`package graph`和`package weightedgraph`的定义的实现, 从而方便后面的实验.    
 
 - bfs    
     - **O(V+E)**    
     - 实现《算法导论 第3版》ch22.2 广度优先搜索 中的算法描述, [Breadth First Search](https://en.wikipedia.org/wiki/Breadth-first_search). 基本思路为搜索过程中从`queue`(借助其先入先出的特性)头上取下一次迭代的初始节点, 并将迭代到的节点存储到`queue`尾, 从而实现**广度优先**. 搜索过程中的`tree`的信息及`depth`等通过节点属性的形式保存在一个节点数组中.    
     - 提供了基于`bfs`的生成`level graph`的实现, 以供`dinic`算法使用.    
 
-- bfs_main    
+- cmd/test_bfs   
 执行`package bfs`代码的`main`.     
 
 - dfs    
@@ -139,7 +119,7 @@ NOTE: `flownetwork` 与 `weightedgraph` 非常相似, 所以其实完全可以�
     - `EmondKarp`: **O(V(E^2))** 基于`FordFulkerson`, 在如何寻找`augmenting path`的方法上进行了扩展优化, 即以[Breadth First Search](https://en.wikipedia.org/wiki/Breadth-first_search)来寻找点到点的最短路径, 效率更高.    
     - `Dinic`: **O((V^2)E)** 依然是基于`FordFulkerson`的方法, 最主要的区别在于在生成`residual network`后, 先采用[Breadth First Search](https://en.wikipedia.org/wiki/Breadth-first_search)来生成分层图(`level graph`, 以每个`node`的`depth`作为其层次), 再在`level graph`上寻找`blocking flow`(即直到不能再找到新的`flow`), 以此`blocking flow`作为`residual network`上的`augmenting flow`.     
 
-- maxflow_main    
+- cmd/test_maxflow   
 调用`maxflow`以解决[maximum flow problem](https://en.wikipedia.org/wiki/Maximum_flow_problem), 支持从`stdin`来构造`flownetwork`, 以更容易测试新的问题.     
 
 - weightedgraph    
