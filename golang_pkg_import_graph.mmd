@@ -37,9 +37,9 @@ pkgbfs["(pkg)bfs"] --> pkggraph
 pkgbfs --> pkggraphsample1
 pkgbfs --> pkglevelgraph
 
-bfs_main("(bin)bfs_main") --> pkgbfs
-bfs_main --> pkggraphsample1
-bfs_main --> pkggraph
+test_bfs("(bin)cmd/test_bfs") --> pkgbfs
+test_bfs --> pkggraphsample1
+test_bfs --> pkggraph
 
 pkgdfs["(pkg)dfs"] --> pkggraph
 pkgdfs --> pkggraphsample2
@@ -55,8 +55,8 @@ pkgmaxflow --> pkggraph
 pkgmaxflow --> pkglevelgraph
 
 
-maxflow_main("(bin)maxflow_main") --> pkgflownetwork
-maxflow_main("(bin)maxflow_main") --> pkgmaxflow
+test_maxflow("(bin)cmd/test_maxflow") --> pkgflownetwork
+test_maxflow("(bin)cmd/test_maxflow") --> pkgmaxflow
 
 pkgminspanningtree["(pkg)minspanningtree"] --> pkggraph
 pkgminspanningtree --> pkgweightedgraph
