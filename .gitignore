@@ -26,3 +26,6 @@
 *.exe
 *.out
 *.app
+cmd/test_bfs/test_bfs
+cmd/test_maxflow/test_maxflow
+
