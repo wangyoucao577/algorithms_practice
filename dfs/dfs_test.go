@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/wangyoucao577/algorithms_practice/graph"
-	"github.com/wangyoucao577/algorithms_practice/graphsample2"
+	"github.com/wangyoucao577/algorithms_practice/graphsamples/graphsample2"
 )
 
 func (d *Dfs) printEdges(g graph.Graph) {

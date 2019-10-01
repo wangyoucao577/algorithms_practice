@@ -3,7 +3,7 @@ package minspanningtree
 import (
 	"testing"
 
-	"github.com/wangyoucao577/algorithms_practice/graphsample5"
+	"github.com/wangyoucao577/algorithms_practice/graphsamples/graphsample5"
 	"github.com/wangyoucao577/algorithms_practice/weightedgraph"
 )
 

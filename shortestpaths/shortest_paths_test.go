@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/wangyoucao577/algorithms_practice/graph"
-	"github.com/wangyoucao577/algorithms_practice/graphsample6"
-	"github.com/wangyoucao577/algorithms_practice/graphsample8"
+	"github.com/wangyoucao577/algorithms_practice/graphsamples/graphsample6"
+	"github.com/wangyoucao577/algorithms_practice/graphsamples/graphsample8"
 	"github.com/wangyoucao577/algorithms_practice/weightedgraph"
 )
 

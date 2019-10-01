@@ -5,7 +5,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/wangyoucao577/algorithms_practice/graphsample4"
+	"github.com/wangyoucao577/algorithms_practice/graphsamples/graphsample4"
 )
 
 func TestSCC(t *testing.T) {

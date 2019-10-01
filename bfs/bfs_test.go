@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/wangyoucao577/algorithms_practice/graph"
-	"github.com/wangyoucao577/algorithms_practice/graphsample1"
+	"github.com/wangyoucao577/algorithms_practice/graphsamples/graphsample1"
 )
 
 func TestBfsOnGraphSample1(t *testing.T) {
