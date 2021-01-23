@@ -7,7 +7,7 @@ import (
 
 	"github.com/wangyoucao577/algorithms_practice/bfs"
 	"github.com/wangyoucao577/algorithms_practice/graph"
-	"github.com/wangyoucao577/algorithms_practice/graphsample1"
+	"github.com/wangyoucao577/algorithms_practice/graphsamples/graphsample1"
 )
 
 func printPath(w io.Writer, s graph.NodeID, t graph.NodeID, depth int, path graph.Path) {
